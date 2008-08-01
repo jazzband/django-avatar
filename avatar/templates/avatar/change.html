@@ -1,0 +1,10 @@
+{% extends "avatar/base.html" %}
+
+{% block content %}
+    <p>Your current avatar looks like this:</p>
+    <img src="{% url avatar_img avatar.email_hash %}" />
+    <form enctype="multipart/form-data" method="POST" action="">
+        <input type="file" name="avatar" value="Avatar Image" />
+        <input type="submit" value="Upload New Image" />
+    </form>
+{% endblock %}

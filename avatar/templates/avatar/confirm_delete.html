@@ -1,0 +1,10 @@
+{% extends "avatar/base.html" %}
+
+{% block content %}
+    <p>Are you sure that you would like to delete the avatar of {{ avatar.user.username }}?</p>
+    <form method="POST" action="">
+        <input type="hidden" name="next" value="{{ next }}">
+        <input type="submit" value="Yes" />
+    </form>
+    <a href="{{ next }}">No</a>
+{% endblock %}
