@@ -55,18 +55,16 @@ def img(request, email_hash, resize_method=Image.ANTIALIAS):
     rating = request.GET.get('r', 'g') # Unused, for now.
     default = request.GET.get('d', '')
     data = None
+    avatar = Avatar.objects.get(email_hash=email_hash)
     try:
-        avatar = Avatar.objects.get(email_hash=email_hash)
+        data = open(avatar.get_avatar_filename(), 'r').read()
+    except IOError:
+        pass 
+    if not data and default:
         try:
-            data = open(avatar.get_avatar_filename(), 'r').read()
-        except IOError:
+            data = urlopen(default).read()
+        except: #TODO: Fix this hardcore
             pass
-    except Avatar.DoesNotExist:
-        if default:
-            try:
-                data = urlopen(default).read()
-            except: #TODO: Fix this hardcore
-                pass
     if not data:
         filename = os.path.join(os.path.dirname(__file__), 'default.jpg')
         data = open(filename, 'r').read()
