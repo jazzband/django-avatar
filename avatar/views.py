@@ -95,6 +95,7 @@ def img(request, email_hash, resize_method=Image.ANTIALIAS):
 def change(request, extra_context={}, next_override=None):
     if request.method == "POST":
         dirname = os.path.join(settings.MEDIA_ROOT, 'avatars')
+        os.makedirs(dirname)
         filename = "%s.jpg" % request.user.avatar.email_hash
         full_filename = os.path.join(dirname, filename)
         (destination, destination_path) = tempfile.mkstemp()
