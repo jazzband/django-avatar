@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext_lazy as _
 
 try:
     from cStringIO import StringIO
@@ -105,6 +106,7 @@ def change(request, extra_context={}, next_override=None):
         shutil.move(destination_path, full_filename)
         request.user.avatar.avatar = full_filename
         request.user.avatar.save()
+        request.user.message_set.create(message=_("Successfully updated avatar for $(username).") % {'username': user.username})
         return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
         'avatar/change.html',
@@ -124,6 +126,7 @@ def delete(request, extra_context={}, next_override=None):
         # request.user.avatar.delete()
         request.user.avatar.avatar = "DEFAULT"
         request.user.avatar.save()
+        request.user.message_set.create(message=_("Successfully removed avatar for $(username).") % {'username': user.username})
         next = next_override or _get_next(request)
         return HttpResponseRedirect(next)
     return render_to_response(
