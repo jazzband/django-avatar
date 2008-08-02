@@ -106,7 +106,9 @@ def change(request, extra_context={}, next_override=None):
         shutil.move(destination_path, full_filename)
         request.user.avatar.avatar = full_filename
         request.user.avatar.save()
-        request.user.message_set.create(message=_("Successfully updated avatar for $(username).") % {'username': user.username})
+        request.user.message_set.create(
+            message=_("Successfully updated avatar for $(username).") % 
+                {'username': request.user.username})
         return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
         'avatar/change.html',
@@ -126,7 +128,9 @@ def delete(request, extra_context={}, next_override=None):
         # request.user.avatar.delete()
         request.user.avatar.avatar = "DEFAULT"
         request.user.avatar.save()
-        request.user.message_set.create(message=_("Successfully removed avatar for $(username).") % {'username': user.username})
+        request.user.message_set.create(
+            message=_("Successfully removed avatar for $(username).") % 
+                {'username': request.user.username})
         next = next_override or _get_next(request)
         return HttpResponseRedirect(next)
     return render_to_response(
