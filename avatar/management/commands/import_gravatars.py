@@ -5,6 +5,7 @@ from urllib2 import urlopen
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import NoArgsCommand
+from models import Avatar
 
 try:
     from hashlib import md5
@@ -36,14 +37,15 @@ class Command(NoArgsCommand):
                 os.makedirs(dirname)
             except OSError:
                 pass
-            filename = "%s.jpg" % user.avatar.email_hash
+            avatar, created = Avatar.objects.get_or_create(user=user)
+            filename = "%s.jpg" % avatar.email_hash
             full_filename = os.path.join(dirname, filename)
             try:
                 f = open(full_filename, 'w')
                 f.write(data)
                 f.close()
-                user.avatar.avatar = full_filename
-                user.avatar.save()
+                avatar.avatar = full_filename
+                avatar.save()
                 print "Imported Gravatar for %s" % user.username
             except:
                 print "Error on writing to file: %s" % full_filename
