@@ -107,7 +107,7 @@ def change(request, extra_context={}, next_override=None):
         request.user.avatar.avatar = full_filename
         request.user.avatar.save()
         request.user.message_set.create(
-            message=_("Successfully updated avatar for $(username).") % 
+            message=_("Successfully updated avatar for %(username).") % 
                 {'username': request.user.username})
         return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
@@ -129,7 +129,7 @@ def delete(request, extra_context={}, next_override=None):
         request.user.avatar.avatar = "DEFAULT"
         request.user.avatar.save()
         request.user.message_set.create(
-            message=_("Successfully removed avatar for $(username).") % 
+            message=_("Successfully removed avatar for %(username).") % 
                 {'username': request.user.username})
         next = next_override or _get_next(request)
         return HttpResponseRedirect(next)
