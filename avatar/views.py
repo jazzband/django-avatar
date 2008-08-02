@@ -1,8 +1,14 @@
 import os
 import os.path
 import tempfile
-import ImageFile
-import Image
+try:
+    from PIL import ImageFile
+except ImportError:
+    import ImageFile
+try:
+    from PIL import Image
+except ImportError:
+    import Image
 import shutil
 
 from models import Avatar
