@@ -62,11 +62,12 @@ def img(request, email_hash, resize_method=Image.ANTIALIAS):
     rating = request.GET.get('r', 'g') # Unused, for now.
     default = request.GET.get('d', '')
     data = None
-    avatar = Avatar.objects.get(email_hash=email_hash)
+    avatar, created = Avatar.objects.get_or_create(email_hash=email_hash)
     try:
-        data = open(avatar.get_avatar_filename(), 'r').read()
+        if not created:
+            data = open(avatar.get_avatar_filename(), 'r').read()
     except IOError:
-        pass 
+        pass
     if not data and default:
         try:
             data = urlopen(default).read()
@@ -99,13 +100,14 @@ def img(request, email_hash, resize_method=Image.ANTIALIAS):
     return response
 
 def change(request, extra_context={}, next_override=None):
+    avatar, created = Avatar.objects.get_or_create(user=request.user)
     if request.method == "POST":
         dirname = os.path.join(settings.MEDIA_ROOT, 'avatars')
         try:
             os.makedirs(dirname)
         except OSError:
             pass # The dirs already exist.
-        filename = "%s.jpg" % request.user.avatar.email_hash
+        filename = "%s.jpg" % avatar.email_hash
         full_filename = os.path.join(dirname, filename)
         (destination, destination_path) = tempfile.mkstemp()
         for i, chunk in enumerate(request.FILES['avatar'].chunks()):
@@ -114,8 +116,8 @@ def change(request, extra_context={}, next_override=None):
             os.write(destination, chunk)
         os.close(destination)
         shutil.move(destination_path, full_filename)
-        request.user.avatar.avatar = full_filename
-        request.user.avatar.save()
+        avatar.avatar = full_filename
+        avatar.save()
         request.user.message_set.create(
             message=_("Successfully updated your avatar."))
         return HttpResponseRedirect(next_override or _get_next(request))
@@ -124,19 +126,20 @@ def change(request, extra_context={}, next_override=None):
         extra_context,
         context_instance = RequestContext(
             request,
-            { 'avatar': request.user.avatar, 
+            { 'avatar': avatar, 
               'next': next_override or _get_next(request) }
         )
     )
 change = login_required(change)
 
 def delete(request, extra_context={}, next_override=None):
+    avatar, created = Avatar.objects.get_or_create(user=request.user)
     if request.method == 'POST':
         # Should we really delete a OneToOneField?
         # I think just set image to default.
         # request.user.avatar.delete()
-        request.user.avatar.avatar = "DEFAULT"
-        request.user.avatar.save()
+        avatar.avatar = "DEFAULT"
+        avatar.save()
         request.user.message_set.create(
             message=_("Successfully removed your avatar."))
         next = next_override or _get_next(request)
@@ -146,7 +149,7 @@ def delete(request, extra_context={}, next_override=None):
         extra_context,
         context_instance = RequestContext(
             request,
-            { 'avatar': request.user.avatar,
+            { 'avatar': avatar,
               'next': next_override or _get_next(request) }
         )
     )
