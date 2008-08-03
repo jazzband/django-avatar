@@ -20,6 +20,7 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
+from django.core.cache import cache
 
 try:
     from cStringIO import StringIO
@@ -29,7 +30,7 @@ except ImportError:
 MAX_MEGABYTES = getattr(settings, 'AVATAR_MAX_FILESIZE', 10)
 MAX_WIDTH = getattr(settings, 'AVATAR_MAX_WIDTH', 512)
 DEFAULT_WIDTH = getattr(settings, 'AVATAR_DEFAULT_WIDTH', 80)
-#AVATAR_CACHE
+AVATAR_CACHE_SECONDS = getattr(settings, 'AVATAR_CACHE_SECONDS', None)
 
 def _get_next(request):
     """
@@ -62,6 +63,11 @@ def img(request, email_hash, resize_method=Image.ANTIALIAS):
         size = MAX_WIDTH
     rating = request.GET.get('r', 'g') # Unused, for now.
     default = request.GET.get('d', '')
+    if AVATAR_CACHE_SECONDS:
+        cache_key = '%s-%s' % (email_hash, str(size))
+        cached = cache.get(cache_key)
+        if cached:
+            return cached
     data = None
     try:
         avatar = Avatar.objects.get(email_hash=email_hash)
@@ -103,6 +109,8 @@ def img(request, email_hash, resize_method=Image.ANTIALIAS):
     image = image.resize((size, size), resize_method)
     response = HttpResponse(mimetype='image/jpeg')
     image.save(response, "JPEG")
+    if AVATAR_CACHE_SECONDS:
+        cache.set(cache_key, response, AVATAR_CACHE_SECONDS)
     return response
 
 def change(request, extra_context={}, next_override=None):
@@ -126,6 +134,9 @@ def change(request, extra_context={}, next_override=None):
         avatar.save()
         request.user.message_set.create(
             message=_("Successfully updated your avatar."))
+        if AVATAR_CACHE_SECONDS:
+            for i in xrange(512):
+                cache.delete('%s-%s' % (avatar.email_hash, str(i)))
         return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
         'avatar/change.html',
@@ -148,6 +159,9 @@ def delete(request, extra_context={}, next_override=None):
         avatar.save()
         request.user.message_set.create(
             message=_("Successfully removed your avatar."))
+        if AVATAR_CACHE_SECONDS:
+            for i in xrange(512):
+                cache.delete('%s-%s' % (avatar.email_hash, str(i)))
         next = next_override or _get_next(request)
         return HttpResponseRedirect(next)
     return render_to_response(
