@@ -62,9 +62,12 @@ def img(request, email_hash, resize_method=Image.ANTIALIAS):
     rating = request.GET.get('r', 'g') # Unused, for now.
     default = request.GET.get('d', '')
     data = None
-    avatar, created = Avatar.objects.get_or_create(email_hash=email_hash)
     try:
-        if not created:
+        avatar = Avatar.objects.get(email_hash=email_hash)
+    except Avatar.DoesNotExist:
+        avatar = None
+    try:
+        if avatar is not None:
             data = open(avatar.get_avatar_filename(), 'r').read()
     except IOError:
         pass
