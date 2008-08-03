@@ -29,6 +29,7 @@ except ImportError:
 MAX_MEGABYTES = getattr(settings, 'AVATAR_MAX_FILESIZE', 10)
 MAX_WIDTH = getattr(settings, 'AVATAR_MAX_WIDTH', 512)
 DEFAULT_WIDTH = getattr(settings, 'AVATAR_DEFAULT_WIDTH', 80)
+#AVATAR_CACHE
 
 def _get_next(request):
     """
@@ -65,6 +66,8 @@ def img(request, email_hash, resize_method=Image.ANTIALIAS):
     try:
         avatar = Avatar.objects.get(email_hash=email_hash)
     except Avatar.DoesNotExist:
+        avatar = None
+    except Avatar.MultipleObjectsReturned:
         avatar = None
     try:
         if avatar is not None:
