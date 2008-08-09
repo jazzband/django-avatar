@@ -11,4 +11,4 @@ def delete_avatar(sender=None, instance=None, **kwargs):
     except Avatar.DoesNotExist:
         pass
 signals.post_save.connect(create_avatar, sender=User)
-signals.post_save.connect(delete_avatar, sender=User)
+signals.post_delete.connect(delete_avatar, sender=User)
