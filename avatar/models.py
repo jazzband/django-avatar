@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.storage import default_storage
 from django.utils.translation import ugettext as _
-
 try:
     from hashlib import md5
 except ImportError:
@@ -21,14 +20,12 @@ try:
 except ImportError:
     import Image
 
-WIDTH_HEIGHT_RE = re.compile(r'\[(\d+)x(\d+)\]')
-
 AUTO_GENERATE_AVATAR_SIZES = getattr(settings, 'AUTO_GENERATE_AVATAR_SIZES', (80,))
 AVATAR_RESIZE_METHOD = getattr(settings, 'AVATAR_RESIZE_METHOD', Image.ANTIALIAS)
 
-def avatar_file_path(instance=None, filename=None):
-    return 'avatars/%s/[%sx%s]%s' % (instance.user.username, 
-        instance.avatar.width, instance.avatar.height, filename)
+def avatar_file_path(instance=None, filename=None, user=None):
+    user = user or instance.user
+    return 'avatars/%s/%s' % (user.username, filename)
 
 class Avatar(models.Model):
     email_hash = models.CharField(max_length=128, blank=True)
@@ -43,16 +40,12 @@ class Avatar(models.Model):
     def save(self):
         self.email_hash = md5(self.user.email).hexdigest().lower()
         if self.primary:
-            avatars = Avatar.objects.filter(user=self.user, primary=True)
+            avatars = Avatar.objects.filter(user=self.user, primary=True).exclude(id=self.id)
             avatars.update(primary=False)
         super(Avatar, self).save()
     
     def thumbnail_exists(self, size):
-        if size in AUTO_GENERATE_AVATAR_SIZES:
-            return True
-        new_path_fragment = '[%sx%s]' % (size, size)
-        path = WIDTH_HEIGHT_RE.sub(new_path_fragment, self.avatar.path)
-        return default_storage.exists(path)
+        return default_storage.exists(self.avatar_path(size))
     
     def create_thumbnail(self, size):
         orig = default_storage.open(self.avatar.path, 'rb').read()
@@ -75,8 +68,16 @@ class Avatar(models.Model):
     
     def avatar_url(self, size):
         new_url_fragment = '[%sx%s]' % (size, size)
-        return WIDTH_HEIGHT_RE.sub(new_url_fragment, self.avatar.url)
+        split = self.avatar.url.split('/')
+        last = split.pop()
+        last = "%s%s" % (new_url_fragment, last)
+        split.append(last)
+        return "/".join(split)
 
     def avatar_path(self, size):
-        new_path_fragment = '[%sx%s]' % (size, size)
-        return WIDTH_HEIGHT_RE.sub(new_path_fragment, self.avatar.path)
+        new_url_fragment = '[%sx%s]' % (size, size)
+        split = self.avatar.path.split('/')
+        last = split.pop()
+        last = "%s%s" % (new_url_fragment, last)
+        split.append(last)
+        return "/".join(split)

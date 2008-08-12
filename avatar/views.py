@@ -3,7 +3,8 @@ import os.path
 import tempfile
 import shutil
 
-from models import Avatar
+from models import Avatar, avatar_file_path
+from forms import PrimaryAvatarForm, DeleteAvatarForm
 from urllib2 import urlopen
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.conf import settings
@@ -12,6 +13,7 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
+from django.core.files.storage import default_storage
 
 try:
     from cStringIO import StringIO
@@ -48,8 +50,10 @@ def _get_next(request):
     4. Otherwise, the view raise a 404 Not Found.
     """
     next = request.POST.get('next', request.GET.get('next', request.META.get('HTTP_REFERER', None)))
-    if not next or next == request.path:
-        raise Http404 # No next url was supplied in GET or POST.
+    #if not next or next == request.path:
+    #    raise Http404 # No next url was supplied in GET or POST.
+    if not next:
+        next = request.path
     return next
 
 def img(request, email_hash):
@@ -107,26 +111,43 @@ def img(request, email_hash):
     return response
 
 def change(request, extra_context={}, next_override=None):
-    avatar, created = Avatar.objects.get_or_create(user=request.user)
+    avatars = Avatar.objects.filter(user=request.user).order_by('-primary')
+    if avatars.count() > 0:
+        avatar = avatars[0]
+    else:
+        avatar = None
+    primary_avatar_form = PrimaryAvatarForm(request.POST or None, user=request.user)
     if request.method == "POST":
-        dirname = os.path.join(settings.MEDIA_ROOT, 'avatars')
-        try:
-            os.makedirs(dirname)
-        except OSError:
-            pass # The dirs already exist.
-        filename = "%s.jpg" % avatar.email_hash
-        full_filename = os.path.join(dirname, filename)
-        (destination, destination_path) = tempfile.mkstemp()
-        for i, chunk in enumerate(request.FILES['avatar'].chunks()):
-            if i * 16 == MAX_MEGABYTES:
-                raise Http404
-            os.write(destination, chunk)
-        os.close(destination)
-        shutil.move(destination_path, full_filename)
-        avatar.avatar = full_filename
-        avatar.save()
-        request.user.message_set.create(
-            message=_("Successfully updated your avatar."))
+        if 'avatar' in request.FILES:
+            path = avatar_file_path(user=request.user, 
+                filename=request.FILES['avatar'].name)
+            try:
+                os.makedirs("/".join(path.split('/')[:-1]))
+            except OSError:
+                pass # The dirs already exist.
+            new_file = default_storage.open(path, 'wb')
+            print new_file
+            for i, chunk in enumerate(request.FILES['avatar'].chunks()):
+                if i * 16 == MAX_MEGABYTES:
+                    raise Http404 # TODO: Is this the right thing to do?
+                                  # Validation error maybe, instead?
+                new_file.write(chunk)
+            avatar = Avatar(
+                user = request.user,
+                primary = True,
+                avatar = path,
+            )
+            avatar.save()
+            new_file.close()
+            request.user.message_set.create(
+                message=_("Successfully uploaded a new avatar."))
+        if 'choice' in request.POST and primary_avatar_form.is_valid():
+            avatar = Avatar.objects.get(id=
+                primary_avatar_form.cleaned_data['choice'])
+            avatar.primary = True
+            avatar.save()
+            request.user.message_set.create(
+                message=_("Successfully updated your avatar."))
         return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
         'avatar/change.html',
@@ -134,30 +155,36 @@ def change(request, extra_context={}, next_override=None):
         context_instance = RequestContext(
             request,
             { 'avatar': avatar, 
-              'next': next_override or _get_next(request) }
+              'avatars': avatars,
+              'primary_avatar_form': primary_avatar_form,
+              'next': next_override or _get_next(request), }
         )
     )
 change = login_required(change)
 
 def delete(request, extra_context={}, next_override=None):
-    avatar, created = Avatar.objects.get_or_create(user=request.user)
+    avatars = Avatar.objects.filter(user=request.user).order_by('-primary')
+    if avatars.count() > 0:
+        avatar = avatars[0]
+    else:
+        avatar = None
+    delete_avatar_form = DeleteAvatarForm(request.POST or None, user=request.user)
     if request.method == 'POST':
-        # Should we really delete a OneToOneField?
-        # I think just set image to default.
-        # request.user.avatar.delete()
-        avatar.avatar = "DEFAULT"
-        avatar.save()
-        request.user.message_set.create(
-            message=_("Successfully removed your avatar."))
-        next = next_override or _get_next(request)
-        return HttpResponseRedirect(next)
+        if delete_avatar_form.is_valid():
+            ids = delete_avatar_form.cleaned_data['choices']
+            Avatar.objects.filter(id__in=ids).delete()
+            request.user.message_set.create(
+                message=_("Successfully deleted the requested avatars."))
+            return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
         'avatar/confirm_delete.html',
         extra_context,
         context_instance = RequestContext(
             request,
-            { 'avatar': avatar,
-              'next': next_override or _get_next(request) }
+            { 'avatar': avatar, 
+              'avatars': avatars,
+              'delete_avatar_form': delete_avatar_form,
+              'next': next_override or _get_next(request), }
         )
     )
-delete = login_required(delete)
+change = login_required(change)

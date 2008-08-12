@@ -1,4 +1,6 @@
 import os.path
+import hashlib
+import urllib
 
 from django import template
 from django.utils.html import escape
@@ -32,8 +34,8 @@ def avatar_url(user, size=80):
         return avatar.avatar_url(size)
     else:
         if AVATAR_GRAVATAR_BACKUP:
-            return "http://www.gravatar.com/avatar/%s/?" % (
-                hashlib.md5(email).hexdigest(),
+            return "http://www.gravatar.com/avatar/%s/?%s" % (
+                hashlib.md5(user.email).hexdigest(),
                 urllib.urlencode({'s': str(size)}),)
         else:
             return AVATAR_DEFAULT_URL
@@ -53,3 +55,10 @@ def avatar(user, size=80):
         url = avatar_url(user, size)
     return """<img src="%s" alt="%s" />""" % (url, alt)
 register.simple_tag(avatar)
+
+def render_avatar(avatar, size=80):
+    if not avatar.thumbnail_exists(size):
+        avatar.create_thumbnail(size)
+    return """<img src="%s" alt="%s" />""" % (
+        avatar.avatar_url(size), str(avatar))
+register.simple_tag(render_avatar)

@@ -14,5 +14,4 @@ def create_default_thumbnails(instance=None, created=False, **kwargs):
     if created:
         for size in AUTO_GENERATE_AVATAR_SIZES:
             instance.create_thumbnail(size)
-        avatar, created = Avatar.objects.get_or_create(user=instance)
 signals.post_save.connect(create_default_thumbnails, sender=Avatar)
