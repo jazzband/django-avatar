@@ -122,8 +122,10 @@ def change(request, extra_context={}, next_override=None):
             path = avatar_file_path(user=request.user, 
                 filename=request.FILES['avatar'].name)
             try:
-                os.makedirs("/".join(path.split('/')[:-1]))
-            except OSError:
+                os.makedirs(os.path.join(
+                    settings.MEDIA_ROOT, "/".join(path.split('/')[:-1])))
+            except OSError, e:
+                print e
                 pass # The dirs already exist.
             new_file = default_storage.open(path, 'wb')
             print new_file
