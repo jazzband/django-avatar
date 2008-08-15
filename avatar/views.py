@@ -125,10 +125,8 @@ def change(request, extra_context={}, next_override=None):
                 os.makedirs(os.path.join(
                     settings.MEDIA_ROOT, "/".join(path.split('/')[:-1])))
             except OSError, e:
-                print e
                 pass # The dirs already exist.
             new_file = default_storage.open(path, 'wb')
-            print new_file
             for i, chunk in enumerate(request.FILES['avatar'].chunks()):
                 if i * 16 == MAX_MEGABYTES:
                     raise Http404 # TODO: Is this the right thing to do?
