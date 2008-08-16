@@ -114,9 +114,11 @@ def change(request, extra_context={}, next_override=None):
     avatars = Avatar.objects.filter(user=request.user).order_by('-primary')
     if avatars.count() > 0:
         avatar = avatars[0]
+        kwargs = {'initial': {'choice': avatar.id}}
     else:
         avatar = None
-    primary_avatar_form = PrimaryAvatarForm(request.POST or None, user=request.user)
+        kwargs = {}
+    primary_avatar_form = PrimaryAvatarForm(request.POST or None, user=request.user, **kwargs)
     if request.method == "POST":
         if 'avatar' in request.FILES:
             path = avatar_file_path(user=request.user, 
