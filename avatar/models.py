@@ -31,7 +31,7 @@ class Avatar(models.Model):
     email_hash = models.CharField(max_length=128, blank=True)
     user = models.ForeignKey(User)
     primary = models.BooleanField(default=False)
-    avatar = models.ImageField(upload_to=avatar_file_path, blank=True)
+    avatar = models.ImageField(max_length=1024, upload_to=avatar_file_path, blank=True)
     date_uploaded = models.DateTimeField(default=datetime.datetime.now)
     
     def __unicode__(self):
