@@ -64,6 +64,8 @@ class Avatar(models.Model):
             image = image.crop((0, diff, w, h - diff))
         image = image.resize((size, size), AVATAR_RESIZE_METHOD)
         thumb = default_storage.open(self.avatar_path(size), 'wb')
+        if image.mode != "RGB":
+            image = image.convert("RGB")
         image.save(thumb, "JPEG")
     
     def avatar_url(self, size):
