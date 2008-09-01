@@ -37,12 +37,12 @@ class Avatar(models.Model):
     def __unicode__(self):
         return _(u'Avatar for %s' % self.user)
     
-    def save(self):
+    def save(self, force_insert=False, force_update=False):
         self.email_hash = md5(self.user.email).hexdigest().lower()
         if self.primary:
             avatars = Avatar.objects.filter(user=self.user, primary=True).exclude(id=self.id)
             avatars.update(primary=False)
-        super(Avatar, self).save()
+        super(Avatar, self).save(force_insert, force_update)
     
     def thumbnail_exists(self, size):
         return default_storage.exists(self.avatar_path(size))
