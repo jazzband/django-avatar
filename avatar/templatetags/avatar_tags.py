@@ -3,7 +3,6 @@ import hashlib
 import urllib
 
 from django import template
-from django.utils.html import escape
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import ugettext as _

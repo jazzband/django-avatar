@@ -1,4 +1,4 @@
 from django.contrib import admin
-from models import Avatar
+from avatar.models import Avatar
 
 admin.site.register(Avatar)

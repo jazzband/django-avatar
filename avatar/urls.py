@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import patterns, url
 
 urlpatterns = patterns('avatar',
     url('^change/$', 'views.change', name='avatar_change'),

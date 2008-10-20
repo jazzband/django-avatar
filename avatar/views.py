@@ -1,24 +1,16 @@
 import os
 import os.path
-import tempfile
-import shutil
 
-from models import Avatar, avatar_file_path
-from forms import PrimaryAvatarForm, DeleteAvatarForm
+from avatar.models import Avatar, avatar_file_path
+from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm
 from urllib2 import urlopen
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.conf import settings
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.core.files.storage import default_storage
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
 
 try:
     from PIL import ImageFile

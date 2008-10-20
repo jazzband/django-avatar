@@ -2,8 +2,6 @@ from django import forms
 from django.forms import widgets
 from django.utils.safestring import mark_safe
 
-from models import Avatar
-
 def avatar_img(avatar, size):
     if not avatar.thumbnail_exists(size):
         avatar.create_thumbnail(size)
