@@ -1,16 +1,12 @@
-import os
 import os.path
 
 from avatar.models import Avatar, avatar_file_path
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm
-from django.http import HttpResponseRedirect, Http404
-from django.conf import settings
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
-
-from avatar import MAX_MEGABYTES
 
 def _get_next(request):
     """
