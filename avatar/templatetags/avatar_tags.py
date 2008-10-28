@@ -1,17 +1,13 @@
-import os.path
 import hashlib
 import urllib
 
 from django import template
 from django.contrib.auth.models import User
-from django.conf import settings
 from django.utils.translation import ugettext as _
 
-register = template.Library()
+from avatar import AVATAR_DEFAULT_URL, AVATAR_GRAVATAR_BACKUP
 
-AVATAR_GRAVATAR_BACKUP = getattr(settings, 'AVATAR_GRAVATAR_BACKUP', True)
-AVATAR_DEFAULT_URL = getattr(settings, 'AVATAR_DEFAULT_URL', 
-    settings.MEDIA_URL + os.path.join(os.path.dirname(__file__), 'default.jpg'))
+register = template.Library()
 
 def avatar_url(user, size=80):
     if not isinstance(user, User):
@@ -52,12 +48,13 @@ def avatar(user, size=80):
     else:
         alt = unicode(user)
         url = avatar_url(user, size)
-    return """<img src="%s" alt="%s" />""" % (url, alt)
+    return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (url, alt,
+        size, size)
 register.simple_tag(avatar)
 
 def render_avatar(avatar, size=80):
     if not avatar.thumbnail_exists(size):
         avatar.create_thumbnail(size)
-    return """<img src="%s" alt="%s" />""" % (
-        avatar.avatar_url(size), str(avatar))
+    return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
+        avatar.avatar_url(size), str(avatar), size, size)
 register.simple_tag(render_avatar)

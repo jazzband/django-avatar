@@ -1,9 +1,23 @@
-from models import Avatar
-from django.db.models import signals
-from django.contrib.auth.models import User
+import os.path
+
 from django.conf import settings
 
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
 AUTO_GENERATE_AVATAR_SIZES = getattr(settings, 'AUTO_GENERATE_AVATAR_SIZES', (80,))
+AVATAR_RESIZE_METHOD = getattr(settings, 'AVATAR_RESIZE_METHOD', Image.ANTIALIAS)
+AVATAR_STORAGE_DIR = getattr(settings, 'AVATAR_STORAGE_DIR', 'avatars')
+MAX_MEGABYTES = getattr(settings, 'AVATAR_MAX_FILESIZE', 10)
+AVATAR_GRAVATAR_BACKUP = getattr(settings, 'AVATAR_GRAVATAR_BACKUP', True)
+AVATAR_DEFAULT_URL = getattr(settings, 'AVATAR_DEFAULT_URL', 
+    settings.MEDIA_URL + os.path.join(os.path.dirname(__file__), 'default.jpg'))
+
+from django.db.models import signals
+from django.contrib.auth.models import User
+from avatar.models import Avatar
 
 def update_email_hash(sender=None, instance=None, **kwargs):
     for avatar in instance.avatar_set.all():

@@ -5,8 +5,8 @@ from django.utils.safestring import mark_safe
 def avatar_img(avatar, size):
     if not avatar.thumbnail_exists(size):
         avatar.create_thumbnail(size)
-    return mark_safe("""<img src="%s" alt="%s" />""" % 
-        (avatar.avatar_url(size), unicode(avatar)))
+    return mark_safe("""<img src="%s" alt="%s" width="%s" height="%s" />""" % 
+        (avatar.avatar_url(size), unicode(avatar), size, size))
 
 class PrimaryAvatarForm(forms.Form):
     
