@@ -2,11 +2,11 @@ from django.core.management.base import NoArgsCommand
 from django.conf import settings
 
 from avatar.models import Avatar
-
-AUTO_GENERATE_AVATAR_SIZES = getattr(settings, 'AUTO_GENERATE_AVATAR_SIZES', (80,))
+from avatar import AUTO_GENERATE_AVATAR_SIZES
 
 class Command(NoArgsCommand):
-    help = "Import avatars from Gravatar, and store them locally."
+    help = "Regenerates avatar thumbnails for the sizes specified in " + \
+        "settings.AUTO_GENERATE_AVATAR_SIZES."
     
     def handle_noargs(self, **options):
         for avatar in Avatar.objects.all():
