@@ -75,4 +75,4 @@ class Avatar(models.Model):
     
     def avatar_name(self, size):
         return os.path.join(AVATAR_STORAGE_DIR, self.user.username,
-            'resized', str(self.id), '-'.join([str(size), self.avatar.name]))
+            'resized', str(size), self.avatar.name)
