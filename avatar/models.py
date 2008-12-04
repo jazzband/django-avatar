@@ -16,9 +16,9 @@ try:
 except ImportError:
     from md5 import new as md5
 try:
-    from PIL import ImageFile
+    from PIL import Image
 except ImportError:
-    import ImageFile
+    import Image
 
 from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD
 
@@ -48,26 +48,27 @@ class Avatar(models.Model):
         return self.avatar.storage.exists(self.avatar_name(size))
     
     def create_thumbnail(self, size):
-        orig = self.avatar.storage.open(self.avatar.name, 'rb').read()
-        p = ImageFile.Parser()
-        p.feed(orig)
         try:
-            image = p.close()
+            orig = self.avatar.storage.open(self.avatar.name, 'rb').read()
+            image = Image.open(StringIO(orig))
         except IOError:
             return # What should we do here?  Render a "sorry, didn't work" img?
         (w, h) = image.size
-        if w > h:
-            diff = (w - h) / 2
-            image = image.crop((diff, 0, w - diff, h))
+        if w != size or h != size:
+            if w > h:
+                diff = (w - h) / 2
+                image = image.crop((diff, 0, w - diff, h))
+            else:
+                diff = (h - w) / 2
+                image = image.crop((0, diff, w, h - diff))
+            image = image.resize((size, size), AVATAR_RESIZE_METHOD)
+            if image.mode != "RGB":
+                image = image.convert("RGB")
+            thumb = StringIO()
+            image.save(thumb, "JPEG")
+            thumb_file = ContentFile(thumb.getvalue())
         else:
-            diff = (h - w) / 2
-            image = image.crop((0, diff, w, h - diff))
-        image = image.resize((size, size), AVATAR_RESIZE_METHOD)
-        thumb = StringIO()
-        if image.mode != "RGB":
-            image = image.convert("RGB")
-        image.save(thumb, "JPEG")
-        thumb_file = ContentFile(thumb.getvalue())
+            thumb_file = ContentFile(orig)
         thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
     
     def avatar_url(self, size):
