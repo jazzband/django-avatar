@@ -107,6 +107,7 @@ def delete(request, extra_context={}, next_override=None):
                     if unicode(a.id) not in ids:
                         a.primary = True
                         a.save()
+                        new_primary
                         break
                 notification.send([request.user], "avatar_updated", {"user": request.user, "avatar": new_primary})
                 notification.send((x['friend'] for x in Friendship.objects.friends_for_user(request.user)), "avatar_friend_updated", {"user": request.user, "avatar": new_primary})

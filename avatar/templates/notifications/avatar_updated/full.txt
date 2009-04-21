@@ -1,0 +1,4 @@
+{% load i18n %}{% blocktrans with avatar.get_absolute_url as avatar_url %}Avatar {{ avatar }} has been created.
+
+http://{{ current_site }}{{ avatar_url }}
+{% endblocktrans %}
