@@ -102,15 +102,13 @@ def delete(request, extra_context={}, next_override=None):
         if delete_avatar_form.is_valid():
             ids = delete_avatar_form.cleaned_data['choices']
             if unicode(avatar.id) in ids and avatars.count() > len(ids):
-                new_primary
                 for a in avatars:
                     if unicode(a.id) not in ids:
                         a.primary = True
                         a.save()
-                        new_primary
+                        notification.send([request.user], "avatar_updated", {"user": request.user, "avatar": a})
+                        notification.send((x['friend'] for x in Friendship.objects.friends_for_user(request.user)), "avatar_friend_updated", {"user": request.user, "avatar": a})
                         break
-                notification.send([request.user], "avatar_updated", {"user": request.user, "avatar": new_primary})
-                notification.send((x['friend'] for x in Friendship.objects.friends_for_user(request.user)), "avatar_friend_updated", {"user": request.user, "avatar": new_primary})
             Avatar.objects.filter(id__in=ids).delete()
             request.user.message_set.create(
                 message=_("Successfully deleted the requested avatars."))
