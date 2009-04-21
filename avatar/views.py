@@ -8,6 +8,21 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
+from django.db.models import get_app
+from django.core.exceptions import ImproperlyConfigured
+from django.conf import settings
+
+try:
+    notification = get_app('notification')
+except ImproperlyConfigured:
+    notification = None
+
+try:
+    from friends.models import Friendship
+    friends = True
+except ImportError:
+    friends = False
+
 def _get_next(request):
     """
     The part that's the least straightforward about views in this module is how they 
@@ -37,6 +52,7 @@ def change(request, extra_context={}, next_override=None):
         kwargs = {}
     primary_avatar_form = PrimaryAvatarForm(request.POST or None, user=request.user, **kwargs)
     if request.method == "POST":
+        updated = False
         if 'avatar' in request.FILES:
             path = avatar_file_path(user=request.user, 
                 filename=request.FILES['avatar'].name)
@@ -47,6 +63,7 @@ def change(request, extra_context={}, next_override=None):
             )
             new_file = avatar.avatar.storage.save(path, request.FILES['avatar'])
             avatar.save()
+            updated = True
             request.user.message_set.create(
                 message=_("Successfully uploaded a new avatar."))
         if 'choice' in request.POST and primary_avatar_form.is_valid():
@@ -54,8 +71,12 @@ def change(request, extra_context={}, next_override=None):
                 primary_avatar_form.cleaned_data['choice'])
             avatar.primary = True
             avatar.save()
+            updated = True
             request.user.message_set.create(
                 message=_("Successfully updated your avatar."))
+        if updated and notification:
+            notification.send([request.user], "avatar_updated", {"user": request.user, "avatar": avatar})
+            notification.send((x['friend'] for x in Friendship.objects.friends_for_user(request.user)), "avatar_friend_updated", {"user": request.user, "avatar": avatar})
         return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
         'avatar/change.html',
@@ -81,11 +102,14 @@ def delete(request, extra_context={}, next_override=None):
         if delete_avatar_form.is_valid():
             ids = delete_avatar_form.cleaned_data['choices']
             if unicode(avatar.id) in ids and avatars.count() > len(ids):
+                new_primary
                 for a in avatars:
                     if unicode(a.id) not in ids:
                         a.primary = True
                         a.save()
                         break
+                notification.send([request.user], "avatar_updated", {"user": request.user, "avatar": new_primary})
+                notification.send((x['friend'] for x in Friendship.objects.friends_for_user(request.user)), "avatar_friend_updated", {"user": request.user, "avatar": new_primary})
             Avatar.objects.filter(id__in=ids).delete()
             request.user.message_set.create(
                 message=_("Successfully deleted the requested avatars."))
