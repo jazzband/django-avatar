@@ -18,10 +18,6 @@ from django.db.models import signals
 from django.contrib.auth.models import User
 from avatar.models import Avatar
 
-def update_email_hash(sender=None, instance=None, **kwargs):
-    for avatar in instance.avatar_set.all():
-        avatar.save()
-signals.post_save.connect(update_email_hash, sender=User)
 
 def create_default_thumbnails(instance=None, created=False, **kwargs):
     if created:

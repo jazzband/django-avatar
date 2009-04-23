@@ -12,10 +12,6 @@ except ImportError:
     from StringIO import StringIO
 
 try:
-    from hashlib import md5
-except ImportError:
-    from md5 import new as md5
-try:
     from PIL import Image
 except ImportError:
     import Image
@@ -27,7 +23,6 @@ def avatar_file_path(instance=None, filename=None, user=None):
     return os.path.join(AVATAR_STORAGE_DIR, user.username, filename)
 
 class Avatar(models.Model):
-    email_hash = models.CharField(max_length=128, blank=True)
     user = models.ForeignKey(User)
     primary = models.BooleanField(default=False)
     avatar = models.ImageField(max_length=1024, upload_to=avatar_file_path, blank=True)
@@ -37,7 +32,6 @@ class Avatar(models.Model):
         return _(u'Avatar for %s') % self.user
     
     def save(self, force_insert=False, force_update=False):
-        self.email_hash = md5(self.user.email).hexdigest().lower()
         if self.primary:
             avatars = Avatar.objects.filter(user=self.user, primary=True)\
                 .exclude(id=self.id)
