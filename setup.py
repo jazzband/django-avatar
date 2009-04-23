@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.0.0'
+version = '1.0.2'
 
 LONG_DESCRIPTION = """
 Using django-avatar
@@ -157,9 +157,14 @@ setup(
     keywords='avatar,django',
     author='Eric Florenzano',
     author_email='floguy@gmail.com',
-    url='http://django-avatar.googlecode.com/',
+    url='http://github.com/ericflo/django-avatar/',
     license='BSD',
     packages=find_packages(),
+    package_data = {
+        'avatar': [
+            'templates/avatar/*.html'
+        ],
+    },
     include_package_data=True,
     zip_safe=False,
     install_requires=['setuptools'],
