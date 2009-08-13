@@ -1,0 +1,68 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-08-09 04:13-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: models.py:32
+#, python-format
+msgid "Avatar for %s"
+msgstr "Avatar para %s"
+
+#: views.py:68
+msgid "Successfully uploaded a new avatar."
+msgstr "Nova foto de perfil enviada com sucesso."
+
+#: views.py:76
+msgid "Successfully updated your avatar."
+msgstr "Sua foto de perfil foi atualizada com sucesso."
+
+#: views.py:114
+msgid "Successfully deleted the requested avatars."
+msgstr "As fotos de perfil selecionadas foram excluídas com sucesso."
+
+#: management/__init__.py:9
+msgid "Avatar Updated"
+msgstr "Foto de Perfil Atualizada"
+
+#: management/__init__.py:9
+msgid "avatar have been updated"
+msgstr "foto de perfil foi atualizada"
+
+#: management/__init__.py:10
+msgid "Friend Updated Avatar"
+msgstr "Amigo Atualizou Foto de Perfil"
+
+#: management/__init__.py:10
+msgid "a friend has updated his avatar"
+msgstr "um amigo atualizou a foto de perfil"
+
+#: templates/notifications/avatar_friend_updated/notice.html:2
+#, python-format
+msgid ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated his avatar <a "
+"href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> atualizou a foto de perfil <a "
+"href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templates/notifications/avatar_updated/notice.html:2
+#, python-format
+msgid "A new tribe <a href=\"%(avatar_url)s\">%(avatar)s</a> has been created."
+msgstr "Uma nova foto de perfil <a href=\"%(avatar_url)s\">%(avatar)s</a> foi criada."
+
+#: templatetags/avatar_tags.py:47
+msgid "Default Avatar"
+msgstr "Foto de Perfil Padrão"
