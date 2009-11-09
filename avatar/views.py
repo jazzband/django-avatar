@@ -20,6 +20,7 @@ except ImproperlyConfigured:
 friends = False
 if 'friends' in settings.INSTALLED_APPS:
     friends = True
+    from friends.models import Friendship
 
 def _get_next(request):
     """
