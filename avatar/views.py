@@ -42,14 +42,14 @@ def _get_next(request):
     return next
 
 def change(request, extra_context={}, next_override=None):
-    avatars = Avatar.objects.filter(user=request.user).order_by('-primary')
-    if avatars.count() > 0:
-        avatar = avatars[0]
+    avatars = request.user.avatar_set.all()
+    avatar = avatars.get(primary=True)
+    if avatar:
         kwargs = {'initial': {'choice': avatar.id}}
     else:
-        avatar = None
         kwargs = {}
-    primary_avatar_form = PrimaryAvatarForm(request.POST or None, user=request.user, **kwargs)
+    primary_avatar_form = PrimaryAvatarForm(request.POST or None,
+        user=request.user, avatars=avatars, **kwargs)
     if request.method == "POST":
         updated = False
         if 'avatar' in request.FILES:
@@ -92,12 +92,10 @@ def change(request, extra_context={}, next_override=None):
 change = login_required(change)
 
 def delete(request, extra_context={}, next_override=None):
-    avatars = Avatar.objects.filter(user=request.user).order_by('-primary')
-    if avatars.count() > 0:
-        avatar = avatars[0]
-    else:
-        avatar = None
-    delete_avatar_form = DeleteAvatarForm(request.POST or None, user=request.user)
+    avatars = request.user.avatar_set.all()
+    avatar = avatars.get(primary=True)
+    delete_avatar_form = DeleteAvatarForm(request.POST or None,
+        user=request.user, avatars=avatars)
     if request.method == 'POST':
         if delete_avatar_form.is_valid():
             ids = delete_avatar_form.cleaned_data['choices']

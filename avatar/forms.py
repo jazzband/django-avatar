@@ -13,10 +13,10 @@ class PrimaryAvatarForm(forms.Form):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         size = kwargs.pop('size', 80)
+        avatars = kwargs.pop('avatars')
         super(PrimaryAvatarForm, self).__init__(*args, **kwargs)
-        avatars = user.avatar_set.all()
         self.fields['choice'] = forms.ChoiceField(
-            choices=[(c.id, avatar_img(c, size)) for c in user.avatar_set.all()],
+            choices=[(c.id, avatar_img(c, size)) for c in avatars],
             widget=widgets.RadioSelect)
 
 class DeleteAvatarForm(forms.Form):
@@ -24,8 +24,8 @@ class DeleteAvatarForm(forms.Form):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         size = kwargs.pop('size', 80)
+        avatars = kwargs.pop('avatars')
         super(DeleteAvatarForm, self).__init__(*args, **kwargs)
-        avatars = user.avatar_set.all()
         self.fields['choices'] = forms.MultipleChoiceField(
-            choices=[(c.id, avatar_img(c, size)) for c in user.avatar_set.all()],
+            choices=[(c.id, avatar_img(c, size)) for c in avatars],
             widget=widgets.CheckboxSelectMultiple)
