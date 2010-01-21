@@ -12,6 +12,8 @@ from django.db.models import get_app
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
+from avatar import AVATAR_MAX_AVATARS_PER_USER
+
 try:
     notification = get_app('notification')
 except ImproperlyConfigured:
@@ -44,6 +46,7 @@ def _get_next(request):
 def change(request, extra_context={}, next_override=None):
     avatars = request.user.avatar_set.all()
     avatar = avatars.get(primary=True)
+    avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
     if avatar:
         kwargs = {'initial': {'choice': avatar.id}}
     else:
@@ -94,6 +97,7 @@ change = login_required(change)
 def delete(request, extra_context={}, next_override=None):
     avatars = request.user.avatar_set.all()
     avatar = avatars.get(primary=True)
+    avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
     delete_avatar_form = DeleteAvatarForm(request.POST or None,
         user=request.user, avatars=avatars)
     if request.method == 'POST':
