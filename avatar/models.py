@@ -16,7 +16,8 @@ try:
 except ImportError:
     import Image
 
-from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD
+from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
+                   AVATAR_MAX_AVATARS_PER_USER
 
 def avatar_file_path(instance=None, filename=None, user=None):
     user = user or instance.user
@@ -32,7 +33,7 @@ class Avatar(models.Model):
         return _(u'Avatar for %s') % self.user
     
     def save(self, force_insert=False, force_update=False):
-        if self.primary:
+        if self.primary and AVATAR_MAX_AVATARS_PER_USER > 1:
             avatars = Avatar.objects.filter(user=self.user, primary=True)\
                 .exclude(id=self.id)
             avatars.update(primary=False)
