@@ -19,9 +19,6 @@ class UploadAvatarForm(forms.Form):
         self.user = kwargs.pop('user')
         super(UploadAvatarForm, self).__init__(*args, **kwargs)
         
-    def clean(self):
-        pass
-        
     def clean_avatar(self):
         data = self.cleaned_data['avatar']
         count = Avatar.objects.filter(user=self.user).count()
