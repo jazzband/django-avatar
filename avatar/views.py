@@ -86,9 +86,6 @@ def add(request, extra_context={}, next_override=None):
                 message=_("Successfully uploaded a new avatar."))
             if notification:
                 _notification_updated(request, avatar)
-        else:
-            # from IPython.Shell import IPShellEmbed; IPShellEmbed()()
-            print upload_avatar_form.errors
     return render_to_response(
             'avatar/add.html',
             extra_context,
