@@ -3,7 +3,9 @@ from django.forms import widgets
 from django.utils.safestring import mark_safe
 
 from avatar.models import Avatar
-from avatar import AVATAR_MAX_AVATARS_PER_USER
+from avatar import AVATAR_MAX_AVATARS_PER_USER, AVATAR_MAX_SIZE
+
+from django.template.defaultfilters import filesizeformat
 
 def avatar_img(avatar, size):
     if not avatar.thumbnail_exists(size):
@@ -21,6 +23,10 @@ class UploadAvatarForm(forms.Form):
         
     def clean_avatar(self):
         data = self.cleaned_data['avatar']
+        if data.size > AVATAR_MAX_SIZE:
+            raise forms.ValidationError(
+                "Your file is too big (%s), the maximum allowed size is %s" %
+                (filesizeformat(data.size), filesizeformat(AVATAR_MAX_SIZE)))
         count = Avatar.objects.filter(user=self.user).count()
         if AVATAR_MAX_AVATARS_PER_USER > 1 and \
            count >= AVATAR_MAX_AVATARS_PER_USER: 
