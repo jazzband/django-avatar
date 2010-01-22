@@ -33,7 +33,10 @@ class Avatar(models.Model):
         return _(u'Avatar for %s') % self.user
     
     def save(self, force_insert=False, force_update=False):
-        if self.primary and AVATAR_MAX_AVATARS_PER_USER > 1:
+        if AVATAR_MAX_AVATARS_PER_USER == 1:
+            first = Avatar.objects.filter(user=self.user).only('id')[0]
+            self.id = first.id
+        elif self.primary and AVATAR_MAX_AVATARS_PER_USER > 1:
             avatars = Avatar.objects.filter(user=self.user, primary=True)\
                 .exclude(id=self.id)
             avatars.update(primary=False)
