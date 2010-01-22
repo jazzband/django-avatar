@@ -54,6 +54,10 @@ def _get_avatars(user):
     
     # Current avatar
     avatar = avatars.filter(primary=True)[:1]
+    if avatar:
+        avatar = avatar[0]
+    else:
+        avatar = None
     
     # Slice the default set now that we used the queryset for the primary avatar
     avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
