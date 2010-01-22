@@ -24,7 +24,6 @@ class UploadAvatarForm(forms.Form):
         
     def clean_avatar(self):
         data = self.cleaned_data['avatar']
-        # FIXME use AVATAR_MAX_AVATARS_PER_USER
         count = Avatar.objects.filter(user=self.user).count()
         if AVATAR_MAX_AVATARS_PER_USER > 1 and \
            count >= AVATAR_MAX_AVATARS_PER_USER: 
