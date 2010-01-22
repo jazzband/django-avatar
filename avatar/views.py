@@ -47,11 +47,20 @@ def _notification_updated(request, avatar):
     notification.send([request.user], "avatar_updated", {"user": request.user, "avatar": avatar})
     if friends:
         notification.send((x['friend'] for x in Friendship.objects.friends_for_user(request.user)), "avatar_friend_updated", {"user": request.user, "avatar": avatar})
+
+def _get_avatars(user):
+    # Default set. Needs to be sliced, but that's it. Keep the natural order.
+    avatars = user.avatar_set.all() 
     
-def add(request, extra_context={}, next_override=None):
-    avatars = request.user.avatar_set.all()
-    avatar = avatars.get(primary=True)
+    # Current avatar
+    avatar = avatars.filter(primary=True)[:1]
+    
+    # Slice the default set now that we used the queryset for the primary avatar
     avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
+    return (avatar, avatars)
+
+def add(request, extra_context={}, next_override=None):
+    avatar, avatars = _get_avatars(request.user)
     upload_avatar_form = UploadAvatarForm(request.POST or None,
         request.FILES or None, user=request.user)
     if request.method == "POST" and 'avatar' in request.FILES:
@@ -87,9 +96,7 @@ def add(request, extra_context={}, next_override=None):
 add = login_required(add)
 
 def change(request, extra_context={}, next_override=None):
-    avatars = request.user.avatar_set.all()
-    avatar = avatars.get(primary=True)
-    avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
+    avatar, avatars = _get_avatars(request.user)
     if avatar:
         kwargs = {'initial': {'choice': avatar.id}}
     else:
@@ -125,9 +132,7 @@ def change(request, extra_context={}, next_override=None):
 change = login_required(change)
 
 def delete(request, extra_context={}, next_override=None):
-    avatars = request.user.avatar_set.all()
-    avatar = avatars.get(primary=True)
-    avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
+    avatar, avatars = _get_avatars(request.user)
     delete_avatar_form = DeleteAvatarForm(request.POST or None,
         user=request.user, avatars=avatars)
     if request.method == 'POST':
