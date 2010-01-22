@@ -50,17 +50,20 @@ def _notification_updated(request, avatar):
 
 def _get_avatars(user):
     # Default set. Needs to be sliced, but that's it. Keep the natural order.
-    avatars = user.avatar_set.all() 
+    avatars = user.avatar_set.all()
     
     # Current avatar
-    avatar = avatars.filter(primary=True)[:1]
-    if avatar:
-        avatar = avatar[0]
+    primary_avatar = avatars.order_by('-primary')[:1]
+    if primary_avatar:
+        avatar = primary_avatar[0]
     else:
         avatar = None
     
-    # Slice the default set now that we used the queryset for the primary avatar
-    avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
+    if AVATAR_MAX_AVATARS_PER_USER == 1:
+        avatars = primary_avatar
+    else:
+        # Slice the default set now that we used the queryset for the primary avatar
+        avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
     return (avatar, avatars)
 
 def add(request, extra_context={}, next_override=None):
