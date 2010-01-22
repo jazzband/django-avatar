@@ -17,7 +17,8 @@ except ImportError:
     import Image
 
 from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
-                   AVATAR_MAX_AVATARS_PER_USER
+                   AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT
+
 
 def avatar_file_path(instance=None, filename=None, user=None):
     user = user or instance.user
@@ -63,7 +64,7 @@ class Avatar(models.Model):
             if image.mode != "RGB":
                 image = image.convert("RGB")
             thumb = StringIO()
-            image.save(thumb, "JPEG")
+            image.save(thumb, AVATAR_THUMB_FORMAT)
             thumb_file = ContentFile(thumb.getvalue())
         else:
             thumb_file = ContentFile(orig)
