@@ -1,7 +1,7 @@
 import os.path
 
 from avatar.models import Avatar, avatar_file_path
-from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm
+from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -42,6 +42,49 @@ def _get_next(request):
     if not next:
         next = request.path
     return next
+    
+def _notification_updated(request, avatar):
+    notification.send([request.user], "avatar_updated", {"user": request.user, "avatar": avatar})
+    if friends:
+        notification.send((x['friend'] for x in Friendship.objects.friends_for_user(request.user)), "avatar_friend_updated", {"user": request.user, "avatar": avatar})
+    
+def add(request, extra_context={}, next_override=None):
+    avatars = request.user.avatar_set.all()
+    avatar = avatars.get(primary=True)
+    avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
+    upload_avatar_form = UploadAvatarForm(request.POST or None,
+        request.FILES or None, user=request.user)
+    if request.method == "POST" and 'avatar' in request.FILES:
+        if upload_avatar_form.is_valid():
+            path = avatar_file_path(user=request.user, 
+                filename=request.FILES['avatar'].name)
+            avatar = Avatar(
+                user = request.user,
+                primary = True,
+                avatar = path,
+            )
+            new_file = avatar.avatar.storage.save(path, request.FILES['avatar'])
+            avatar.save()
+            updated = True
+            request.user.message_set.create(
+                message=_("Successfully uploaded a new avatar."))
+            if notification:
+                _notification_updated(request, avatar)
+        else:
+            # from IPython.Shell import IPShellEmbed; IPShellEmbed()()
+            print upload_avatar_form.errors
+    return render_to_response(
+            'avatar/add.html',
+            extra_context,
+            context_instance = RequestContext(
+                request,
+                { 'avatar': avatar, 
+                  'avatars': avatars, 
+                  'upload_avatar_form': upload_avatar_form,
+                  'next': next_override or _get_next(request), }
+            )
+        )
+add = login_required(add)
 
 def change(request, extra_context={}, next_override=None):
     avatars = request.user.avatar_set.all()
@@ -55,19 +98,6 @@ def change(request, extra_context={}, next_override=None):
         user=request.user, avatars=avatars, **kwargs)
     if request.method == "POST":
         updated = False
-        if 'avatar' in request.FILES:
-            path = avatar_file_path(user=request.user, 
-                filename=request.FILES['avatar'].name)
-            avatar = Avatar(
-                user = request.user,
-                primary = True,
-                avatar = path,
-            )
-            new_file = avatar.avatar.storage.save(path, request.FILES['avatar'])
-            avatar.save()
-            updated = True
-            request.user.message_set.create(
-                message=_("Successfully uploaded a new avatar."))
         if 'choice' in request.POST and primary_avatar_form.is_valid():
             avatar = Avatar.objects.get(id=
                 primary_avatar_form.cleaned_data['choice'])
@@ -77,9 +107,7 @@ def change(request, extra_context={}, next_override=None):
             request.user.message_set.create(
                 message=_("Successfully updated your avatar."))
         if updated and notification:
-            notification.send([request.user], "avatar_updated", {"user": request.user, "avatar": avatar})
-            if friends:
-                notification.send((x['friend'] for x in Friendship.objects.friends_for_user(request.user)), "avatar_friend_updated", {"user": request.user, "avatar": avatar})
+            _notification_updated(request, avatar)
         return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
         'avatar/change.html',
@@ -108,9 +136,7 @@ def delete(request, extra_context={}, next_override=None):
                     if unicode(a.id) not in ids:
                         a.primary = True
                         a.save()
-                        notification.send([request.user], "avatar_updated", {"user": request.user, "avatar": a})
-                        if friends:
-                            notification.send((x['friend'] for x in Friendship.objects.friends_for_user(request.user)), "avatar_friend_updated", {"user": request.user, "avatar": a})
+                        _notification_updated(request, a)
                         break
             Avatar.objects.filter(id__in=ids).delete()
             request.user.message_set.create(

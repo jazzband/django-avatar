@@ -2,11 +2,30 @@ from django import forms
 from django.forms import widgets
 from django.utils.safestring import mark_safe
 
+from avatar import AVATAR_MAX_AVATARS_PER_USER
+
 def avatar_img(avatar, size):
     if not avatar.thumbnail_exists(size):
         avatar.create_thumbnail(size)
     return mark_safe("""<img src="%s" alt="%s" width="%s" height="%s" />""" % 
         (avatar.avatar_url(size), unicode(avatar), size, size))
+
+class UploadAvatarForm(forms.Form):
+
+    avatar = forms.ImageField()
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super(UploadAvatarForm, self).__init__(*args, **kwargs)
+        
+    def clean(self):
+        pass
+        
+    def clean_avatar(self):
+        # data = self.cleaned_data['avatar']
+        # FIXME use AVATAR_MAX_AVATARS_PER_USER
+        pass
+        
 
 class PrimaryAvatarForm(forms.Form):
     
