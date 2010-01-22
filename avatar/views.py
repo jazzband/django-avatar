@@ -12,7 +12,7 @@ from django.db.models import get_app
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
-from avatar import AVATAR_MAX_AVATARS_PER_USER
+from avatar import AVATAR_MAX_AVATARS_PER_USER, AVATAR_DONT_SAVE_DUPLICATES
 
 try:
     notification = get_app('notification')
@@ -79,7 +79,12 @@ def add(request, extra_context={}, next_override=None):
                 primary = True,
                 avatar = path,
             )
-            new_file = avatar.avatar.storage.save(path, request.FILES['avatar'])
+            if AVATAR_DONT_SAVE_DUPLICATES and \
+               avatar.avatar.storage.exists(path):
+                new_file = None
+            else:
+                new_file = avatar.avatar.storage.save(path, 
+                                                      request.FILES['avatar'])
             avatar.save()
             updated = True
             request.user.message_set.create(
