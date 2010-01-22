@@ -21,7 +21,7 @@ from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
 
 
 def avatar_file_path(instance=None, filename=None):
-    return os.path.join(AVATAR_STORAGE_DIR, user.username, filename)
+    return os.path.join(AVATAR_STORAGE_DIR, instance.user.username, filename)
 
 class Avatar(models.Model):
     user = models.ForeignKey(User)
