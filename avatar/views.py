@@ -94,6 +94,7 @@ def change(request, extra_context={}, next_override=None):
         kwargs = {'initial': {'choice': avatar.id}}
     else:
         kwargs = {}
+    upload_avatar_form = UploadAvatarForm(user=request.user, **kwargs)
     primary_avatar_form = PrimaryAvatarForm(request.POST or None,
         user=request.user, avatars=avatars, **kwargs)
     if request.method == "POST":
@@ -116,6 +117,7 @@ def change(request, extra_context={}, next_override=None):
             request,
             { 'avatar': avatar, 
               'avatars': avatars,
+              'upload_avatar_form': upload_avatar_form,
               'primary_avatar_form': primary_avatar_form,
               'next': next_override or _get_next(request), }
         )
