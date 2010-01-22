@@ -20,8 +20,7 @@ from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
                    AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT
 
 
-def avatar_file_path(instance=None, filename=None, user=None):
-    user = user or instance.user
+def avatar_file_path(instance=None, filename=None):
     return os.path.join(AVATAR_STORAGE_DIR, user.username, filename)
 
 class Avatar(models.Model):

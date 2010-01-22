@@ -72,19 +72,12 @@ def add(request, extra_context={}, next_override=None):
         request.FILES or None, user=request.user)
     if request.method == "POST" and 'avatar' in request.FILES:
         if upload_avatar_form.is_valid():
-            path = avatar_file_path(user=request.user, 
-                filename=request.FILES['avatar'].name)
             avatar = Avatar(
                 user = request.user,
                 primary = True,
-                avatar = path,
             )
-            if AVATAR_DONT_SAVE_DUPLICATES and \
-               avatar.avatar.storage.exists(path):
-                new_file = None
-            else:
-                new_file = avatar.avatar.storage.save(path, 
-                                                      request.FILES['avatar'])
+            image_file = request.FILES['avatar']
+            avatar.avatar.save(image_file.name, image_file)
             avatar.save()
             updated = True
             request.user.message_set.create(
