@@ -28,11 +28,7 @@ class UploadAvatarForm(forms.Form):
                 "Your file is too big (%s), the maximum allowed size is %s" %
                 (filesizeformat(data.size), filesizeformat(AVATAR_MAX_SIZE)))
         count = Avatar.objects.filter(user=self.user).count()
-        if AVATAR_MAX_AVATARS_PER_USER > 1 and \
-           count >= AVATAR_MAX_AVATARS_PER_USER: 
-            # Note: there is a special case for AVATAR_MAX_AVATARS_PER_USER = 1,
-            # we delete the old one and replace it directly with ours, in the
-            # model.
+        if count >= AVATAR_MAX_AVATARS_PER_USER: 
             raise forms.ValidationError(
                 "You already have %d avatars, and the maximum allowed is %d." %
                 (count, AVATAR_MAX_AVATARS_PER_USER))
