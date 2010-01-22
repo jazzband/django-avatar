@@ -27,5 +27,7 @@ from avatar.models import Avatar
 def create_default_thumbnails(instance=None, created=False, **kwargs):
     if created:
         for size in AUTO_GENERATE_AVATAR_SIZES:
+            if AVATAR_DONT_SAVE_DUPLICATES and instance.thumbnail_exists(size):
+                return
             instance.create_thumbnail(size)
 signals.post_save.connect(create_default_thumbnails, sender=Avatar)
