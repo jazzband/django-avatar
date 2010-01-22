@@ -138,7 +138,8 @@ def delete(request, extra_context={}, next_override=None):
                     if unicode(a.id) not in ids:
                         a.primary = True
                         a.save()
-                        _notification_updated(request, a)
+                        if notification:
+                            _notification_updated(request, a)
                         break
             Avatar.objects.filter(id__in=ids).delete()
             request.user.message_set.create(
