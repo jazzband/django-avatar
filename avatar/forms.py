@@ -30,7 +30,6 @@ class UploadAvatarForm(forms.Form):
             raise forms.ValidationError(
                 "You already have %d avatars, and the maximum allowed is %d." %
                 (count, AVATAR_MAX_AVATARS_PER_USER))
-        print data
         return        
         
 
