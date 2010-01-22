@@ -33,10 +33,13 @@ class Avatar(models.Model):
         return _(u'Avatar for %s') % self.user
     
     def save(self, force_insert=False, force_update=False):
-        if self.primary:
-            avatars = Avatar.objects.filter(user=self.user, primary=True)\
-                .exclude(id=self.id)
-            avatars.update(primary=False)
+        avatars = Avatar.objects.filter(user=self.user).exclude(id=self.id)
+        if AVATAR_MAX_AVATARS_PER_USER > 1:
+            if instance.primary:
+                avatars = avatars.filter(primary=True)
+                avatars.update(primary=False)
+        else:
+            avatars.delete()
         super(Avatar, self).save(force_insert, force_update)
     
     def thumbnail_exists(self, size):
