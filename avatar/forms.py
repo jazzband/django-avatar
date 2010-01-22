@@ -2,6 +2,7 @@ from django import forms
 from django.forms import widgets
 from django.utils.safestring import mark_safe
 
+from avatar.models import Avatar
 from avatar import AVATAR_MAX_AVATARS_PER_USER
 
 def avatar_img(avatar, size):
@@ -22,9 +23,19 @@ class UploadAvatarForm(forms.Form):
         pass
         
     def clean_avatar(self):
-        # data = self.cleaned_data['avatar']
+        data = self.cleaned_data['avatar']
         # FIXME use AVATAR_MAX_AVATARS_PER_USER
-        pass
+        count = Avatar.objects.filter(user=self.user).count()
+        if AVATAR_MAX_AVATARS_PER_USER > 1 and \
+           count >= AVATAR_MAX_AVATARS_PER_USER: 
+            # Note: there is a special case for AVATAR_MAX_AVATARS_PER_USER = 1,
+            # we delete the old one and replace it directly with ours, in the
+            # model.
+            raise forms.ValidationError(
+                "You already have %d avatars, and the maximum allowed is %d." %
+                (count, AVATAR_MAX_AVATARS_PER_USER))
+        print data
+        return        
         
 
 class PrimaryAvatarForm(forms.Form):
