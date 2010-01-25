@@ -54,7 +54,7 @@ class Avatar(models.Model):
     def save(self, force_insert=False, force_update=False):
         avatars = Avatar.objects.filter(user=self.user).exclude(id=self.id)
         if AVATAR_MAX_AVATARS_PER_USER > 1:
-            if instance.primary:
+            if self.primary:
                 avatars = avatars.filter(primary=True)
                 avatars.update(primary=False)
         else:
