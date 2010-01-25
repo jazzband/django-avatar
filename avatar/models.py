@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.utils.translation import ugettext as _
+import hashlib
 
 try:
     from cStringIO import StringIO
@@ -17,15 +18,29 @@ except ImportError:
     import Image
 
 from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
-                   AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT
-
+                   AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT, \
+                   AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES
 
 def avatar_file_path(instance=None, filename=None, size=None):
-    tmp = [AVATAR_STORAGE_DIR, instance.user.username]
+    tmppath = [AVATAR_STORAGE_DIR]
+    if AVATAR_HASH_USERDIRNAMES:
+        tmp = hashlib.md5(instance.user.username).hexdigest()
+        tmppath.extend([tmp[0], tmp[1], instance.user.username])
+    else:
+        tmppath.append(instance.user.username)        
+    if not filename:
+        # Filename already stored in database
+        filename = instance.avatar.name
+    else:
+        # File doesn't exist yet
+        if AVATAR_HASH_FILENAMES:
+            (root, ext) = os.path.splitext(filename)
+            filename = hashlib.md5(filename).hexdigest()
+            filename = filename + ext
     if size:
-        tmp.extend(['resized', str(size)])
-    tmp.append(os.path.basename(filename))
-    return os.path.join(*tmp)
+        tmppath.extend(['resized', str(size)])
+    tmppath.append(os.path.basename(filename))
+    return os.path.join(*tmppath)
 
 class Avatar(models.Model):
     user = models.ForeignKey(User)
@@ -78,7 +93,6 @@ class Avatar(models.Model):
     
     def avatar_name(self, size):
         return avatar_file_path(
-            instance=self, 
-            filename=self.avatar.name,
+            instance=self,
             size=size
         )
