@@ -12,7 +12,7 @@ from django.db.models import get_app
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
-from avatar import AVATAR_MAX_AVATARS_PER_USER, AVATAR_DONT_SAVE_DUPLICATES
+from avatar import AVATAR_MAX_AVATARS_PER_USER
 
 try:
     notification = get_app('notification')

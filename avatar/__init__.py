@@ -17,7 +17,6 @@ AVATAR_DEFAULT_URL = getattr(settings, 'AVATAR_DEFAULT_URL',
 AVATAR_MAX_AVATARS_PER_USER = getattr(settings, 'AVATAR_MAX_AVATARS_PER_USER', 42)
 AVATAR_MAX_SIZE = getattr(settings, 'AVATAR_MAX_SIZE', 1024 * 1024)
 AVATAR_THUMB_FORMAT = getattr(settings, 'AVATAR_THUMB_FORMAT', "JPEG")
-AVATAR_DONT_SAVE_DUPLICATES = getattr(settings, 'AVATAR_DONT_SAVE_DUPLICATES', False)
 
 from django.db.models import signals
 from django.contrib.auth.models import User
@@ -27,7 +26,5 @@ from avatar.models import Avatar
 def create_default_thumbnails(instance=None, created=False, **kwargs):
     if created:
         for size in AUTO_GENERATE_AVATAR_SIZES:
-            if AVATAR_DONT_SAVE_DUPLICATES and instance.thumbnail_exists(size):
-                return
             instance.create_thumbnail(size)
 signals.post_save.connect(create_default_thumbnails, sender=Avatar)
