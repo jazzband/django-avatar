@@ -20,8 +20,12 @@ from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
                    AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT
 
 
-def avatar_file_path(instance=None, filename=None):
-    return os.path.join(AVATAR_STORAGE_DIR, instance.user.username, filename)
+def avatar_file_path(instance=None, filename=None, size=None):
+    tmp = [AVATAR_STORAGE_DIR, instance.user.username]
+    if size:
+        tmp.extend(['resized', str(size)])
+    tmp.append(os.path.basename(filename))
+    return os.path.join(*tmp)
 
 class Avatar(models.Model):
     user = models.ForeignKey(User)
@@ -73,5 +77,8 @@ class Avatar(models.Model):
         return self.avatar.storage.url(self.avatar_name(size))
     
     def avatar_name(self, size):
-        return os.path.join(AVATAR_STORAGE_DIR, self.user.username,
-            'resized', str(size), self.avatar.name)
+        return avatar_file_path(
+            instance=self, 
+            filename=self.avatar.name,
+            size=size
+        )
