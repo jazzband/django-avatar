@@ -42,7 +42,24 @@ class AvatarUploadTests(TestCase):
         f.close()
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.context['upload_avatar_form'].errors, {})
-        #print response.context['upload_avatar_form'].errors
+        
+    def testImageWithoutExtension(self):
+        f = open(os.path.join(self.testdatapath,"imagefilewithoutext"), "rb")
+        response = self.client.post(reverse('avatar_add'), {
+            'avatar': f,
+        })
+        f.close()
+        self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(response.context['upload_avatar_form'].errors, {})
+        
+    def testImageWithWrongExtension(self):
+        f = open(os.path.join(self.testdatapath,"imagefilewithwrongext.ogg"), "rb")
+        response = self.client.post(reverse('avatar_add'), {
+            'avatar': f,
+        })
+        f.close()
+        self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(response.context['upload_avatar_form'].errors, {})
         
     def testImageTooBig(self):
         f = open(os.path.join(self.testdatapath,"testbig.png"), "rb")
@@ -53,7 +70,6 @@ class AvatarUploadTests(TestCase):
         self.failUnlessEqual(response.status_code, 200)
         self.failIfEqual(response.context['upload_avatar_form'].errors, {})
         
-    # def testImageWithoutExtension
     # def testTooManyAvatars
     # def testReplaceAvatarWhenMaxIsOne
     # def testHashFileName
