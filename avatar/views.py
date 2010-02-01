@@ -66,6 +66,7 @@ def _get_avatars(user):
         avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
     return (avatar, avatars)
 
+@login_required
 def add(request, extra_context={}, next_override=None):
     avatar, avatars = _get_avatars(request.user)
     upload_avatar_form = UploadAvatarForm(request.POST or None,
@@ -95,8 +96,8 @@ def add(request, extra_context={}, next_override=None):
                   'next': next_override or _get_next(request), }
             )
         )
-add = login_required(add)
 
+@login_required
 def change(request, extra_context={}, next_override=None):
     avatar, avatars = _get_avatars(request.user)
     if avatar:
@@ -131,8 +132,8 @@ def change(request, extra_context={}, next_override=None):
               'next': next_override or _get_next(request), }
         )
     )
-change = login_required(change)
 
+@login_required
 def delete(request, extra_context={}, next_override=None):
     avatar, avatars = _get_avatars(request.user)
     delete_avatar_form = DeleteAvatarForm(request.POST or None,
@@ -163,4 +164,3 @@ def delete(request, extra_context={}, next_override=None):
               'next': next_override or _get_next(request), }
         )
     )
-delete = login_required(delete)
