@@ -21,16 +21,23 @@ from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
                    AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT, \
                    AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES
 
-def avatar_file_path(instance=None, filename=None, size=None):
+def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath = [AVATAR_STORAGE_DIR]
     if AVATAR_HASH_USERDIRNAMES:
         tmp = hashlib.md5(instance.user.username).hexdigest()
         tmppath.extend([tmp[0], tmp[1], instance.user.username])
     else:
-        tmppath.append(instance.user.username)        
+        tmppath.append(instance.user.username)
     if not filename:
         # Filename already stored in database
         filename = instance.avatar.name
+        if ext and AVATAR_HASH_FILENAMES:
+            # An extension was provided, probably because the thumbnail
+            # is in a different format than the file. Use it. Because it's
+            # only enabled if AVATAR_HASH_FILENAMES is true, we can trust
+            # it won't conflict with another filename
+            (root, oldext) = os.path.splitext(filename)
+            filename = root + "." + ext
     else:
         # File doesn't exist yet
         if AVATAR_HASH_FILENAMES:
@@ -41,6 +48,14 @@ def avatar_file_path(instance=None, filename=None, size=None):
         tmppath.extend(['resized', str(size)])
     tmppath.append(os.path.basename(filename))
     return os.path.join(*tmppath)
+
+def find_extension(format):
+    format = format.lower()
+
+    if format == 'jpeg':
+        format = 'jpg'
+
+    return format
 
 class Avatar(models.Model):
     user = models.ForeignKey(User)
@@ -92,7 +107,9 @@ class Avatar(models.Model):
         return self.avatar.storage.url(self.avatar_name(size))
     
     def avatar_name(self, size):
+        ext = find_extension(AVATAR_THUMB_FORMAT)
         return avatar_file_path(
             instance=self,
-            size=size
+            size=size,
+            ext=ext
         )
