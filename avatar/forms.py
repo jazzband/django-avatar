@@ -3,9 +3,11 @@ from django.forms import widgets
 from django.utils.safestring import mark_safe
 
 from avatar.models import Avatar
-from avatar import AVATAR_MAX_AVATARS_PER_USER, AVATAR_MAX_SIZE
+from avatar import AVATAR_MAX_AVATARS_PER_USER, AVATAR_MAX_SIZE, AVATAR_ALLOWED_FILE_EXTS
 
 from django.template.defaultfilters import filesizeformat
+
+import os.path
 
 def avatar_img(avatar, size):
     if not avatar.thumbnail_exists(size):
@@ -23,6 +25,12 @@ class UploadAvatarForm(forms.Form):
         
     def clean_avatar(self):
         data = self.cleaned_data['avatar']
+        if AVATAR_ALLOWED_FILE_EXTS:
+            (root, ext) = os.path.splitext(data.name)
+            if ext not in AVATAR_ALLOWED_FILE_EXTS:
+               raise forms.ValidationError(
+                "%s is an invalid file extension. Authorized extensions are : %s" % 
+                (ext, ", ".join(AVATAR_ALLOWED_FILE_EXTS))) 
         if data.size > AVATAR_MAX_SIZE:
             raise forms.ValidationError(
                 "Your file is too big (%s), the maximum allowed size is %s" %
