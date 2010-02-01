@@ -26,7 +26,7 @@ class UploadAvatarForm(forms.Form):
     def clean_avatar(self):
         data = self.cleaned_data['avatar']
         if AVATAR_ALLOWED_FILE_EXTS:
-            (root, ext) = os.path.splitext(data.name)
+            (root, ext) = os.path.splitext(data.name.lower())
             if ext not in AVATAR_ALLOWED_FILE_EXTS:
                raise forms.ValidationError(
                 "%s is an invalid file extension. Authorized extensions are : %s" % 
