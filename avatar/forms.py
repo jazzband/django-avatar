@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import widgets
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
 
 from avatar.models import Avatar
 from avatar import AVATAR_MAX_AVATARS_PER_USER, AVATAR_MAX_SIZE, AVATAR_ALLOWED_FILE_EXTS
@@ -29,18 +30,18 @@ class UploadAvatarForm(forms.Form):
             (root, ext) = os.path.splitext(data.name.lower())
             if ext not in AVATAR_ALLOWED_FILE_EXTS:
                raise forms.ValidationError(
-                "%s is an invalid file extension. Authorized extensions are : %s" % 
-                (ext, ", ".join(AVATAR_ALLOWED_FILE_EXTS))) 
+                _(u"%(ext)s is an invalid file extension. Authorized extensions are : %(valid_exts_list)s") % 
+                { 'ext' : ext, 'valid_exts_list' : ", ".join(AVATAR_ALLOWED_FILE_EXTS) }) 
         if data.size > AVATAR_MAX_SIZE:
             raise forms.ValidationError(
-                "Your file is too big (%s), the maximum allowed size is %s" %
-                (filesizeformat(data.size), filesizeformat(AVATAR_MAX_SIZE)))
+                _(u"Your file is too big (%(size)s), the maximum allowed size is %(max_valid_size)s") %
+                { 'size' : filesizeformat(data.size), 'max_valid_size' : filesizeformat(AVATAR_MAX_SIZE)} )
         count = Avatar.objects.filter(user=self.user).count()
         if AVATAR_MAX_AVATARS_PER_USER > 1 and \
            count >= AVATAR_MAX_AVATARS_PER_USER: 
             raise forms.ValidationError(
-                "You already have %d avatars, and the maximum allowed is %d." %
-                (count, AVATAR_MAX_AVATARS_PER_USER))
+                _(u"You already have %(nb_avatars)d avatars, and the maximum allowed is %(nb_max_avatars)d.") %
+                { 'nb_avatars' : count, 'nb_max_avatars' : AVATAR_MAX_AVATARS_PER_USER})
         return        
         
 
