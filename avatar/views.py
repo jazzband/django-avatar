@@ -125,4 +125,4 @@ def delete(request, extra_context={}, next_override=None):
               'next': next_override or _get_next(request), }
         )
     )
-change = login_required(change)
+delete = login_required(delete)
