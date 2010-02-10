@@ -166,6 +166,7 @@ def delete(request, extra_context={}, next_override=None):
     )
     
 def render_primary(request, user=None, size=80, extra_context={}):
+    size = int(size)
     avatar = get_primary_avatar(user, size=size)
     if avatar:
         # FIXME: later, add an option to render the resized avatar dynamically
