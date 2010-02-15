@@ -67,7 +67,7 @@ def _get_avatars(user):
     return (avatar, avatars)    
 
 @login_required
-def add(request, extra_context={}, next_override=None):
+def add(request, extra_context={}, next_override=None, *args, **kwargs):
     avatar, avatars = _get_avatars(request.user)
     upload_avatar_form = UploadAvatarForm(request.POST or None,
         request.FILES or None, user=request.user)
@@ -98,7 +98,7 @@ def add(request, extra_context={}, next_override=None):
         )
 
 @login_required
-def change(request, extra_context={}, next_override=None):
+def change(request, extra_context={}, next_override=None, *args, **kwargs):
     avatar, avatars = _get_avatars(request.user)
     if avatar:
         kwargs = {'initial': {'choice': avatar.id}}
@@ -134,7 +134,7 @@ def change(request, extra_context={}, next_override=None):
     )
 
 @login_required
-def delete(request, extra_context={}, next_override=None):
+def delete(request, extra_context={}, next_override=None, *args, **kwargs):
     avatar, avatars = _get_avatars(request.user)
     delete_avatar_form = DeleteAvatarForm(request.POST or None,
         user=request.user, avatars=avatars)
@@ -165,7 +165,7 @@ def delete(request, extra_context={}, next_override=None):
         )
     )
     
-def render_primary(request, user=None, size=80, extra_context={}):
+def render_primary(request, extra_context={}, user=None, size=80, *args, **kwargs):
     size = int(size)
     avatar = get_primary_avatar(user, size=size)
     if avatar:
