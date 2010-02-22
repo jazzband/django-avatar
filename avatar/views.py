@@ -1,8 +1,8 @@
 import os.path
 
-from avatar.models import Avatar, avatar_file_path
+from avatar.models import Avatar, avatar_file_path, get_primary_avatar
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -64,7 +64,7 @@ def _get_avatars(user):
     else:
         # Slice the default set now that we used the queryset for the primary avatar
         avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
-    return (avatar, avatars)
+    return (avatar, avatars)    
 
 @login_required
 def add(request, extra_context={}, next_override=None):
@@ -164,3 +164,16 @@ def delete(request, extra_context={}, next_override=None):
               'next': next_override or _get_next(request), }
         )
     )
+    
+def render_primary(request, user=None, size=80, extra_context={}):
+    avatar = get_primary_avatar(user, size=size)
+    if avatar:
+        # FIXME: later, add an option to render the resized avatar dynamically
+        # instead of redirecting to an already created static file. This could
+        # be useful in certain situations, particulary if there is a CDN and
+        # we want to minimize the storage usage on our static server, letting
+        # the CDN store those files instead
+        return HttpResponseRedirect(avatar.avatar_url(size))
+    else:
+        return HttpResponseRedirect(AVATAR_DEFAULT_URL)
+    
