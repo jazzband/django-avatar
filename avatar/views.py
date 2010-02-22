@@ -1,18 +1,17 @@
-from avatar.models import Avatar
-from avatar.util import get_primary_avatar
-from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
-
 from django.db.models import get_app
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
+from django.contrib.auth.decorators import login_required
+
 from avatar import AVATAR_MAX_AVATARS_PER_USER
-from avatar.util import get_default_avatar_url
+from avatar.models import Avatar
+from avatar.util import get_primary_avatar, get_default_avatar_url
+from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 
 try:
     notification = get_app('notification')

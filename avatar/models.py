@@ -2,10 +2,11 @@ import datetime
 import os.path
 
 from django.db import models
-from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.utils.translation import ugettext as _
 from django.utils.hashcompat import md5_constructor
+
+from django.contrib.auth.models import User
 
 try:
     from cStringIO import StringIO

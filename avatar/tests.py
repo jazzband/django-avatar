@@ -1,9 +1,12 @@
 import os.path
+
 from django.test import TestCase
 from django.test.client import Client
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.conf import settings
+
+from django.contrib.auth.models import User
+
 from avatar import AVATAR_DEFAULT_URL
 
 try:
