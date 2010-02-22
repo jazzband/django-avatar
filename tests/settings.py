@@ -6,7 +6,9 @@ DATABASE_ENGINE = 'sqlite3'
 DATABASE_NAME = ':memory:'
  
 ROOT_URLCONF = 'settings'
- 
+
+STATIC_URL = '/site_media/static/'
+
 SITE_ID = 1
 
 INSTALLED_APPS = (

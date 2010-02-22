@@ -21,8 +21,7 @@ except ImportError:
 
 from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
                    AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT, \
-                   AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES, \
-                   AVATAR_DEFAULT_URL
+                   AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES
 
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath = [AVATAR_STORAGE_DIR]
@@ -59,25 +58,6 @@ def find_extension(format):
         format = 'jpg'
 
     return format
-    
-def get_primary_avatar(user, size=80):
-    if not isinstance(user, User):
-        try:
-            user = User.objects.get(username=user)
-        except User.DoesNotExist:
-            return AVATAR_DEFAULT_URL
-    avatars = user.avatar_set.order_by('-date_uploaded')
-    primary = avatars.filter(primary=True)
-    if primary.count() > 0:
-        avatar = primary[0]
-    elif avatars.count() > 0:
-        avatar = avatars[0]
-    else:
-        avatar = None
-    if avatar:
-        if not avatar.thumbnail_exists(size):
-            avatar.create_thumbnail(size)
-    return avatar
 
 class Avatar(models.Model):
     user = models.ForeignKey(User)

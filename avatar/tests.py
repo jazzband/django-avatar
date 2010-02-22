@@ -3,6 +3,8 @@ from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.conf import settings
+from avatar import AVATAR_DEFAULT_URL
 
 try:
     from PIL import Image
@@ -65,6 +67,18 @@ class AvatarUploadTests(TestCase):
         f.close()
         self.failUnlessEqual(response.status_code, 200)
         self.failIfEqual(response.context['upload_avatar_form'].errors, {})
+    
+    def testDefaultUrl(self):
+        response = self.client.get(reverse('avatar_render_primary', kwargs={
+            'user': self.user.username,
+            'size': 80,
+        }))
+        loc = response['Location']
+        base_url = getattr(settings, 'STATIC_URL', None)
+        if not base_url:
+            base_url = settings.MEDIA_URL
+        self.assertTrue(base_url in loc)
+        self.assertTrue(loc.endswith(AVATAR_DEFAULT_URL))
         
     # def testTooManyAvatars
     # def testReplaceAvatarWhenMaxIsOne
