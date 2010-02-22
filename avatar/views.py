@@ -1,4 +1,5 @@
-from avatar.models import Avatar, get_primary_avatar
+from avatar.models import Avatar
+from avatar.util import get_primary_avatar
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
