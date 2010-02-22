@@ -4,6 +4,7 @@ from django.conf import settings
 
 try:
     from PIL import Image
+    dir(Image) # Placate PyFlakes
 except ImportError:
     import Image
 
@@ -22,7 +23,6 @@ AVATAR_HASH_USERDIRNAMES = getattr(settings, 'AVATAR_HASH_USERDIRNAMES', False)
 AVATAR_ALLOWED_FILE_EXTS = getattr(settings, 'AVATAR_ALLOWED_FILE_EXTS', None)
 
 from django.db.models import signals
-from django.contrib.auth.models import User
 from avatar.models import Avatar
 
 

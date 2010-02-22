@@ -9,17 +9,20 @@ from django.utils.hashcompat import md5_constructor
 
 try:
     from cStringIO import StringIO
+    dir(StringIO) # Placate PyFlakes
 except ImportError:
     from StringIO import StringIO
 
 try:
     from PIL import Image
+    dir(Image) # Placate PyFlakes
 except ImportError:
     import Image
 
 from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
                    AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT, \
-                   AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES
+                   AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES, \
+                   AVATAR_DEFAULT_URL
 
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath = [AVATAR_STORAGE_DIR]

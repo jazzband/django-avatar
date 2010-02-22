@@ -1,8 +1,6 @@
-import os.path
-
-from avatar.models import Avatar, avatar_file_path, get_primary_avatar
+from avatar.models import Avatar, get_primary_avatar
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
