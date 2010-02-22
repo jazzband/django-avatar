@@ -37,15 +37,21 @@ def _get_next(request):
     3. If Django can determine the previous page from the HTTP headers, the view will
     redirect to that previous page.
     """
-    next = request.POST.get('next', request.GET.get('next', request.META.get('HTTP_REFERER', None)))
+    next = request.POST.get('next', request.GET.get('next',
+        request.META.get('HTTP_REFERER', None)))
     if not next:
         next = request.path
     return next
     
 def _notification_updated(request, avatar):
-    notification.send([request.user], "avatar_updated", {"user": request.user, "avatar": avatar})
+    notification.send([request.user], "avatar_updated",
+        {"user": request.user, "avatar": avatar})
     if friends:
-        notification.send((x['friend'] for x in Friendship.objects.friends_for_user(request.user)), "avatar_friend_updated", {"user": request.user, "avatar": avatar})
+        notification.send((x['friend'] for x in
+                Friendship.objects.friends_for_user(request.user)),
+            "avatar_friend_updated",
+            {"user": request.user, "avatar": avatar}
+        )
 
 def _get_avatars(user):
     # Default set. Needs to be sliced, but that's it. Keep the natural order.
