@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 
 from avatar import AVATAR_DEFAULT_URL
+from avatar.util import get_primary_avatar
 
 try:
     from PIL import Image
@@ -43,6 +44,8 @@ class AvatarUploadTests(TestCase):
         f.close()
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.context['upload_avatar_form'].errors, {})
+        avatar = get_primary_avatar(self.user)
+        self.failIfEqual(avatar, None)
         
     def testImageWithoutExtension(self):
         f = open(os.path.join(self.testdatapath,"imagefilewithoutext"), "rb")
@@ -82,6 +85,10 @@ class AvatarUploadTests(TestCase):
             base_url = settings.MEDIA_URL
         self.assertTrue(base_url in loc)
         self.assertTrue(loc.endswith(AVATAR_DEFAULT_URL))
+
+    def testNonExistingUser(self):
+        a = get_primary_avatar("nonexistinguser")
+        self.failUnlessEqual(a, None)
         
     # def testTooManyAvatars
     # def testReplaceAvatarWhenMaxIsOne
