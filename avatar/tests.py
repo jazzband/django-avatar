@@ -89,11 +89,14 @@ class AvatarUploadTests(TestCase):
     def testNonExistingUser(self):
         a = get_primary_avatar("nonexistinguser")
         self.failUnlessEqual(a, None)
-        
+
+    # def testDeleteAvatar
+    # def testDeletePrimaryAvatarAndNewPrimary
+    # def testAvatarOrder
     # def testTooManyAvatars
     # def testReplaceAvatarWhenMaxIsOne
     # def testHashFileName
     # def testHashUserName
-    # def testDeleteFile
     # def testChangePrimaryAvatar
+    # def testDeleteThumbnailAndRecreation    
     # def testAutomaticThumbnailCreation
