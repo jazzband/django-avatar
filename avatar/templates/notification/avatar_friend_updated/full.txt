@@ -1,0 +1,4 @@
+{% load i18n %}{% blocktrans with user as avatar_creator and avatar.get_absolute_url as avatar_url %}{{ avatar_creator }} has updated their avatar {{ avatar }}.
+
+http://{{ current_site }}{{ avatar_url }}
+{% endblocktrans %}

@@ -2,25 +2,63 @@ import datetime
 import os.path
 
 from django.db import models
-from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.utils.translation import ugettext as _
+from django.utils.hashcompat import md5_constructor
+
+from django.contrib.auth.models import User
 
 try:
     from cStringIO import StringIO
+    dir(StringIO) # Placate PyFlakes
 except ImportError:
     from StringIO import StringIO
 
 try:
     from PIL import Image
+    dir(Image) # Placate PyFlakes
 except ImportError:
     import Image
 
-from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD
+from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
+                   AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT, \
+                   AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES
 
-def avatar_file_path(instance=None, filename=None, user=None):
-    user = user or instance.user
-    return os.path.join(AVATAR_STORAGE_DIR, user.username, filename)
+def avatar_file_path(instance=None, filename=None, size=None, ext=None):
+    tmppath = [AVATAR_STORAGE_DIR]
+    if AVATAR_HASH_USERDIRNAMES:
+        tmp = md5_constructor(instance.user.username).hexdigest()
+        tmppath.extend([tmp[0], tmp[1], instance.user.username])
+    else:
+        tmppath.append(instance.user.username)
+    if not filename:
+        # Filename already stored in database
+        filename = instance.avatar.name
+        if ext and AVATAR_HASH_FILENAMES:
+            # An extension was provided, probably because the thumbnail
+            # is in a different format than the file. Use it. Because it's
+            # only enabled if AVATAR_HASH_FILENAMES is true, we can trust
+            # it won't conflict with another filename
+            (root, oldext) = os.path.splitext(filename)
+            filename = root + "." + ext
+    else:
+        # File doesn't exist yet
+        if AVATAR_HASH_FILENAMES:
+            (root, ext) = os.path.splitext(filename)
+            filename = md5_constructor(filename).hexdigest()
+            filename = filename + ext
+    if size:
+        tmppath.extend(['resized', str(size)])
+    tmppath.append(os.path.basename(filename))
+    return os.path.join(*tmppath)
+
+def find_extension(format):
+    format = format.lower()
+
+    if format == 'jpeg':
+        format = 'jpg'
+
+    return format
 
 class Avatar(models.Model):
     user = models.ForeignKey(User)
@@ -32,10 +70,13 @@ class Avatar(models.Model):
         return _(u'Avatar for %s') % self.user
     
     def save(self, force_insert=False, force_update=False):
-        if self.primary:
-            avatars = Avatar.objects.filter(user=self.user, primary=True)\
-                .exclude(id=self.id)
-            avatars.update(primary=False)
+        avatars = Avatar.objects.filter(user=self.user).exclude(id=self.id)
+        if AVATAR_MAX_AVATARS_PER_USER > 1:
+            if self.primary:
+                avatars = avatars.filter(primary=True)
+                avatars.update(primary=False)
+        else:
+            avatars.delete()
         super(Avatar, self).save(force_insert, force_update)
     
     def thumbnail_exists(self, size):
@@ -59,7 +100,7 @@ class Avatar(models.Model):
             if image.mode != "RGB":
                 image = image.convert("RGB")
             thumb = StringIO()
-            image.save(thumb, "JPEG")
+            image.save(thumb, AVATAR_THUMB_FORMAT)
             thumb_file = ContentFile(thumb.getvalue())
         else:
             thumb_file = ContentFile(orig)
@@ -69,5 +110,9 @@ class Avatar(models.Model):
         return self.avatar.storage.url(self.avatar_name(size))
     
     def avatar_name(self, size):
-        return os.path.join(AVATAR_STORAGE_DIR, self.user.username,
-            'resized', str(size), self.avatar.name)
+        ext = find_extension(AVATAR_THUMB_FORMAT)
+        return avatar_file_path(
+            instance=self,
+            size=size,
+            ext=ext
+        )

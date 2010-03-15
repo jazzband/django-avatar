@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-02 12:46+0100\n"
+"PO-Revision-Date: 2010-02-02 12:56+0100\n"
+"Last-Translator: Mathieu Pillard <m.pillard@liberation.fr>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: forms.py:33
+#, python-format
+msgid "%(ext)s is an invalid file extension. Authorized extensions are : %(valid_exts_list)s"
+msgstr "%(ext)s n'est pas une extension de fichier valide. Les extensions autorisées sont: %(valid_exts_list)s"
+
+#: forms.py:37
+#, python-format
+msgid "Your file is too big (%(size)s), the maximum allowed size is %(max_valid_size)s"
+msgstr "Le fichier est trop gros (%(size)s), la taille maximum autorisée est %(max_valid_size)s"
+
+#: forms.py:43
+#, python-format
+msgid "You already have %(nb_avatars)d avatars, and the maximum allowed is %(nb_max_avatars)d."
+msgstr "Vous avez déjà %(nb_avatars)d avatars, et le maximum autorisé est %(nb_max_avatars)d."
+
+#: models.py:67
+#, python-format
+msgid "Avatar for %s"
+msgstr "Avatar pour %s"
+
+#: views.py:85
+msgid "Successfully uploaded a new avatar."
+msgstr "Votre nouveau avatar a été uploadé avec succès."
+
+#: views.py:119
+msgid "Successfully updated your avatar."
+msgstr "Votre avatar a été mis à jour avec succès."
+
+#: views.py:154
+msgid "Successfully deleted the requested avatars."
+msgstr "Les avatars sélectionnés ont été effacés avec succès."
+
+#: management/__init__.py:9
+msgid "Avatar Updated"
+msgstr "Avatar mis à jour"
+
+#: management/__init__.py:9
+msgid "avatar have been updated"
+msgstr "avatar mis à jour"
+
+#: management/__init__.py:10
+msgid "Friend Updated Avatar"
+msgstr "Avatar mis à jour par un ami"
+
+#: management/__init__.py:10
+msgid "a friend has updated his avatar"
+msgstr "un ami a mis à jour son avatar"
+
+#: templates/notifications/avatar_friend_updated/notice.html:2
+#, python-format
+msgid "<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated his avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr "<a href=\"%(user_url)s\">%(avatar_creator)s</a> a mis à jour son avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templates/notifications/avatar_updated/notice.html:2
+#, python-format
+msgid "A new tribe <a href=\"%(avatar_url)s\">%(avatar)s</a> has been created."
+msgstr ""
+
+#: templatetags/avatar_tags.py:47
+msgid "Default Avatar"
+msgstr "Avatar par défaut"
+

@@ -1,0 +1,4 @@
+{% load i18n %}{% blocktrans with avatar.get_absolute_url as avatar_url %}Your avatar has been updated.  {{ avatar }}
+
+http://{{ current_site }}{{ avatar_url }}
+{% endblocktrans %}

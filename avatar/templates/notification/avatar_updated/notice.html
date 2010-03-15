@@ -1,0 +1,2 @@
+{% load i18n %}
+{% blocktrans with user as avatar_creator and avatar.get_absolute_url as avatar_url %}You have updated your avatar <a href="{{ avatar_url }}">{{ avatar }}</a>.{% endblocktrans %}

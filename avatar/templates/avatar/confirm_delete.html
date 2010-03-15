@@ -5,7 +5,7 @@
     {% if not avatars %}
         <p>You have no avatars to delete.  Please <a href="{% url avatar_change %}">upload one</a> now.</p>
     {% else %}
-        <form method="POST" action="">
+        <form method="POST" action="{% url avatar_delete %}">
             <ul>
                 {{ delete_avatar_form.as_ul }}
             </ul>

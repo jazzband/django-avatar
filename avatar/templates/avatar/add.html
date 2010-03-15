@@ -6,13 +6,6 @@
     {% avatar user %}
     {% if not avatars %}
         <p>You haven't uploaded an avatar yet.  Please upload one now.</p>
-    {% else %}
-        <form method="POST" action="{% url avatar_change %}">
-            <ul>
-                {{ primary_avatar_form.as_ul }}
-            </ul>
-            <input type="submit" value="Choose new Default" />
-        </form>
     {% endif %}
     <form enctype="multipart/form-data" method="POST" action="{% url avatar_add %}">
         {{ upload_avatar_form.as_p }}
