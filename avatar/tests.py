@@ -7,14 +7,24 @@ from django.conf import settings
 
 from django.contrib.auth.models import User
 
-from avatar import AVATAR_DEFAULT_URL
+from avatar import AVATAR_DEFAULT_URL, AVATAR_MAX_AVATARS_PER_USER
+from avatar.util import get_primary_avatar
+from avatar.models import Avatar
 
 try:
     from PIL import Image
     dir(Image) # Placate PyFlakes
 except ImportError:
     import Image
+    
 
+def upload_helper(o, filename):
+    f = open(os.path.join(o.testdatapath, filename), "rb")
+    response = o.client.post(reverse('avatar_add'), {
+        'avatar': f,
+    })
+    f.close()
+    return response
 
 class AvatarUploadTests(TestCase):
     
@@ -27,47 +37,32 @@ class AvatarUploadTests(TestCase):
         Image.init()
 
     def testNonImageUpload(self):
-        f = open(os.path.join(self.testdatapath, "nonimagefile"), "rb")
-        response = self.client.post(reverse('avatar_add'), {
-            'avatar': f,
-        })
-        f.close()
+        response = upload_helper(self, "nonimagefile")
         self.failUnlessEqual(response.status_code, 200)
         self.failIfEqual(response.context['upload_avatar_form'].errors, {})
         
     def testNormalImageUpload(self):
-        f = open(os.path.join(self.testdatapath,"test.png"), "rb")
-        response = self.client.post(reverse('avatar_add'), {
-            'avatar': f,
-        })
-        f.close()
+        response = upload_helper(self, "test.png")
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.context['upload_avatar_form'].errors, {})
+        avatar = get_primary_avatar(self.user)
+        self.failIfEqual(avatar, None)
         
     def testImageWithoutExtension(self):
-        f = open(os.path.join(self.testdatapath,"imagefilewithoutext"), "rb")
-        response = self.client.post(reverse('avatar_add'), {
-            'avatar': f,
-        })
-        f.close()
+        # use with AVATAR_ALLOWED_FILE_EXTS = ('.jpg', '.png')
+        response = upload_helper(self, "imagefilewithoutext")
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.context['upload_avatar_form'].errors, {})
+        self.failIfEqual(response.context['upload_avatar_form'].errors, {})
         
     def testImageWithWrongExtension(self):
-        f = open(os.path.join(self.testdatapath,"imagefilewithwrongext.ogg"), "rb")
-        response = self.client.post(reverse('avatar_add'), {
-            'avatar': f,
-        })
-        f.close()
+        # use with AVATAR_ALLOWED_FILE_EXTS = ('.jpg', '.png')
+        response = upload_helper(self, "imagefilewithwrongext.ogg")
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.context['upload_avatar_form'].errors, {})
+        self.failIfEqual(response.context['upload_avatar_form'].errors, {})
         
     def testImageTooBig(self):
-        f = open(os.path.join(self.testdatapath,"testbig.png"), "rb")
-        response = self.client.post(reverse('avatar_add'), {
-            'avatar': f,
-        })
-        f.close()
+        # use with AVATAR_MAX_SIZE = 1024 * 1024
+        response = upload_helper(self, "testbig.png")
         self.failUnlessEqual(response.status_code, 200)
         self.failIfEqual(response.context['upload_avatar_form'].errors, {})
     
@@ -82,11 +77,55 @@ class AvatarUploadTests(TestCase):
             base_url = settings.MEDIA_URL
         self.assertTrue(base_url in loc)
         self.assertTrue(loc.endswith(AVATAR_DEFAULT_URL))
+
+    def testNonExistingUser(self):
+        a = get_primary_avatar("nonexistinguser")
+        self.failUnlessEqual(a, None)
         
-    # def testTooManyAvatars
+    def testThereCanBeOnlyOnePrimaryAvatar(self):
+        for i in range(1, 10):
+            self.testNormalImageUpload()
+        count = Avatar.objects.filter(user=self.user, primary=True).count()
+        self.failUnlessEqual(count, 1)
+        
+    def testDeleteAvatar(self):
+        self.testNormalImageUpload()
+        avatar = Avatar.objects.filter(user=self.user)
+        self.failUnlessEqual(len(avatar), 1)
+        response = self.client.post(reverse('avatar_delete'), {
+            'choices': [avatar[0].id],
+        })
+        self.failUnlessEqual(response.status_code, 302)
+        count = Avatar.objects.filter(user=self.user).count()
+        self.failUnlessEqual(count, 0)
+        
+    def testDeletePrimaryAvatarAndNewPrimary(self):
+        self.testThereCanBeOnlyOnePrimaryAvatar()
+        primary = get_primary_avatar(self.user)
+        oid = primary.id
+        response = self.client.post(reverse('avatar_delete'), {
+            'choices': [oid],
+        })
+        primaries = Avatar.objects.filter(user=self.user, primary=True)
+        self.failUnlessEqual(len(primaries), 1)
+        self.failIfEqual(oid, primaries[0].id)
+        avatars = Avatar.objects.filter(user=self.user)
+        self.failUnlessEqual(avatars[0].id, primaries[0].id)
+
+    def testTooManyAvatars(self):
+        for i in range(0, AVATAR_MAX_AVATARS_PER_USER):
+            self.testNormalImageUpload()
+        count_before = Avatar.objects.filter(user=self.user).count()       
+        response = upload_helper(self, "test.png")
+        count_after = Avatar.objects.filter(user=self.user).count()
+        self.failUnlessEqual(response.status_code, 200)
+        self.failIfEqual(response.context['upload_avatar_form'].errors, {})
+        self.failUnlessEqual(count_before, count_after)
+
+    # def testAvatarOrder
     # def testReplaceAvatarWhenMaxIsOne
     # def testHashFileName
     # def testHashUserName
-    # def testDeleteFile
     # def testChangePrimaryAvatar
+    # def testDeleteThumbnailAndRecreation    
     # def testAutomaticThumbnailCreation

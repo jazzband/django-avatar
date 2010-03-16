@@ -1,14 +1,14 @@
 {% extends "avatar/base.html" %}
-{% load avatar_tags %}
+{% load i18n avatar_tags %}
 
 {% block content %}
-    <p>Your current avatar: </p>
+    <p>{% trans "Your current avatar: " %}</p>
     {% avatar user %}
     {% if not avatars %}
-        <p>You haven't uploaded an avatar yet.  Please upload one now.</p>
+        <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
     {% endif %}
     <form enctype="multipart/form-data" method="POST" action="{% url avatar_add %}">
         {{ upload_avatar_form.as_p }}
-        <p><input type="submit" value="Upload New Image" /></p>
+        <p><input type="submit" value="{% trans "Upload New Image" %}" /></p>
     </form>
 {% endblock %}

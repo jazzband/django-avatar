@@ -2,8 +2,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
-from django.db.models import get_app
-from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
 from django.contrib.auth.decorators import login_required
@@ -13,10 +11,9 @@ from avatar.models import Avatar
 from avatar.util import get_primary_avatar, get_default_avatar_url
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 
-try:
-    notification = get_app('notification')
-except ImproperlyConfigured:
-    notification = None
+notification = False
+if 'notification' in settings.INSTALLED_APPS:
+    from notification import models as notification
 
 friends = False
 if 'friends' in settings.INSTALLED_APPS:
@@ -72,9 +69,12 @@ def _get_avatars(user):
     return (avatar, avatars)    
 
 @login_required
-def add(request, extra_context={}, next_override=None, *args, **kwargs):
+def add(request, extra_context=None, next_override=None,
+        upload_form=UploadAvatarForm, *args, **kwargs):
+    if extra_context is None:
+        extra_context = {}
     avatar, avatars = _get_avatars(request.user)
-    upload_avatar_form = UploadAvatarForm(request.POST or None,
+    upload_avatar_form = upload_form(request.POST or None,
         request.FILES or None, user=request.user)
     if request.method == "POST" and 'avatar' in request.FILES:
         if upload_avatar_form.is_valid():
@@ -103,14 +103,18 @@ def add(request, extra_context={}, next_override=None, *args, **kwargs):
         )
 
 @login_required
-def change(request, extra_context={}, next_override=None, *args, **kwargs):
+def change(request, extra_context=None, next_override=None,
+        upload_form=UploadAvatarForm, primary_form=PrimaryAvatarForm,
+        *args, **kwargs):
+    if extra_context is None:
+        extra_context = {}
     avatar, avatars = _get_avatars(request.user)
     if avatar:
         kwargs = {'initial': {'choice': avatar.id}}
     else:
         kwargs = {}
-    upload_avatar_form = UploadAvatarForm(user=request.user, **kwargs)
-    primary_avatar_form = PrimaryAvatarForm(request.POST or None,
+    upload_avatar_form = upload_form(user=request.user, **kwargs)
+    primary_avatar_form = primary_form(request.POST or None,
         user=request.user, avatars=avatars, **kwargs)
     if request.method == "POST":
         updated = False
@@ -139,7 +143,9 @@ def change(request, extra_context={}, next_override=None, *args, **kwargs):
     )
 
 @login_required
-def delete(request, extra_context={}, next_override=None, *args, **kwargs):
+def delete(request, extra_context=None, next_override=None, *args, **kwargs):
+    if extra_context is None:
+        extra_context = {}
     avatar, avatars = _get_avatars(request.user)
     delete_avatar_form = DeleteAvatarForm(request.POST or None,
         user=request.user, avatars=avatars)

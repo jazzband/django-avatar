@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.0.3'
+version = '1.1a1'
 
 LONG_DESCRIPTION = """
 Using django-avatar
@@ -162,7 +162,8 @@ setup(
     packages=find_packages(),
     package_data = {
         'avatar': [
-            'templates/avatar/*.html'
+            'templates/avatar/*.html',
+            'locale/*/LC_MESSAGES/*',
         ],
     },
     include_package_data=True,

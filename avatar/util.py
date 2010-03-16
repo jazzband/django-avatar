@@ -22,7 +22,7 @@ def get_primary_avatar(user, size=80):
         try:
             user = User.objects.get(username=user)
         except User.DoesNotExist:
-            return get_default_avatar_url()
+            return None
     avatars = user.avatar_set.order_by('-date_uploaded')
     primary = avatars.filter(primary=True)
     if primary.count() > 0:
