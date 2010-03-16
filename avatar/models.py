@@ -22,7 +22,8 @@ except ImportError:
 
 from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
                    AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT, \
-                   AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES
+                   AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES, \
+                   AVATAR_THUMB_QUALITY
 
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath = [AVATAR_STORAGE_DIR]
@@ -82,12 +83,13 @@ class Avatar(models.Model):
     def thumbnail_exists(self, size):
         return self.avatar.storage.exists(self.avatar_name(size))
     
-    def create_thumbnail(self, size, quality=95):
+    def create_thumbnail(self, size, quality=None):
         try:
             orig = self.avatar.storage.open(self.avatar.name, 'rb').read()
             image = Image.open(StringIO(orig))
         except IOError:
             return # What should we do here?  Render a "sorry, didn't work" img?
+        quality = quality or AVATAR_THUMB_QUALITY
         (w, h) = image.size
         if w != size or h != size:
             if w > h:
