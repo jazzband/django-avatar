@@ -1,5 +1,6 @@
 include LICENSE.txt
 include CONTRIBUTORS.txt
+include avatar/media/avatar/img/default.jpg
 recursive-include docs *
 recursive-include avatar/templates/avatar *.html
 recursive-include avatar/locale/*/LC_MESSAGES *.mo *.po
