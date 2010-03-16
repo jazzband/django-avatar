@@ -1,5 +1,13 @@
+1.0.4
+-----
+
+ * bugfix: fixed bug introduced in 1.0.3 where Friendship was not defined
+ * feature: added AVATAR_GRAVATAR_DEFAULT — used when user has no avatar for
+   the lookup e-mail address.
+ * bugfix: corrected @login_required on delete view
+
 1.0.3
 -----
 
- * check for django-friends using INSTALLED_APPS to prevent imports from
-   happening.
+ * bugfix: check for django-friends using INSTALLED_APPS to prevent imports
+   from happening.
