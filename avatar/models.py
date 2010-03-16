@@ -5,6 +5,7 @@ from django.db import models
 from django.core.files.base import ContentFile
 from django.utils.translation import ugettext as _
 from django.utils.hashcompat import md5_constructor
+from django.utils.encoding import smart_str
 
 from django.contrib.auth.models import User
 
@@ -46,7 +47,7 @@ def avatar_file_path(instance=None, filename=None, size=None, ext=None):
         # File doesn't exist yet
         if AVATAR_HASH_FILENAMES:
             (root, ext) = os.path.splitext(filename)
-            filename = md5_constructor(filename).hexdigest()
+            filename = md5_constructor(smart_str(filename)).hexdigest()
             filename = filename + ext
     if size:
         tmppath.extend(['resized', str(size)])
