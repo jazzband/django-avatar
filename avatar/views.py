@@ -69,9 +69,12 @@ def _get_avatars(user):
     return (avatar, avatars)    
 
 @login_required
-def add(request, extra_context={}, next_override=None, *args, **kwargs):
+def add(request, extra_context=None, next_override=None,
+        upload_form=UploadAvatarForm, *args, **kwargs):
+    if extra_context is None:
+        extra_context = {}
     avatar, avatars = _get_avatars(request.user)
-    upload_avatar_form = UploadAvatarForm(request.POST or None,
+    upload_avatar_form = upload_form(request.POST or None,
         request.FILES or None, user=request.user)
     if request.method == "POST" and 'avatar' in request.FILES:
         if upload_avatar_form.is_valid():
@@ -100,14 +103,18 @@ def add(request, extra_context={}, next_override=None, *args, **kwargs):
         )
 
 @login_required
-def change(request, extra_context={}, next_override=None, *args, **kwargs):
+def change(request, extra_context=None, next_override=None,
+        upload_form=UploadAvatarForm, primary_form=PrimaryAvatarForm,
+        *args, **kwargs):
+    if extra_context is None:
+        extra_context = {}
     avatar, avatars = _get_avatars(request.user)
     if avatar:
         kwargs = {'initial': {'choice': avatar.id}}
     else:
         kwargs = {}
-    upload_avatar_form = UploadAvatarForm(user=request.user, **kwargs)
-    primary_avatar_form = PrimaryAvatarForm(request.POST or None,
+    upload_avatar_form = upload_form(user=request.user, **kwargs)
+    primary_avatar_form = primary_form(request.POST or None,
         user=request.user, avatars=avatars, **kwargs)
     if request.method == "POST":
         updated = False
@@ -136,7 +143,9 @@ def change(request, extra_context={}, next_override=None, *args, **kwargs):
     )
 
 @login_required
-def delete(request, extra_context={}, next_override=None, *args, **kwargs):
+def delete(request, extra_context=None, next_override=None, *args, **kwargs):
+    if extra_context is None:
+        extra_context = {}
     avatar, avatars = _get_avatars(request.user)
     delete_avatar_form = DeleteAvatarForm(request.POST or None,
         user=request.user, avatars=avatars)
