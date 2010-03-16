@@ -2,8 +2,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
-from django.db.models import get_app
-from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
 from django.contrib.auth.decorators import login_required
@@ -13,10 +11,9 @@ from avatar.models import Avatar
 from avatar.util import get_primary_avatar, get_default_avatar_url
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 
-try:
-    notification = get_app('notification')
-except ImproperlyConfigured:
-    notification = None
+notification = False
+if 'notification' in settings.INSTALLED_APPS:
+    from notification import models as notification
 
 friends = False
 if 'friends' in settings.INSTALLED_APPS:
