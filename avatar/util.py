@@ -8,6 +8,9 @@ def get_default_avatar_url():
     base_url = getattr(settings, 'STATIC_URL', None)
     if not base_url:
         base_url = getattr(settings, 'MEDIA_URL', '')
+    # Don't use base_url if the default avatar url starts with http:// 
+    if AVATAR_DEFAULT_URL.startswith('http://'):
+        return AVATAR_DEFAULT_URL
     # We'll be nice and make sure there are no duplicated forward slashes
     ends = base_url.endswith('/')
     begins = AVATAR_DEFAULT_URL.startswith('/')
