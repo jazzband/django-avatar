@@ -90,6 +90,7 @@ def add(request, extra_context=None, next_override=None,
                 message=_("Successfully uploaded a new avatar."))
             if notification:
                 _notification_updated(request, avatar)
+        return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
             'avatar/add.html',
             extra_context,
