@@ -9,6 +9,6 @@
     {% endif %}
     <form enctype="multipart/form-data" method="POST" action="{% url avatar_add %}">
         {{ upload_avatar_form.as_p }}
-        <p><input type="submit" value="{% trans "Upload New Image" %}" /></p>
+        <p>{% csrf_token %}<input type="submit" value="{% trans "Upload New Image" %}" /></p>
     </form>
 {% endblock %}
