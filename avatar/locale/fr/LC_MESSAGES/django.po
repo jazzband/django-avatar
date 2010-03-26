@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-02 12:46+0100\n"
-"PO-Revision-Date: 2010-02-02 12:56+0100\n"
+"POT-Creation-Date: 2010-03-26 18:29+0100\n"
+"PO-Revision-Date: 2010-03-26 18:35+0100\n"
 "Last-Translator: Mathieu Pillard <m.pillard@liberation.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -30,20 +30,20 @@ msgstr "Le fichier est trop gros (%(size)s), la taille maximum autorisée est %(
 msgid "You already have %(nb_avatars)d avatars, and the maximum allowed is %(nb_max_avatars)d."
 msgstr "Vous avez déjà %(nb_avatars)d avatars, et le maximum autorisé est %(nb_max_avatars)d."
 
-#: models.py:67
+#: models.py:72
 #, python-format
 msgid "Avatar for %s"
 msgstr "Avatar pour %s"
 
-#: views.py:85
+#: views.py:90
 msgid "Successfully uploaded a new avatar."
 msgstr "Votre nouveau avatar a été uploadé avec succès."
 
-#: views.py:119
+#: views.py:128
 msgid "Successfully updated your avatar."
 msgstr "Votre avatar a été mis à jour avec succès."
 
-#: views.py:154
+#: views.py:166
 msgid "Successfully deleted the requested avatars."
 msgstr "Les avatars sélectionnés ont été effacés avec succès."
 
@@ -52,28 +52,60 @@ msgid "Avatar Updated"
 msgstr "Avatar mis à jour"
 
 #: management/__init__.py:9
-msgid "avatar have been updated"
-msgstr "avatar mis à jour"
+msgid "your avatar has been updated"
+msgstr "votre avatar a été mis à jour"
 
 #: management/__init__.py:10
 msgid "Friend Updated Avatar"
 msgstr "Avatar mis à jour par un ami"
 
 #: management/__init__.py:10
-msgid "a friend has updated his avatar"
+msgid "a friend has updated their avatar"
 msgstr "un ami a mis à jour son avatar"
 
-#: templates/notifications/avatar_friend_updated/notice.html:2
+#: templates/avatar/add.html:5
+#: templates/avatar/change.html:5
+msgid "Your current avatar: "
+msgstr "Votre avatar actuel:"
+
+#: templates/avatar/add.html:8
+#: templates/avatar/change.html:8
+msgid "You haven't uploaded an avatar yet. Please upload one now."
+msgstr "Vous n'avez pas encore ajouté d'avatar. Veuillez le faire maintenant."
+
+#: templates/avatar/add.html:12
+#: templates/avatar/change.html:19
+msgid "Upload New Image"
+msgstr "Ajouter une nouvelle image"
+
+#: templates/avatar/change.html:14
+msgid "Choose new Default"
+msgstr "Choisir le nouvel avatar par défaut"
+
+#: templates/avatar/confirm_delete.html:5
+msgid "Please select the avatars that you would like to delete."
+msgstr "Veuillez sélectionner les avatars que vous souhaitez effacer"
+
+#: templates/avatar/confirm_delete.html:8
 #, python-format
-msgid "<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated his avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgid "You have no avatars to delete. Please <a href=\"%(avatar_change_url)s\">upload one</a> now."
+msgstr "Vous n'avez aucun avatar à effacer. Veuillez en <a href=\"%(avatar_change_url)s\">ajouter</a> un maintenant."
+
+#: templates/avatar/confirm_delete.html:14
+msgid "Delete These"
+msgstr "Effacer"
+
+#: templates/notification/avatar_friend_updated/notice.html:2
+#, python-format
+msgid "<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated their avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
 msgstr "<a href=\"%(user_url)s\">%(avatar_creator)s</a> a mis à jour son avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
 
-#: templates/notifications/avatar_updated/notice.html:2
+#: templates/notification/avatar_updated/notice.html:2
 #, python-format
-msgid "A new tribe <a href=\"%(avatar_url)s\">%(avatar)s</a> has been created."
-msgstr ""
+msgid "You have updated your avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr "Vous avez mis à jour votre <a href=\"%(avatar_url)s\">%(avatar)s</a>."
 
-#: templatetags/avatar_tags.py:47
+#: templatetags/avatar_tags.py:40
 msgid "Default Avatar"
 msgstr "Avatar par défaut"
 
