@@ -99,9 +99,9 @@ class Avatar(models.Model):
             else:
                 diff = (h - w) / 2
                 image = image.crop((0, diff, w, h - diff))
-            image = image.resize((size, size), AVATAR_RESIZE_METHOD)
             if image.mode != "RGB":
                 image = image.convert("RGB")
+            image = image.resize((size, size), AVATAR_RESIZE_METHOD)
             thumb = StringIO()
             image.save(thumb, AVATAR_THUMB_FORMAT, quality=quality)
             thumb_file = ContentFile(thumb.getvalue())
