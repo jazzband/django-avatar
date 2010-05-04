@@ -22,7 +22,7 @@ def upload_helper(o, filename):
     f = open(os.path.join(o.testdatapath, filename), "rb")
     response = o.client.post(reverse('avatar_add'), {
         'avatar': f,
-    })
+    }, follow=True)
     f.close()
     return response
 
@@ -44,6 +44,7 @@ class AvatarUploadTests(TestCase):
     def testNormalImageUpload(self):
         response = upload_helper(self, "test.png")
         self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(len(response.redirect_chain), 1)
         self.failUnlessEqual(response.context['upload_avatar_form'].errors, {})
         avatar = get_primary_avatar(self.user)
         self.failIfEqual(avatar, None)
@@ -52,18 +53,21 @@ class AvatarUploadTests(TestCase):
         # use with AVATAR_ALLOWED_FILE_EXTS = ('.jpg', '.png')
         response = upload_helper(self, "imagefilewithoutext")
         self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(len(response.redirect_chain), 0) # Redirect only if it worked        
         self.failIfEqual(response.context['upload_avatar_form'].errors, {})
         
     def testImageWithWrongExtension(self):
         # use with AVATAR_ALLOWED_FILE_EXTS = ('.jpg', '.png')
         response = upload_helper(self, "imagefilewithwrongext.ogg")
         self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(len(response.redirect_chain), 0) # Redirect only if it worked        
         self.failIfEqual(response.context['upload_avatar_form'].errors, {})
         
     def testImageTooBig(self):
         # use with AVATAR_MAX_SIZE = 1024 * 1024
         response = upload_helper(self, "testbig.png")
         self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(len(response.redirect_chain), 0) # Redirect only if it worked        
         self.failIfEqual(response.context['upload_avatar_form'].errors, {})
     
     def testDefaultUrl(self):
@@ -94,8 +98,9 @@ class AvatarUploadTests(TestCase):
         self.failUnlessEqual(len(avatar), 1)
         response = self.client.post(reverse('avatar_delete'), {
             'choices': [avatar[0].id],
-        })
-        self.failUnlessEqual(response.status_code, 302)
+        }, follow=True)
+        self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(len(response.redirect_chain), 1)
         count = Avatar.objects.filter(user=self.user).count()
         self.failUnlessEqual(count, 0)
         
@@ -119,6 +124,7 @@ class AvatarUploadTests(TestCase):
         response = upload_helper(self, "test.png")
         count_after = Avatar.objects.filter(user=self.user).count()
         self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(len(response.redirect_chain), 0) # Redirect only if it worked
         self.failIfEqual(response.context['upload_avatar_form'].errors, {})
         self.failUnlessEqual(count_before, count_after)
 
