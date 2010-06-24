@@ -26,13 +26,13 @@ def get_primary_avatar(user, size=80):
             user = User.objects.get(username=user)
         except User.DoesNotExist:
             return None
-    avatars = user.avatar_set.order_by('-date_uploaded')
-    primary = avatars.filter(primary=True)
-    if primary.count() > 0:
-        avatar = primary[0]
-    elif avatars.count() > 0:
-        avatar = avatars[0]
-    else:
+    try:
+        # Order by -primary first; this means if a primary=True avatar exists
+        # it will be first, and then ordered by date uploaded, otherwise a
+        # primary=False avatar will be first.  Exactly the fallback behavior we
+        # want.
+        avatar = user.avatar_set.order_by("-primary", "-date_uploaded")[0]
+    except IndexError:
         avatar = None
     if avatar:
         if not avatar.thumbnail_exists(size):

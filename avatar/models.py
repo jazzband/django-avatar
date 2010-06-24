@@ -26,6 +26,7 @@ from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
                    AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES, \
                    AVATAR_THUMB_QUALITY
 
+
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath = [AVATAR_STORAGE_DIR]
     if AVATAR_HASH_USERDIRNAMES:
@@ -71,15 +72,17 @@ class Avatar(models.Model):
     def __unicode__(self):
         return _(u'Avatar for %s') % self.user
     
-    def save(self, force_insert=False, force_update=False):
-        avatars = Avatar.objects.filter(user=self.user).exclude(id=self.id)
+    def save(self, *args, **kwargs):
+        avatars = Avatar.objects.filter(user=self.user)
+        if self.pk:
+            avatars = avatars.exclude(pk=self.pk)
         if AVATAR_MAX_AVATARS_PER_USER > 1:
             if self.primary:
                 avatars = avatars.filter(primary=True)
                 avatars.update(primary=False)
         else:
             avatars.delete()
-        super(Avatar, self).save(force_insert, force_update)
+        super(Avatar, self).save(*args, **kwargs)
     
     def thumbnail_exists(self, size):
         return self.avatar.storage.exists(self.avatar_name(size))
