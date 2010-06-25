@@ -1,7 +1,6 @@
 import os.path
 
 from django.test import TestCase
-from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
@@ -29,7 +28,6 @@ def upload_helper(o, filename):
 class AvatarUploadTests(TestCase):
     
     def setUp(self):
-        self.client = Client()
         self.testdatapath = os.path.join(os.path.dirname(__file__), "testdata")
         self.user = User.objects.create_user('test', 'lennon@thebeatles.com', 'testpassword')
         self.user.save()
