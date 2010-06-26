@@ -1,1 +1,14 @@
 This application is mainly developed by Eric Florenzano.
+
+Ahmad Al-Ibrahim
+Alex Gaynor
+Ben Browitt
+Brian Rosner
+Daniel T. Alvarenga
+Jakob Torp Svendsen
+James Tauber
+James Turnbull
+Jannis Leidel
+John Debs
+Mathieu Pillard
+Ross Poulton

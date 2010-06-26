@@ -1,3 +1,4 @@
+include README.txt
 include LICENSE.txt
 include CONTRIBUTORS.txt
 include avatar/media/avatar/img/default.jpg
