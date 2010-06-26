@@ -86,6 +86,10 @@ class Avatar(models.Model):
         invalidate_cache(self.user)
         super(Avatar, self).save(*args, **kwargs)
     
+    def delete(self, *args, **kwargs):
+        invalidate_cache(self.user)
+        super(Avatar, self).delete(*args, **kwargs)
+    
     def thumbnail_exists(self, size):
         return self.avatar.storage.exists(self.avatar_name(size))
     
