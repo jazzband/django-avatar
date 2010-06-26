@@ -6,6 +6,7 @@ from django.core.files.base import ContentFile
 from django.utils.translation import ugettext as _
 from django.utils.hashcompat import md5_constructor
 from django.utils.encoding import smart_str
+from django.db.models import signals
 
 from django.contrib.auth.models import User
 
@@ -130,3 +131,11 @@ class Avatar(models.Model):
             size=size,
             ext=ext
         )
+
+
+def create_default_thumbnails(instance=None, created=False, **kwargs):
+    if created:
+        for size in AUTO_GENERATE_AVATAR_SIZES:
+            instance.create_thumbnail(size)
+
+signals.post_save.connect(create_default_thumbnails, sender=Avatar)
