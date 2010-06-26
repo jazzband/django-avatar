@@ -21,6 +21,7 @@ try:
 except ImportError:
     import Image
 
+from avatar.util import invalidate_cache
 from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
                    AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT, \
                    AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES, \
@@ -82,12 +83,15 @@ class Avatar(models.Model):
                 avatars.update(primary=False)
         else:
             avatars.delete()
+        invalidate_cache(self.user)
         super(Avatar, self).save(*args, **kwargs)
     
     def thumbnail_exists(self, size):
         return self.avatar.storage.exists(self.avatar_name(size))
     
     def create_thumbnail(self, size, quality=None):
+        # invalidate the cache of the thumbnail with the given size first
+        invalidate_cache(self.user, size)
         try:
             orig = self.avatar.storage.open(self.avatar.name, 'rb').read()
             image = Image.open(StringIO(orig))
@@ -111,7 +115,7 @@ class Avatar(models.Model):
         else:
             thumb_file = ContentFile(orig)
         thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
-    
+
     def avatar_url(self, size):
         return self.avatar.storage.url(self.avatar_name(size))
     

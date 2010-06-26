@@ -85,7 +85,6 @@ def add(request, extra_context=None, next_override=None,
             image_file = request.FILES['avatar']
             avatar.avatar.save(image_file.name, image_file)
             avatar.save()
-            updated = True
             request.user.message_set.create(
                 message=_("Successfully uploaded a new avatar."))
             if notification:

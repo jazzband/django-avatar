@@ -8,11 +8,13 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from avatar import AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT
-from avatar.util import get_primary_avatar
-from avatar.util import get_default_avatar_url
+from avatar.util import get_primary_avatar, get_default_avatar_url, cache_result
 
 register = template.Library()
 
+
+@cache_result
+@register.simple_tag
 def avatar_url(user, size=80):
     avatar = get_primary_avatar(user, size=size)
     if avatar:
@@ -27,8 +29,9 @@ def avatar_url(user, size=80):
                 urllib.urlencode(params))
         else:
             return get_default_avatar_url()
-register.simple_tag(avatar_url)
 
+@cache_result
+@register.simple_tag
 def avatar(user, size=80):
     if not isinstance(user, User):
         try:
@@ -43,8 +46,9 @@ def avatar(user, size=80):
         url = avatar_url(user, size)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (url, alt,
         size, size)
-register.simple_tag(avatar)
 
+@cache_result
+@register.simple_tag
 def primary_avatar(user, size=80):
     """
     This tag tries to get the default avatar for a user without doing any db
@@ -56,11 +60,11 @@ def primary_avatar(user, size=80):
     url = reverse('avatar_render_primary', kwargs={'user' : user, 'size' : size})
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (url, alt,
         size, size)
-register.simple_tag(primary_avatar)
 
+@cache_result
+@register.simple_tag
 def render_avatar(avatar, size=80):
     if not avatar.thumbnail_exists(size):
         avatar.create_thumbnail(size)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
         avatar.avatar_url(size), str(avatar), size, size)
-register.simple_tag(render_avatar)

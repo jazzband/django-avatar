@@ -1,8 +1,36 @@
 from django.conf import settings
+from django.core.cache import cache
 
 from django.contrib.auth.models import User
 
-from avatar import AVATAR_DEFAULT_URL
+from avatar import AVATAR_DEFAULT_URL, AVATAR_CACHE_TIMEOUT, AUTO_GENERATE_AVATAR_SIZES
+
+cached_funcs = set()
+
+def get_cache_key(user_or_username, size, prefix):
+    if isinstance(user_or_username, User):
+        user_or_username = user_or_username.username
+    return '%s_%s_%s' % (prefix, user_or_username, size)
+
+def cache_result(func):
+    def cache_set(key, value):
+        cache.set(key, value, AVATAR_CACHE_TIMEOUT)
+        return value
+
+    def cached_func(user, size):
+        prefix = func.__name__
+        cached_funcs.add(prefix)
+        key = get_cache_key(user, size, prefix=prefix)
+        return cache.get(key) or cache_set(key, func(user, size))
+    return cached_func
+
+def invalidate_cache(user, size=None):
+    sizes = set(AUTO_GENERATE_AVATAR_SIZES)
+    if size is not None:
+        sizes.add(size)
+    for prefix in cached_funcs:
+        for size in sizes:
+            cache.delete(get_cache_key(user, size, prefix))
 
 def get_default_avatar_url():
     base_url = getattr(settings, 'STATIC_URL', None)
