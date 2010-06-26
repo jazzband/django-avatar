@@ -5,4 +5,4 @@ pip-log.txt
 *DS_Store
 *~
 dist/
-avatar.egg-info/
+*.egg-info/
