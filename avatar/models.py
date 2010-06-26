@@ -1,5 +1,5 @@
 import datetime
-import os.path
+import os
 
 from django.db import models
 from django.core.files.base import ContentFile
@@ -23,10 +23,10 @@ except ImportError:
     import Image
 
 from avatar.util import invalidate_cache
-from avatar import AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD, \
-                   AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT, \
-                   AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES, \
-                   AVATAR_THUMB_QUALITY
+from avatar.settings import (AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD,
+                             AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT,
+                             AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES,
+                             AVATAR_THUMB_QUALITY, AUTO_GENERATE_AVATAR_SIZES)
 
 
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):

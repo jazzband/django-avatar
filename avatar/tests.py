@@ -6,7 +6,7 @@ from django.conf import settings
 
 from django.contrib.auth.models import User
 
-from avatar import AVATAR_DEFAULT_URL, AVATAR_MAX_AVATARS_PER_USER
+from avatar.settings import AVATAR_DEFAULT_URL, AVATAR_MAX_AVATARS_PER_USER
 from avatar.util import get_primary_avatar
 from avatar.models import Avatar
 

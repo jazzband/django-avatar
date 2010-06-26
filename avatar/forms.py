@@ -1,14 +1,15 @@
+import os
+
 from django import forms
 from django.forms import widgets
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-
-from avatar.models import Avatar
-from avatar import AVATAR_MAX_AVATARS_PER_USER, AVATAR_MAX_SIZE, AVATAR_ALLOWED_FILE_EXTS
-
 from django.template.defaultfilters import filesizeformat
 
-import os.path
+from avatar.models import Avatar
+from avatar.settings import (AVATAR_MAX_AVATARS_PER_USER, AVATAR_MAX_SIZE,
+                             AVATAR_ALLOWED_FILE_EXTS, AVATAR_DEFAULT_SIZE)
+
 
 def avatar_img(avatar, size):
     if not avatar.thumbnail_exists(size):
@@ -49,7 +50,7 @@ class PrimaryAvatarForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
-        size = kwargs.pop('size', 80)
+        size = kwargs.pop('size', AVATAR_DEFAULT_SIZE)
         avatars = kwargs.pop('avatars')
         super(PrimaryAvatarForm, self).__init__(*args, **kwargs)
         self.fields['choice'] = forms.ChoiceField(
@@ -60,7 +61,7 @@ class DeleteAvatarForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
-        size = kwargs.pop('size', 80)
+        size = kwargs.pop('size', AVATAR_DEFAULT_SIZE)
         avatars = kwargs.pop('avatars')
         super(DeleteAvatarForm, self).__init__(*args, **kwargs)
         self.fields['choices'] = forms.MultipleChoiceField(

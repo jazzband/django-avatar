@@ -6,10 +6,10 @@ from django.conf import settings
 
 from django.contrib.auth.decorators import login_required
 
-from avatar import AVATAR_MAX_AVATARS_PER_USER
-from avatar.models import Avatar
-from avatar.util import get_primary_avatar, get_default_avatar_url
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
+from avatar.models import Avatar
+from avatar.settings import AVATAR_MAX_AVATARS_PER_USER, AVATAR_DEFAULT_SIZE
+from avatar.util import get_primary_avatar, get_default_avatar_url
 
 notification = False
 if 'notification' in settings.INSTALLED_APPS:
@@ -177,7 +177,7 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
         )
     )
     
-def render_primary(request, extra_context={}, user=None, size=80, *args, **kwargs):
+def render_primary(request, extra_context={}, user=None, size=AVATAR_DEFAULT_SIZE, *args, **kwargs):
     size = int(size)
     avatar = get_primary_avatar(user, size=size)
     if avatar:
