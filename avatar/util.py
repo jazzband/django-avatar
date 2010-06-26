@@ -8,11 +8,18 @@ from avatar import AVATAR_DEFAULT_URL, AVATAR_CACHE_TIMEOUT, AUTO_GENERATE_AVATA
 cached_funcs = set()
 
 def get_cache_key(user_or_username, size, prefix):
+    """
+    Returns a cache key consisten of a username and image size.
+    """
     if isinstance(user_or_username, User):
         user_or_username = user_or_username.username
     return '%s_%s_%s' % (prefix, user_or_username, size)
 
 def cache_result(func):
+    """
+    Decorator to cache the result of functions that take a ``user`` and a
+    ``size`` value.
+    """
     def cache_set(key, value):
         cache.set(key, value, AVATAR_CACHE_TIMEOUT)
         return value
@@ -25,6 +32,9 @@ def cache_result(func):
     return cached_func
 
 def invalidate_cache(user, size=None):
+    """
+    Function to be called when saving or changing an user's avatars.
+    """
     sizes = set(AUTO_GENERATE_AVATAR_SIZES)
     if size is not None:
         sizes.add(size)
