@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.1a3'
+version = '1.1a4'
 
 LONG_DESCRIPTION = """
 Using django-avatar
