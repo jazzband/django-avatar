@@ -87,9 +87,9 @@ class UsersAvatarObjectNode(template.Node):
     def render(self, context):
         user = self.user.resolve(context)
         key = self.key
-        avatar = Avatar.objects.filter(user=self.user, primary=True)
+        avatar = Avatar.objects.filter(user=user, primary=True)
         if(avatar):
-            context[key] = avatar
+            context[key] = avatar[0]
         else:
             context[key] = None
         return u""
