@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
                              AVATAR_DEFAULT_SIZE)
 from avatar.util import get_primary_avatar, get_default_avatar_url, cache_result
+from avatar.models import Avatar
 
 register = template.Library()
 
@@ -69,3 +70,28 @@ def render_avatar(avatar, size=AVATAR_DEFAULT_SIZE):
         avatar.create_thumbnail(size)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
         avatar.avatar_url(size), str(avatar), size, size)
+
+
+def primary_avatar_object(parser, token):
+    split = token.split_contents()
+    if len(split) == 4:
+        return UsersAvatarObjectNode(split[1], split[3])
+    else:
+        raise template.TemplateSyntaxError('%r tag takes three arguments.' % split[0])
+
+class UsersAvatarObjectNode(template.Node):
+    def __init__(self, user, key):
+        self.user = template.Variable(user)
+        self.key  = template.Variable(key)
+    
+    def render(self, context):
+        user = self.user.resolve(context)
+        key = self.key
+        avatar = Avatar.objects.filter(user=self.user, primary=True)
+        if(avatar):
+            context[key] = avatar
+        else:
+            context[key] = None
+        return u""
+
+register.tag('primary_avatar_object', primary_avatar_object)
