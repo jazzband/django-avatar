@@ -82,13 +82,13 @@ def primary_avatar_object(parser, token):
 class UsersAvatarObjectNode(template.Node):
     def __init__(self, user, key):
         self.user = template.Variable(user)
-        self.key  = template.Variable(key)
+        self.key  = key
     
     def render(self, context):
         user = self.user.resolve(context)
         key = self.key
         avatar = Avatar.objects.filter(user=user, primary=True)
-        if(avatar):
+        if avatar:
             context[key] = avatar[0]
         else:
             context[key] = None
