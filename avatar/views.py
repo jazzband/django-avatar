@@ -45,11 +45,14 @@ def _notification_updated(request, avatar):
         notification.send([request.user], "avatar_updated",
             {"user": request.user, "avatar": avatar})
         if friends:
-            notification.send((x['friend'] for x in
-                Friendship.objects.friends_for_user(request.user)),
-                "avatar_friend_updated",
-                {"user": request.user, "avatar": avatar}
-            )
+            try: #dont break if simplefriends is used
+                notification.send((x['friend'] for x in
+                    Friendship.objects.friends_for_user(request.user)),
+                    "avatar_friend_updated",
+                    {"user": request.user, "avatar": avatar}
+                )
+            except:
+                pass
     except:
         pass # in case simplefriends is used try not to crash to badly, in our case its in the activity stream anyway
 
