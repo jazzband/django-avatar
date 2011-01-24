@@ -1,15 +1,17 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.conf import settings
-
+from django.views.decorators.csrf import csrf_exempt, csrf_view_exempt
 from django.contrib.auth.decorators import login_required
-
+from django.shortcuts import get_object_or_404
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
 from avatar.settings import AVATAR_MAX_AVATARS_PER_USER, AVATAR_DEFAULT_SIZE
 from avatar.util import get_primary_avatar, get_default_avatar_url
+from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
 
 notification = False
 if 'notification' in settings.INSTALLED_APPS:
@@ -74,6 +76,24 @@ def _get_avatars(user):
         avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
     return (avatar, avatars)    
 
+
+@csrf_exempt
+def webcam_upload(request, id):
+    # TODO: add proper security by attaching session to flash request
+    user = get_object_or_404(User, pk=id)
+    if request.method == "POST":
+        avatar = Avatar(
+            user = user,
+            primary = True,
+        )
+        avatar.avatar.save("%s_webcam_%s.jpg"%(user.pk, Avatar.objects.filter(user=user).count()),
+                          ContentFile(request.raw_post_data))
+        avatar.save()
+        request.user.message_set.create(
+            message=_("Successfully uploaded a new avatar."))
+        return HttpResponse(status=200, content="ok")
+        
+        
 @login_required
 def add(request, extra_context=None, next_override=None,
         upload_form=UploadAvatarForm, *args, **kwargs):
@@ -197,3 +217,4 @@ def render_primary(request, extra_context={}, user=None, size=AVATAR_DEFAULT_SIZ
         url = get_default_avatar_url()
         return HttpResponseRedirect(url)
     
+
