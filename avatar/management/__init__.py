@@ -6,9 +6,9 @@ if "notification" in settings.INSTALLED_APPS:
     from notification import models as notification
     
     def create_notice_types(app, created_models, verbosity, **kwargs):
-        notification.create_notice_type("avatar_updated", _("Avatar Updated"), _("your avatar has been updated"))
-        notification.create_notice_type("avatar_friend_updated", _("Friend Updated Avatar"), _("a friend has updated their avatar"))
-    
+        #notification.create_notice_type("avatar_updated", _("Avatar Updated"), _("your avatar has been updated"))
+        #notification.create_notice_type("avatar_friend_updated", _("Friend Updated Avatar"), _("a friend has updated their avatar"))
+        pass
     signals.post_syncdb.connect(create_notice_types, sender=notification)
 else:
     print "Skipping creation of NoticeTypes as notification app not found"
