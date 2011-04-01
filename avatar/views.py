@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
@@ -176,6 +176,58 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
               'next': next_override or _get_next(request), }
         )
     )
+    
+    
+def avatar_gallery(request, username, template_name="avatar/gallery.html"):
+    user = get_object_or_404(User, username=username)
+    return render_to_response(template_name, {
+        "other_user": user,
+        "avatars": user.avatar_set.all(),
+    }, context_instance=RequestContext(request))
+    
+    
+def avatar(request, username, id, template_name="avatar/avatar.html"):
+    user = get_object_or_404(User, username=username)
+    avatars = user.avatar_set.order_by("-date_uploaded")
+    index = None
+    avatar = None
+    if avatars:
+        avatar = avatars.get(pk=id)
+        if not avatar:
+            return Http404
+        
+        index = avatars.filter(date_uploaded__gt=avatar.date_uploaded).count()
+        count = avatars.count()
+        
+        if index==0:
+            prev = avatars.reverse()[0]
+            if count <= 1:
+                next = avatars[0]
+            else:
+                next = avatars[1]
+        else:
+            prev = avatars[index-1]
+        
+        if (index+1)>=count:
+            next = avatars[0]
+            prev_index = index-1
+            if prev_index < 0:
+                prev_index = 0
+            prev = avatars[prev_index]
+        else:
+            next = avatars[index+1]
+        
+        
+    return render_to_response(template_name, {
+        "other_user": user,
+        "avatar": avatar,
+        "index": index+1,
+        "avatars": avatars,
+        "next": next,
+        "prev": prev,
+        "count": count,
+    }, context_instance=RequestContext(request))
+
     
 def render_primary(request, extra_context={}, user=None, size=AVATAR_DEFAULT_SIZE, *args, **kwargs):
     size = int(size)
