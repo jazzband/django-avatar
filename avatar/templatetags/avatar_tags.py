@@ -48,6 +48,19 @@ def avatar(user, size=AVATAR_DEFAULT_SIZE):
         url = avatar_url(user, size)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (url, alt,
         size, size)
+    
+    
+@register.filter
+def has_avatar(user):
+    if not isinstance(user, User):
+        return False
+    else:
+        avatar = Avatar.objects.filter(user=user, primary=True)
+        if avatar:
+          return True
+        else:
+          return False
+
 
 @cache_result
 @register.simple_tag
