@@ -57,9 +57,9 @@ def primary_avatar(target, size=AVATAR_DEFAULT_SIZE):
     """
     handler = get_target_handler()
     alt = handler.get_alt_text(target)
-    type = handler.get_type(target)
-    id = handler.get_id(target)
-    url = reverse('avatar_render_primary', kwargs={'target_type' : type, 'id': id, 'size' : size})
+    kwargs = handler.get_primary_avatar_kwargs(target)
+    kwargs['size'] = size
+    url = reverse('avatar_render_primary', kwargs=kwargs)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (url, alt,
         size, size)
 

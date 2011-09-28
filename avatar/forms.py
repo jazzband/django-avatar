@@ -22,6 +22,7 @@ class UploadAvatarForm(forms.Form):
     avatar = forms.ImageField()
 
     def __init__(self, *args, **kwargs):
+        size = kwargs.pop('size', AVATAR_DEFAULT_SIZE)
         self.target = kwargs.pop('target')
         super(UploadAvatarForm, self).__init__(*args, **kwargs)
 
@@ -50,7 +51,8 @@ class PrimaryAvatarForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         size = kwargs.pop('size', AVATAR_DEFAULT_SIZE)
-        avatars = kwargs.pop('avatars')
+        target = kwargs.pop('target')
+        avatars = Avatar.objects.avatars_for_object(target)
         super(PrimaryAvatarForm, self).__init__(*args, **kwargs)
         self.fields['choice'] = forms.ChoiceField(
             choices=[(c.id, avatar_img(c, size)) for c in avatars],
@@ -60,7 +62,8 @@ class DeleteAvatarForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         size = kwargs.pop('size', AVATAR_DEFAULT_SIZE)
-        avatars = kwargs.pop('avatars')
+        target = kwargs.pop('target')
+        avatars = Avatar.objects.avatars_for_object(target)
         super(DeleteAvatarForm, self).__init__(*args, **kwargs)
         self.fields['choices'] = forms.MultipleChoiceField(
             choices=[(c.id, avatar_img(c, size)) for c in avatars],

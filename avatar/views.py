@@ -1,16 +1,16 @@
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.http import HttpResponseRedirect, HttpResponse
+from django.utils.translation import ugettext as _
+from django.views.generic.edit import BaseFormView, FormMixin
+from django.views.generic.base import TemplateResponseMixin, View
 
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
 from avatar.settings import AVATAR_MAX_AVATARS_PER_USER, AVATAR_DEFAULT_SIZE
 from avatar.signals import avatar_updated
-from avatar.util import (get_target_handler, get_primary_avatar,
-                         get_default_avatar_url)
-from avatar.templatetags.avatar_tags import avatar_url
+from avatar.util import get_default_avatar_url
+
 
 def _get_next(request):
     """
@@ -52,151 +52,167 @@ def _get_avatars(target):
         avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
     return (avatar, avatars)
 
-@login_required
-def add(request, extra_context=None, next_override=None, target_type=None,
-        target_id=None, upload_form=UploadAvatarForm, *args, **kwargs):
-    if extra_context is None:
-        extra_context = {}
-    handler = get_target_handler()
-    if target_type is None:
-        target = request.user
-    else:
-        target = handler.get_target_from_type(target_type, target_id)
-    avatar, avatars = _get_avatars(target)
-    upload_form = handler.get_upload_form() or upload_form
-    upload_avatar_form = upload_form(request.POST or None,
-        request.FILES or None, target=target)
-    if request.method == "POST" and 'avatar' in request.FILES:
-        if upload_avatar_form.is_valid():
-            new_avatar = handler.new_avatar(target, request.FILES['avatar'])
-            if new_avatar:
-                request.user.message_set.create(
-                message=_("Successfully uploaded a new avatar."))
-                avatar_updated.send(sender=Avatar, target=target,
-                                    avatar=new_avatar)
-                if request.is_ajax() or request.REQUEST.get('async', None) == 'true':
-                    return HttpResponse(new_avatar.avatar_url(AVATAR_DEFAULT_SIZE))
-                return HttpResponseRedirect(next_override or _get_next(request))
-    return render_to_response(
-            handler.add_template(request.is_ajax()),
-            extra_context,
-            context_instance=RequestContext(
-                request,
-                { 'avatar': avatar,
-                  'avatars': avatars,
-                  'upload_avatar_form': upload_avatar_form,
-                  'next': next_override or _get_next(request), }
+class LoginRequiredMixin(object):
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+class AvatarMixin(object):
+    def get_target(self):
+        return self.request.user
+
+    def get_avatars(self, target):
+        return _get_avatars(target)
+
+    def create_avatar(self, target, avatar_file):
+        avatar = Avatar(
+                content_object=target,
+                primary=True,
             )
-        )
+        avatar.avatar.save(avatar_file.name, avatar_file)
+        avatar.save()
+        return avatar
 
-@login_required
-def change(request, extra_context={}, next_override=None, target_type=None,
-           target_id=None, upload_form=UploadAvatarForm,
-           primary_form=PrimaryAvatarForm, *args, **kwargs):
-    if extra_context is None:
-        extra_context = {}
-    handler = get_target_handler()
-    if target_type is None:
-        target = request.user
-    else:
-        target = handler.get_target_from_type(target_type, target_id)
-    avatar, avatars = _get_avatars(target)
-    upload_form = handler.get_upload_form() or upload_form
-    primary_form = handler.get_primary_form() or primary_form
-    if avatar:
-        kwargs = {'initial': {'choice': avatar.id}}
-    else:
-        kwargs = {}
-    upload_avatar_form = upload_form(target=target, **kwargs)
-    kwargs['size'] = request.REQUEST.get('size', AVATAR_DEFAULT_SIZE)
-    primary_avatar_form = primary_form(request.POST or None, avatars=avatars,
-                                       **kwargs)
-    if request.method == "POST":
-        updated = False
-        if 'choice' in request.POST and primary_avatar_form.is_valid():
-            new_avatar = handler.get_avatar(target, primary_avatar_form.cleaned_data['choice'])
-            new_avatar.primary = True
-            new_avatar.save()
-            updated = True
-            request.user.message_set.create(
-                message=_("Avatar successfully updated."))
-        if updated:
-            avatar_updated.send(sender=Avatar, target=target, avatar=new_avatar)
-        if request.is_ajax():
-            return HttpResponse(new_avatar.avatar_url(AVATAR_DEFAULT_SIZE))
-        return HttpResponseRedirect(next_override or _get_next(request))
-    return render_to_response(
-        handler.change_template(request.is_ajax()),
-        extra_context,
-        context_instance=RequestContext(
-            request,
-            { 'avatar': avatar,
-              'avatars': avatars,
-              'target': target,
-              'target_type': target_type,
-              'id': target_id,
-              'upload_avatar_form': upload_avatar_form,
-              'primary_avatar_form': primary_avatar_form,
-              'next': next_override or _get_next(request), }
-        )
-    )
+    def get_success_url(self):
+        return self.kwargs.get('next_override', None) or _get_next(self.request)
 
-@login_required
-def delete(request, extra_context={}, next_override=None, target_type=None,
-           target_id=None, *args, **kwargs):
-    if extra_context is None:
-        extra_context = {}
-    handler = get_target_handler()
-    if target_type is None:
-        target = request.user
-    else:
-        target = handler.get_target_from_type(target_type, target_id)
-    avatar, avatars = _get_avatars(target)
-    delete_form = handler.get_delete_form() or DeleteAvatarForm
-    delete_avatar_form = delete_form(request.POST or None, avatars=avatars)
-    if request.method == 'POST':
-        if delete_avatar_form.is_valid():
-            ids = delete_avatar_form.cleaned_data['choices']
-            if unicode(avatar.id) in ids and avatars.count() > len(ids):
-                # Find the next best avatar, and set it as the new primary
-                for a in avatars:
-                    if unicode(a.id) not in ids:
-                        a.primary = True
-                        a.save()
-                        avatar_updated.send(sender=Avatar, target=target,
-                                            avatar=avatar)
-                        break
-            Avatar.objects.filter(id__in=ids).delete()
-            request.user.message_set.create(
-                message=_("Successfully deleted the requested avatars."))
-            if request.is_ajax():
-                return HttpResponse(avatar_url(target, AVATAR_DEFAULT_SIZE))
-            return HttpResponseRedirect(next_override or _get_next(request))
-    return render_to_response(
-        handler.delete_template(request.is_ajax()),
-        extra_context,
-        context_instance=RequestContext(
-            request,
-            { 'avatar': avatar,
-              'avatars': avatars,
-              'delete_avatar_form': delete_avatar_form,
-              'next': next_override or _get_next(request), }
-        )
-    )
+    def render_to_response(self, context):
+        if self.request.is_ajax() or self.request.REQUEST.get('async', None) == 'true':
+            return self.render_ajax_response(context)
+        else:
+            return TemplateResponseMixin.render_to_response(self, context)
 
-def render_primary(request, extra_context={}, target_type=None, target_id=None,
-                   size=AVATAR_DEFAULT_SIZE, *args, **kwargs):
-    size = int(size)
-    handler = get_target_handler()
-    target = handler.get_target_from_type(target_type, target_id)
-    avatar = get_primary_avatar(target, size=size)
-    if avatar:
-        # FIXME: later, add an option to render the resized avatar dynamically
-        # instead of redirecting to an already created static file. This could
-        # be useful in certain situations, particularly if there is a CDN and
-        # we want to minimize the storage usage on our static server, letting
-        # the CDN store those files instead
-        return HttpResponseRedirect(avatar.avatar_url(size))
-    else:
-        url = get_default_avatar_url(target, size)
-        return HttpResponseRedirect(url)
+    def render_ajax_response(self, context):
+        return TemplateResponseMixin.render_to_response(self, context)
+
+    def ajax_form_valid(self, new_avatar):
+        return HttpResponse(new_avatar.avatar_url(AVATAR_DEFAULT_SIZE))
+
+    def get_form_kwargs(self):
+        kwargs = FormMixin.get_form_kwargs(self)
+        kwargs['target'] = self.target
+        kwargs['size'] = self.request.REQUEST.get('size', AVATAR_DEFAULT_SIZE)
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
+        self.target = self.get_target()
+        self.avatar, self.avatars = self.get_avatars(self.target)
+        return super(AvatarMixin, self).post(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.target = self.get_target()
+        self.avatar, self.avatars = self.get_avatars(self.target)
+        return super(AvatarMixin, self).get(request, *args, **kwargs)
+
+class AddAvatarView(LoginRequiredMixin, AvatarMixin, TemplateResponseMixin, BaseFormView):
+    form_class = UploadAvatarForm
+    template_name = "avatar/add.html"
+
+    def form_valid(self, form):
+        new_avatar = self.create_avatar(self.target, self.request.FILES['avatar'])
+        if new_avatar:
+            self.request.user.message_set.create(
+                message=_("Successfully uploaded a new avatar."))
+            avatar_updated.send(sender=Avatar, target=self.target,
+                                avatar=new_avatar)
+        if self.request.is_ajax() or self.request.REQUEST.get('async', None) == 'true':
+            return self.ajax_form_valid(new_avatar)
+        else:
+            return FormMixin.form_valid(self, form)
+
+    def get_context_data(self, **kwargs):
+        kwargs['avatar'] = self.avatar
+        kwargs['avatars'] = self.avatars
+        kwargs['upload_avatar_form'] = kwargs['form']
+        kwargs['next'] = self.get_success_url()
+        return kwargs
+
+class ChangeAvatarView(LoginRequiredMixin, AvatarMixin, TemplateResponseMixin, BaseFormView):
+    form_class = PrimaryAvatarForm
+    upload_form_class = UploadAvatarForm
+    template_name = "avatar/change.html"
+
+    def form_valid(self, form):
+        new_avatar = Avatar.objects.get(id=form.cleaned_data['choice'])
+        new_avatar.primary = True
+        new_avatar.save()
+        self.request.user.message_set.create(
+            message=_("Avatar successfully updated."))
+        avatar_updated.send(sender=Avatar, target=self.target, avatar=new_avatar)
+
+        if self.request.is_ajax() or self.request.REQUEST.get('async', None) == 'true':
+            return self.ajax_form_valid(new_avatar)
+        else:
+            return FormMixin.form_valid(self, form)
+
+    def get_context_data(self, **kwargs):
+        upload_form = self.upload_form_class(**self.get_form_kwargs())
+        kwargs['avatar'] = self.avatar
+        kwargs['avatars'] = self.avatars
+        kwargs['target'] = self.target
+        kwargs['primary_avatar_form'] = kwargs['form']
+        kwargs['upload_avatar_form'] = upload_form
+        kwargs['next'] = self.get_success_url()
+        return kwargs
+
+    def get_initial(self):
+        initial = {}
+        if self.avatar:
+            initial['choice'] = self.avatar.id
+            return initial
+        else:
+            return self.initial
+
+class DeleteAvatarView(LoginRequiredMixin, AvatarMixin, TemplateResponseMixin, BaseFormView):
+    form_class = DeleteAvatarForm
+    template_name = "avatar/confirm_delete.html"
+
+    def form_valid(self, form):
+        ids = form.cleaned_data['choices']
+        new_avatar = None
+        if unicode(self.avatar.id) in ids and self.avatars.count() > len(ids):
+            # Find the next best avatar, and set it as the new primary
+            for a in self.avatars:
+                if unicode(a.id) not in ids:
+                    a.primary = True
+                    a.save()
+                    new_avatar = a
+                    avatar_updated.send(sender=Avatar, target=self.target,
+                                        avatar=a)
+                    break
+        Avatar.objects.filter(id__in=ids).delete()
+        self.request.user.message_set.create(
+            message=_("Successfully deleted the requested avatars."))
+        if self.request.is_ajax() or self.request.REQUEST.get('async', None) == 'true':
+            return self.ajax_form_valid(new_avatar)
+        else:
+            return FormMixin.form_valid(self, form)
+
+    def get_context_data(self, **kwargs):
+        kwargs['avatar'] = self.avatar
+        kwargs['avatars'] = self.avatars
+        kwargs['delete_avatar_form'] = kwargs['form']
+        kwargs['next'] = self.get_success_url()
+        return kwargs
+
+class PrimaryAvatarView(AvatarMixin, View):
+    def render_primary(self):
+        size = self.kwargs.get('size', AVATAR_DEFAULT_SIZE)
+        if self.avatar:
+            # FIXME: later, add an option to render the resized avatar dynamically
+            # instead of redirecting to an already created static file. This could
+            # be useful in certain situations, particularly if there is a CDN and
+            # we want to minimize the storage usage on our static server, letting
+            # the CDN store those files instead
+            return HttpResponseRedirect(self.avatar.avatar_url(size))
+        else:
+            url = get_default_avatar_url(self.target, size)
+            return HttpResponseRedirect(url)
+
+    def post(self, request, *args, **kwargs):
+        super(self.__class__, self).post(request, *args, **kwargs)
+        return self.render_primary()
+
+    def get(self, request, *args, **kwargs):
+        super(self.__class__, self).get(request, *args, **kwargs)
+        return self.render_primary()

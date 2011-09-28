@@ -1,13 +1,11 @@
 from django.conf.urls.defaults import patterns, url
+from avatar.views import (AddAvatarView, ChangeAvatarView, DeleteAvatarView,
+                          PrimaryAvatarView)
 
-urlpatterns = patterns('avatar.views',
-    url('^add/$', 'add', name='avatar_add'),
-    url('^change/$', 'change', name='avatar_change'),
-    url('^delete/$', 'delete', name='avatar_delete'),
-
-    url('^(?P<target_type>\w+)/(?P<target_id>\d+)/add/$', 'add', name='avatar_add_generic'),
-    url('^(?P<target_type>\w+)/(?P<target_id>\d+)/change/$', 'change', name='avatar_change_generic'),
-    url('^(?P<target_type>\w+)/(?P<target_id>\d+)/delete/$', 'delete', name='avatar_delete_generic'),
-
-    url('^(?P<target_type>\w+)/(?P<target_id>\d+)/render_primary/(?P<size>[\d]+)/$', 'render_primary', name='avatar_render_primary'),
+urlpatterns = patterns('',
+    url('^add/$', AddAvatarView.as_view(), name='avatar_add'),
+    url('^change/$', ChangeAvatarView.as_view(), name='avatar_change'),
+    url('^delete/$', DeleteAvatarView.as_view(), name='avatar_delete'),
+    url('^render_primary/(?P<user>[\+\w]+)/(?P<size>[\d]+)/$',
+        PrimaryAvatarView.as_view(), name='avatar_render_primary'),
 )
