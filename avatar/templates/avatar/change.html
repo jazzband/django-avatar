@@ -3,7 +3,7 @@
 
 {% block content %}
     <p>{% trans "Your current avatar: " %}</p>
-    {% avatar user %}
+    {% avatar target %}
     {% if not avatars %}
         <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
     {% else %}
