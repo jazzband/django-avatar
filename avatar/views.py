@@ -14,7 +14,7 @@ from avatar.util import get_default_avatar_url
 
 def _get_next(request):
     """
-    The part that's the least straightforward about views in this module is how 
+    The part that's the least straightforward about views in this module is how
     they determine their redirects after they have finished computation.
 
     In short, they will try and determine the next place to go in the following
@@ -86,6 +86,8 @@ class AvatarMixin(object):
         return TemplateResponseMixin.render_to_response(self, context)
 
     def ajax_form_valid(self, new_avatar):
+        if not new_avatar:
+            return HttpResponse()
         return HttpResponse(new_avatar.avatar_url(AVATAR_DEFAULT_SIZE))
 
     def get_form_kwargs(self):
