@@ -22,6 +22,11 @@ try:
 except ImportError:
     import Image
 
+try:
+    from django.utils.timezone import now
+except ImportError:
+    now = datetime.datetime.now
+
 from avatar.util import invalidate_cache
 from avatar.settings import (AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD,
                              AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT,
@@ -69,7 +74,7 @@ class Avatar(models.Model):
     user = models.ForeignKey(User)
     primary = models.BooleanField(default=False)
     avatar = models.ImageField(max_length=1024, upload_to=avatar_file_path, blank=True)
-    date_uploaded = models.DateTimeField(default=datetime.datetime.now)
+    date_uploaded = models.DateTimeField(default=now)
     
     def __unicode__(self):
         return _(u'Avatar for %s') % self.user
