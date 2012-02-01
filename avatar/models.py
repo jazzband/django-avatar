@@ -29,7 +29,7 @@ from avatar.settings import (AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD,
                              AVATAR_THUMB_QUALITY, AUTO_GENERATE_AVATAR_SIZES)
 
 
-def avatar_file_path(instance=None, filename=None, size=None, ext=None):
+def avatar_file_path(instance=None, filename=None, width=None, height=None, ext=None):
     tmppath = [AVATAR_STORAGE_DIR]
     if AVATAR_HASH_USERDIRNAMES:
         tmp = md5_constructor(instance.user.username).hexdigest()
@@ -45,15 +45,16 @@ def avatar_file_path(instance=None, filename=None, size=None, ext=None):
             # only enabled if AVATAR_HASH_FILENAMES is true, we can trust
             # it won't conflict with another filename
             (root, oldext) = os.path.splitext(filename)
-            filename = root + "." + ext
+            filename = root + "." + ext.lower()
     else:
         # File doesn't exist yet
         if AVATAR_HASH_FILENAMES:
             (root, ext) = os.path.splitext(filename)
             filename = md5_constructor(smart_str(filename)).hexdigest()
-            filename = filename + ext
-    if size:
-        tmppath.extend(['resized', str(size)])
+            filename = filename + ext.lower()
+    if width or height: # if they are both False (i.e. 0), we return the original picture!
+        assert width and height
+        tmppath.extend(['resized', str(width), str(height)])
     tmppath.append(os.path.basename(filename))
     return os.path.join(*tmppath)
 
@@ -91,12 +92,13 @@ class Avatar(models.Model):
         invalidate_cache(self.user)
         super(Avatar, self).delete(*args, **kwargs)
     
-    def thumbnail_exists(self, size):
-        return self.avatar.storage.exists(self.avatar_name(size))
+    def thumbnail_exists(self, width, height):
+        return self.avatar.storage.exists(self.avatar_name(width, height))
     
-    def create_thumbnail(self, size, quality=None):
+    def create_thumbnail(self, width, height, quality=None):
+        
         # invalidate the cache of the thumbnail with the given size first
-        invalidate_cache(self.user, size)
+        invalidate_cache(self.user, width, height)
         try:
             orig = self.avatar.storage.open(self.avatar.name, 'rb').read()
             image = Image.open(StringIO(orig))
@@ -104,38 +106,42 @@ class Avatar(models.Model):
             return # What should we do here?  Render a "sorry, didn't work" img?
         quality = quality or AVATAR_THUMB_QUALITY
         (w, h) = image.size
-        if w != size or h != size:
-            if w > h:
-                diff = (w - h) / 2
+        
+        if w != width or h != width:
+            ratioReal = 1.0 * w / h
+            ratioWant = 1.0 * width / height
+            if ratioReal > ratioWant:
+                diff = int((w - ( h * ratioWant) ) / 2)
                 image = image.crop((diff, 0, w - diff, h))
             else:
-                diff = (h - w) / 2
-                image = image.crop((0, diff, w, h - diff))
+                diff = int((h - ( w / ratioWant ) ) / 2)
+                image = image.crop((0, diff, w, h - diff))                
             if image.mode != "RGB":
                 image = image.convert("RGB")
-            image = image.resize((size, size), AVATAR_RESIZE_METHOD)
+            image = image.resize((width, height), AVATAR_RESIZE_METHOD)
             thumb = StringIO()
             image.save(thumb, AVATAR_THUMB_FORMAT, quality=quality)
             thumb_file = ContentFile(thumb.getvalue())
         else:
             thumb_file = ContentFile(orig)
-        thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
+        thumb = self.avatar.storage.save(self.avatar_name(width, height), thumb_file)
 
-    def avatar_url(self, size):
-        return self.avatar.storage.url(self.avatar_name(size))
+    def avatar_url(self, width, height):
+        return self.avatar.storage.url(self.avatar_name(width, height))
     
-    def avatar_name(self, size):
+    def avatar_name(self, width, height):
         ext = find_extension(AVATAR_THUMB_FORMAT)
         return avatar_file_path(
             instance=self,
-            size=size,
+            width=width,
+            height=height,
             ext=ext
         )
 
 
 def create_default_thumbnails(instance=None, created=False, **kwargs):
     if created:
-        for size in AUTO_GENERATE_AVATAR_SIZES:
-            instance.create_thumbnail(size)
+        for (width, height) in AUTO_GENERATE_AVATAR_SIZES:
+            instance.create_thumbnail(width, height)
 
 signals.post_save.connect(create_default_thumbnails, sender=Avatar)
