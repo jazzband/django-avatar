@@ -142,7 +142,7 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
                         avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
                         break
             Avatar.objects.filter(id__in=ids).delete()
-            messages.add_message(request, messages.INFO, _("Successfully the requested avatars"))
+            messages.add_message(request, messages.INFO, _("Successfully deleted the requested avatars"))
             return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
         'avatar/confirm_delete.html',
