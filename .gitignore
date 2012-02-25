@@ -6,3 +6,4 @@ pip-log.txt
 *~
 dist/
 *.egg-info/
+*.swp
