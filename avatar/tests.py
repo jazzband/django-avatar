@@ -50,7 +50,6 @@ class AvatarUploadTests(TestCase):
     def testImageWithoutExtension(self):
         # use with AVATAR_ALLOWED_FILE_EXTS = ('.jpg', '.png')
         response = upload_helper(self, "imagefilewithoutext")
-        print len(response.redirect_chain)
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(len(response.redirect_chain), 0) # Redirect only if it worked        
         self.failIfEqual(response.context['upload_avatar_form'].errors, {})
