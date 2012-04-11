@@ -19,7 +19,7 @@ def avatar_img(avatar, size):
 
 class UploadAvatarForm(forms.Form):
 
-    avatar = forms.ImageField()
+    avatar = forms.ImageField(label=_(u"avatar"))
     
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
