@@ -3,6 +3,7 @@ import os
 
 from django.db import models
 from django.core.files.base import ContentFile
+from django.core.files.storage import get_storage_class
 from django.utils.translation import ugettext as _
 from django.utils.hashcompat import md5_constructor
 from django.utils.encoding import smart_str
@@ -31,7 +32,10 @@ from avatar.util import invalidate_cache
 from avatar.settings import (AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD,
                              AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT,
                              AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES,
-                             AVATAR_THUMB_QUALITY, AUTO_GENERATE_AVATAR_SIZES)
+                             AVATAR_THUMB_QUALITY, AUTO_GENERATE_AVATAR_SIZES,
+                             AVATAR_STORAGE)
+
+avatar_storage = get_storage_class(AVATAR_STORAGE)()
 
 
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
@@ -73,7 +77,8 @@ def find_extension(format):
 class Avatar(models.Model):
     user = models.ForeignKey(User)
     primary = models.BooleanField(default=False)
-    avatar = models.ImageField(max_length=1024, upload_to=avatar_file_path, blank=True)
+    avatar = models.ImageField(max_length=1024,
+        upload_to=avatar_file_path, storage=avatar_storage, blank=True)
     date_uploaded = models.DateTimeField(default=now)
     
     def __unicode__(self):
