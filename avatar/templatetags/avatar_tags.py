@@ -32,6 +32,7 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
         else:
             return get_default_avatar_url()
 
+
 @cache_result
 @register.simple_tag
 def avatar(user, size=AVATAR_DEFAULT_SIZE):
@@ -48,18 +49,13 @@ def avatar(user, size=AVATAR_DEFAULT_SIZE):
         url = avatar_url(user, size)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (url, alt,
         size, size)
-    
-    
+
+
 @register.filter
 def has_avatar(user):
     if not isinstance(user, User):
         return False
-    else:
-        avatar = Avatar.objects.filter(user=user, primary=True)
-        if avatar:
-          return True
-        else:
-          return False
+    return Avatar.objects.filter(user=user, primary=True).exists()
 
 
 @cache_result
@@ -67,14 +63,15 @@ def has_avatar(user):
 def primary_avatar(user, size=AVATAR_DEFAULT_SIZE):
     """
     This tag tries to get the default avatar for a user without doing any db
-    requests. It achieve this by linking to a special view that will do all the 
+    requests. It achieve this by linking to a special view that will do all the
     work for us. If that special view is then cached by a CDN for instance,
     we will avoid many db calls.
     """
     alt = unicode(user)
-    url = reverse('avatar_render_primary', kwargs={'user' : user, 'size' : size})
+    url = reverse('avatar_render_primary', kwargs={'user': user, 'size': size})
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (url, alt,
         size, size)
+
 
 @cache_result
 @register.simple_tag
@@ -92,11 +89,12 @@ def primary_avatar_object(parser, token):
     else:
         raise template.TemplateSyntaxError('%r tag takes three arguments.' % split[0])
 
+
 class UsersAvatarObjectNode(template.Node):
     def __init__(self, user, key):
         self.user = template.Variable(user)
-        self.key  = key
-    
+        self.key = key
+
     def render(self, context):
         user = self.user.resolve(context)
         key = self.key
