@@ -48,6 +48,7 @@ def avatar(user, size=AVATAR_DEFAULT_SIZE):
         alt = unicode(user)
         url = avatar_url(user, size)
     return {
+        'user': user,
         'url': url,
         'alt': alt,
         'size': size,
