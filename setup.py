@@ -162,7 +162,7 @@ setup(
     packages=find_packages(),
     package_data = {
         'avatar': [
-            'templates/avatar/*.html',
+            'templates/*/*',
             'locale/*/LC_MESSAGES/*',
             'media/avatar/img/default.jpg'
         ],
