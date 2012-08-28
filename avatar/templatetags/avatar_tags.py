@@ -1,6 +1,7 @@
 import urllib
 
 from django import template
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.utils.hashcompat import md5_constructor
 from django.core.urlresolvers import reverse
@@ -34,8 +35,8 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
 
 
 @cache_result
-@register.inclusion_tag('avatar/avatar_tag.html')
-def avatar(user, size=AVATAR_DEFAULT_SIZE):
+@register.simple_tag
+def avatar(user, size=AVATAR_DEFAULT_SIZE, **kwargs):
     if not isinstance(user, User):
         try:
             user = User.objects.get(username=user)
@@ -47,12 +48,13 @@ def avatar(user, size=AVATAR_DEFAULT_SIZE):
     else:
         alt = unicode(user)
         url = avatar_url(user, size)
-    return {
+    context = dict(kwargs, **{
         'user': user,
         'url': url,
         'alt': alt,
         'size': size,
-    }
+    })
+    return render_to_string('avatar/avatar_tag.html', context)
 
 
 @register.filter
