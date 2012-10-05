@@ -110,26 +110,26 @@ class Avatar(models.Model):
         try:
             orig = self.avatar.storage.open(self.avatar.name, 'rb').read()
             image = Image.open(StringIO(orig))
+            quality = quality or AVATAR_THUMB_QUALITY
+            (w, h) = image.size
+            if w != size or h != size:
+                if w > h:
+                    diff = (w - h) / 2
+                    image = image.crop((diff, 0, w - diff, h))
+                else:
+                    diff = (h - w) / 2
+                    image = image.crop((0, diff, w, h - diff))
+                if image.mode != "RGB":
+                    image = image.convert("RGB")
+                image = image.resize((size, size), AVATAR_RESIZE_METHOD)
+                thumb = StringIO()
+                image.save(thumb, AVATAR_THUMB_FORMAT, quality=quality)
+                thumb_file = ContentFile(thumb.getvalue())
+            else:
+                thumb_file = ContentFile(orig)
+            thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
         except IOError:
             return # What should we do here?  Render a "sorry, didn't work" img?
-        quality = quality or AVATAR_THUMB_QUALITY
-        (w, h) = image.size
-        if w != size or h != size:
-            if w > h:
-                diff = (w - h) / 2
-                image = image.crop((diff, 0, w - diff, h))
-            else:
-                diff = (h - w) / 2
-                image = image.crop((0, diff, w, h - diff))
-            if image.mode != "RGB":
-                image = image.convert("RGB")
-            image = image.resize((size, size), AVATAR_RESIZE_METHOD)
-            thumb = StringIO()
-            image.save(thumb, AVATAR_THUMB_FORMAT, quality=quality)
-            thumb_file = ContentFile(thumb.getvalue())
-        else:
-            thumb_file = ContentFile(orig)
-        thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
 
     def avatar_url(self, size):
         return self.avatar.storage.url(self.avatar_name(size))
