@@ -92,12 +92,7 @@ class Avatar(models.Model):
                 avatars.update(primary=False)
         else:
             avatars.delete()
-        invalidate_cache(self.user)
         super(Avatar, self).save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        invalidate_cache(self.user)
-        super(Avatar, self).delete(*args, **kwargs)
 
     def thumbnail_exists(self, size):
         return self.avatar.storage.exists(self.avatar_name(size))
@@ -141,9 +136,16 @@ class Avatar(models.Model):
         )
 
 
-def create_default_thumbnails(instance=None, created=False, **kwargs):
+def invalidate_avatar_cache(sender, instance, **kwargs):
+    invalidate_cache(instance.user)
+
+
+def create_default_thumbnails(sender, instance, created=False, **kwargs):
+    invalidate_avatar_cache(sender, instance)
     if created:
         for size in AUTO_GENERATE_AVATAR_SIZES:
             instance.create_thumbnail(size)
 
+
 signals.post_save.connect(create_default_thumbnails, sender=Avatar)
+signals.post_delete.connect(invalidate_avatar_cache, sender=Avatar)
