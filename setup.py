@@ -164,7 +164,8 @@ setup(
         'avatar': [
             'templates/avatar/*.html',
             'locale/*/LC_MESSAGES/*',
-            'media/avatar/img/default.jpg'
+            'media/avatar/img/default.jpg',
+            'testdata/*',
         ],
     },
     include_package_data=True,
