@@ -37,7 +37,7 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
 
 @cache_result
 @register.simple_tag
-def avatar(user, size=AVATAR_DEFAULT_SIZE):
+def avatar(user, size=AVATAR_DEFAULT_SIZE, css_class=""):
     if not isinstance(user, User):
         try:
             user = User.objects.get(username=user)
@@ -49,8 +49,8 @@ def avatar(user, size=AVATAR_DEFAULT_SIZE):
     else:
         alt = unicode(user)
         url = avatar_url(user, size)
-    return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (url, alt,
-        size, size)
+    return """<img src="%s" alt="%s" class="%s" width="%s" height="%s" />""" % (url, alt, 
+        css_class, size, size)
 
 @cache_result
 @register.simple_tag
