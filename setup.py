@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '2.0a1'
+version = '2.0a2-eldarion'
 
 LONG_DESCRIPTION = """
 Using django-avatar
@@ -164,7 +164,8 @@ setup(
         'avatar': [
             'templates/avatar/*.html',
             'locale/*/LC_MESSAGES/*',
-            'media/avatar/img/default.jpg'
+            'media/avatar/img/default.jpg',
+            'testdata/*',
         ],
     },
     include_package_data=True,

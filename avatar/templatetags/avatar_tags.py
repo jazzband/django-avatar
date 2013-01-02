@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
-                             AVATAR_DEFAULT_SIZE)
+                             AVATAR_DEFAULT_SIZE, AVATAR_GRAVATAR_SSL)
 from avatar.util import get_primary_avatar, get_default_avatar_url, cache_result
 
 register = template.Library()
@@ -25,7 +25,11 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
             params = {'s': str(size)}
             if AVATAR_GRAVATAR_DEFAULT:
                 params['d'] = AVATAR_GRAVATAR_DEFAULT
-            return "http://www.gravatar.com/avatar/%s/?%s" % (
+            proto = "http"
+            if AVATAR_GRAVATAR_SSL:
+                proto = "https"
+            return "%s://www.gravatar.com/avatar/%s/?%s" % (
+                proto,
                 md5_constructor(user.email).hexdigest(),
                 urllib.urlencode(params))
         else:
@@ -33,7 +37,7 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
 
 @cache_result
 @register.simple_tag
-def avatar(user, size=AVATAR_DEFAULT_SIZE):
+def avatar(user, size=AVATAR_DEFAULT_SIZE, css_class=""):
     if not isinstance(user, User):
         try:
             user = User.objects.get(username=user)
@@ -45,8 +49,8 @@ def avatar(user, size=AVATAR_DEFAULT_SIZE):
     else:
         alt = unicode(user)
         url = avatar_url(user, size)
-    return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (url, alt,
-        size, size)
+    return """<img src="%s" alt="%s" class="%s" width="%s" height="%s" />""" % (url, alt, 
+        css_class, size, size)
 
 @cache_result
 @register.simple_tag
