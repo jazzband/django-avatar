@@ -26,7 +26,8 @@ from avatar.util import invalidate_cache
 from avatar.settings import (AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD,
                              AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT,
                              AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES,
-                             AVATAR_THUMB_QUALITY, AUTO_GENERATE_AVATAR_SIZES)
+                             AVATAR_THUMB_QUALITY, AUTO_GENERATE_AVATAR_SIZES,
+                             AVATAR_CLEAN_REMOVED)
 
 
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
@@ -138,4 +139,15 @@ def create_default_thumbnails(instance=None, created=False, **kwargs):
         for size in AUTO_GENERATE_AVATAR_SIZES:
             instance.create_thumbnail(size)
 
+
+def remove_avatar_images(instance=None, **kwargs):
+    for size in AUTO_GENERATE_AVATAR_SIZES:
+        if instance.thumbnail_exists(size):
+            instance.avatar.storage.delete(instance.avatar_name(size))
+    instance.avatar.storage.delete(instance.avatar.name)
+
+
 signals.post_save.connect(create_default_thumbnails, sender=Avatar)
+
+if AVATAR_CLEAN_REMOVED:
+    signals.post_delete.connect(remove_avatar_images, sender=Avatar)
