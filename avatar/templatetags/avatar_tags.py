@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
-                             AVATAR_DEFAULT_SIZE)
+                             AVATAR_DEFAULT_SIZE, AVATAR_BASE_URL)
 from avatar.util import get_primary_avatar, get_default_avatar_url, cache_result
 from avatar.models import Avatar
 
@@ -27,7 +27,8 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
             params = {'s': str(size)}
             if AVATAR_GRAVATAR_DEFAULT:
                 params['d'] = AVATAR_GRAVATAR_DEFAULT
-            return "http://www.gravatar.com/avatar/%s/?%s" % (
+            return "%s/avatar/%s/?%s" % (
+                AVATAR_BASE_URL,
                 md5_constructor(user.email).hexdigest(),
                 urllib.urlencode(params))
         else:

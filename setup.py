@@ -110,6 +110,9 @@ Global Settings
 There are a number of settings available to easily customize the avatars that
 appear on the site.  Listed below are those settings:
 
+AVATAR_BASE_URL
+    The base URL where to get avatars at gravatar.com. Defaults to ``http://www.gravatar.com``.
+
 AUTO_GENERATE_AVATAR_SIZES
     An iterable of integers representing the sizes of avatars to generate on
     upload.  This can save rendering time later on if you pre-generate the
@@ -160,7 +163,7 @@ setup(
     url='http://github.com/ericflo/django-avatar/',
     license='BSD',
     packages=find_packages(),
-    package_data = {
+    package_data={
         'avatar': [
             'templates/notification/*/*.*',
             'templates/avatar/*.html',
