@@ -31,7 +31,7 @@ from avatar.settings import (AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD,
                              AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT,
                              AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES,
                              AVATAR_THUMB_QUALITY, AUTO_GENERATE_AVATAR_SIZES,
-                             AVATAR_STORAGE)
+                             AVATAR_STORAGE, AVATAR_CLEANUP_DELETED)
 
 avatar_storage = get_storage_class(AVATAR_STORAGE)()
 
@@ -64,6 +64,7 @@ def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath.append(os.path.basename(filename))
     return os.path.join(*tmppath)
 
+
 def find_extension(format):
     format = format.lower()
 
@@ -72,11 +73,14 @@ def find_extension(format):
 
     return format
 
+
 class Avatar(models.Model):
     user = models.ForeignKey(User)
     primary = models.BooleanField(default=False)
     avatar = models.ImageField(max_length=1024,
-        upload_to=avatar_file_path, storage=avatar_storage, blank=True)
+                               upload_to=avatar_file_path,
+                               storage=avatar_storage,
+                               blank=True)
     date_uploaded = models.DateTimeField(default=now)
 
     def __unicode__(self):
@@ -147,5 +151,15 @@ def create_default_thumbnails(sender, instance, created=False, **kwargs):
             instance.create_thumbnail(size)
 
 
+def remove_avatar_images(instance=None, **kwargs):
+    for size in AUTO_GENERATE_AVATAR_SIZES:
+        if instance.thumbnail_exists(size):
+            instance.avatar.storage.delete(instance.avatar_name(size))
+    instance.avatar.storage.delete(instance.avatar.name)
+
+
 signals.post_save.connect(create_default_thumbnails, sender=Avatar)
 signals.post_delete.connect(invalidate_avatar_cache, sender=Avatar)
+
+if AVATAR_CLEANUP_DELETED:
+    signals.post_delete.connect(remove_avatar_images, sender=Avatar)
