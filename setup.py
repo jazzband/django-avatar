@@ -160,7 +160,9 @@ setup(
     keywords='avatar,django',
     author='Eric Florenzano',
     author_email='floguy@gmail.com',
-    url='http://github.com/ericflo/django-avatar/',
+    maintainer='Jannis Leidel',
+    maintainer_email='jannis@leidel.info',
+    url='http://github.com/jezdez/django-avatar/',
     license='BSD',
     packages=find_packages(),
     package_data={
