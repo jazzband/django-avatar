@@ -1,4 +1,5 @@
 import urllib
+import urlparse
 
 from django import template
 from django.template.loader import render_to_string
@@ -9,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
-                             AVATAR_DEFAULT_SIZE, AVATAR_BASE_URL)
+                             AVATAR_DEFAULT_SIZE, AVATAR_GRAVATAR_BASE_URL)
 from avatar.util import get_primary_avatar, get_default_avatar_url, cache_result
 from avatar.models import Avatar
 
@@ -22,17 +23,16 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
     avatar = get_primary_avatar(user, size=size)
     if avatar:
         return avatar.avatar_url(size)
-    else:
-        if AVATAR_GRAVATAR_BACKUP:
-            params = {'s': str(size)}
-            if AVATAR_GRAVATAR_DEFAULT:
-                params['d'] = AVATAR_GRAVATAR_DEFAULT
-            return "%s/avatar/%s/?%s" % (
-                AVATAR_BASE_URL,
-                md5_constructor(user.email).hexdigest(),
-                urllib.urlencode(params))
-        else:
-            return get_default_avatar_url()
+
+    if AVATAR_GRAVATAR_BACKUP:
+        params = {'s': str(size)}
+        if AVATAR_GRAVATAR_DEFAULT:
+            params['d'] = AVATAR_GRAVATAR_DEFAULT
+        path = "%s/?%s" % (md5_constructor(user.email).hexdigest(),
+                           urllib.urlencode(params))
+        return urlparse.urljoin(AVATAR_GRAVATAR_BASE_URL, path)
+
+    return get_default_avatar_url()
 
 
 @cache_result
