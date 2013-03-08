@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.core.cache import cache
+from django.utils.hashcompat import md5_constructor
+from django.templates.defaultfilters import slugify
 
 from django.contrib.auth.models import User
 
@@ -14,7 +16,9 @@ def get_cache_key(user_or_username, size, prefix):
     """
     if isinstance(user_or_username, User):
         user_or_username = user_or_username.username
-    return '%s_%s_%s' % (prefix, user_or_username, size)
+    key = '%s_%s_%s' % (prefix, user_or_username, size)
+    return '%s_%s' % (slugify(key)[:100], md5_constructor(key).hexdigest())
+
 
 def cache_result(func):
     """
