@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.hashcompat import md5_constructor
-from django.templates.defaultfilters import slugify
+from django.template.defaultfilters import slugify
 
 from django.contrib.auth.models import User
 
