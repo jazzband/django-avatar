@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.hashcompat import md5_constructor
+from django.utils.encoding import smart_str
 from django.template.defaultfilters import slugify
 
 from django.contrib.auth.models import User
@@ -10,14 +11,16 @@ from avatar.settings import (AVATAR_DEFAULT_URL, AVATAR_CACHE_TIMEOUT,
 
 cached_funcs = set()
 
+
 def get_cache_key(user_or_username, size, prefix):
     """
     Returns a cache key consisten of a username and image size.
     """
     if isinstance(user_or_username, User):
         user_or_username = user_or_username.username
-    key = '%s_%s_%s' % (prefix, user_or_username, size)
-    return '%s_%s' % (slugify(key)[:100], md5_constructor(key).hexdigest())
+    key = u'%s_%s_%s' % (prefix, user_or_username, size)
+    return u'%s_%s' % (slugify(key)[:100],
+                       md5_constructor(smart_str(key)).hexdigest())
 
 
 def cache_result(func):
