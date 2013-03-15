@@ -9,7 +9,12 @@ from django.utils.hashcompat import md5_constructor
 from django.utils.encoding import smart_str
 from django.db.models import signals
 
-from django.contrib.auth.models import User
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    from django.contrib.auth.models import User
+else:
+    User = get_user_model()
 
 try:
     from cStringIO import StringIO

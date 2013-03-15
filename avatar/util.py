@@ -4,7 +4,12 @@ from django.utils.hashcompat import md5_constructor
 from django.utils.encoding import smart_str
 from django.template.defaultfilters import slugify
 
-from django.contrib.auth.models import User
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    from django.contrib.auth.models import User
+else:
+    User = get_user_model()
 
 from avatar.settings import (AVATAR_DEFAULT_URL, AVATAR_CACHE_TIMEOUT,
                              AUTO_GENERATE_AVATAR_SIZES, AVATAR_DEFAULT_SIZE)

@@ -7,7 +7,12 @@ from django.utils.translation import ugettext as _
 from django.utils.hashcompat import md5_constructor
 from django.core.urlresolvers import reverse
 
-from django.contrib.auth.models import User
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    from django.contrib.auth.models import User
+else:
+    User = get_user_model()
 
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
                              AVATAR_DEFAULT_SIZE, AVATAR_GRAVATAR_BASE_URL)
