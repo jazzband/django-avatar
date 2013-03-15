@@ -33,7 +33,7 @@ that are required.  A minimal integration can work like this:
 3.  Somewhere in your template navigation scheme, link to the change avatar
     page::
     
-        <a href="{% url avatar_change %}">Change your avatar</a>
+        <a href="{% url 'avatar_change' %}">Change your avatar</a>
 
 4.  Wherever you want to display an avatar for a user, first load the avatar
     template tags::
