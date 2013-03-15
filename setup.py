@@ -33,7 +33,7 @@ that are required.  A minimal integration can work like this:
 3.  Somewhere in your template navigation scheme, link to the change avatar
     page::
     
-        <a href="{% url avatar_change %}">Change your avatar</a>
+        <a href="{% url 'avatar_change' %}">Change your avatar</a>
 
 4.  Wherever you want to display an avatar for a user, first load the avatar
     template tags::
@@ -92,12 +92,12 @@ template rendering system:
 
 ``{% avatar_url user [size in pixels] %}``
     Renders the URL of the avatar for the given user.  User can be either a
-    ``django.contrib.auth.models.User`` object instance or a username.
+    ``django.contrib.auth.get_user_model()`` object instance or a username.
 
 ``{% avatar user [size in pixels] %}``
-    Renders an HTML ``img`` tag for the given user for the specified size.  User
-    can be either a ``django.contrib.auth.models.User`` object instance or a
-    username.
+    Renders an HTML ``img`` tag for the given user for the specified size. User
+    can be either a ``django.contrib.auth.get_user_model()`` object instance
+    or a username.
 
 ``{% render_avatar avatar [size in pixels] %}``
     Given an actual ``avatar.models.Avatar`` object instance, renders an HTML

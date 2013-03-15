@@ -4,12 +4,33 @@ from django.utils.hashcompat import md5_constructor
 from django.utils.encoding import smart_str
 from django.template.defaultfilters import slugify
 
-from django.contrib.auth.models import User
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    from django.contrib.auth.models import User
+    custom_user_model = False
+else:
+    User = get_user_model()
+    custom_user_model = True
 
 from avatar.settings import (AVATAR_DEFAULT_URL, AVATAR_CACHE_TIMEOUT,
                              AUTO_GENERATE_AVATAR_SIZES, AVATAR_DEFAULT_SIZE)
 
 cached_funcs = set()
+
+def get_username(user):
+    """ Return username of a User instance """
+    if hasattr(user, 'get_username'):
+        return user.get_username()
+    else:
+        return user.username
+
+def get_user(username):
+    """ Return user from a username/ish identifier """
+    if custom_user_model:
+        return User.objects.get_by_natural_key(username)
+    else:
+        return User.objects.get(username=username)
 
 
 def get_cache_key(user_or_username, size, prefix):
@@ -17,7 +38,7 @@ def get_cache_key(user_or_username, size, prefix):
     Returns a cache key consisten of a username and image size.
     """
     if isinstance(user_or_username, User):
-        user_or_username = user_or_username.username
+        user_or_username = get_username(user_or_username)
     key = u'%s_%s_%s' % (prefix, user_or_username, size)
     return u'%s_%s' % (slugify(key)[:100],
                        md5_constructor(smart_str(key)).hexdigest())
@@ -69,7 +90,7 @@ def get_default_avatar_url():
 def get_primary_avatar(user, size=AVATAR_DEFAULT_SIZE):
     if not isinstance(user, User):
         try:
-            user = User.objects.get(username=user)
+            user = get_user(user)
         except User.DoesNotExist:
             return None
     try:

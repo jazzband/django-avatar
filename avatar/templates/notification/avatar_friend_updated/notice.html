@@ -1,2 +1,2 @@
-{% load i18n %}{% url profile_detail username=user.username as user_url %}
+{% load i18n %}{% url 'profile_detail' username=user.username as user_url %}{# TODO: support custom user models via get_username; actually, is this template even used anymore? #}
 {% blocktrans with user as avatar_creator and avatar.get_absolute_url as avatar_url %}<a href="{{ user_url }}">{{ avatar_creator }}</a> has updated their avatar <a href="{{ avatar_url }}">{{ avatar }}</a>.{% endblocktrans %}
