@@ -7,16 +7,10 @@ from django.utils.translation import ugettext as _
 from django.utils.hashcompat import md5_constructor
 from django.core.urlresolvers import reverse
 
-try:
-    from django.contrib.auth import get_user_model
-except ImportError:
-    from django.contrib.auth.models import User
-else:
-    User = get_user_model()
-
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
                              AVATAR_DEFAULT_SIZE, AVATAR_GRAVATAR_BASE_URL)
-from avatar.util import get_primary_avatar, get_default_avatar_url, cache_result
+from avatar.util import (
+    get_primary_avatar, get_default_avatar_url, cache_result, User, get_user)
 from avatar.models import Avatar
 
 register = template.Library()
@@ -45,7 +39,7 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
 def avatar(user, size=AVATAR_DEFAULT_SIZE, **kwargs):
     if not isinstance(user, User):
         try:
-            user = User.objects.get(username=user)
+            user = get_user(user)
             alt = unicode(user)
             url = avatar_url(user, size)
         except User.DoesNotExist:

@@ -9,12 +9,7 @@ from django.utils.hashcompat import md5_constructor
 from django.utils.encoding import smart_str
 from django.db.models import signals
 
-try:
-    from django.contrib.auth import get_user_model
-except ImportError:
-    from django.contrib.auth.models import User
-else:
-    User = get_user_model()
+from avatar.util import User, get_username
 
 try:
     from cStringIO import StringIO
@@ -45,10 +40,10 @@ avatar_storage = get_storage_class(AVATAR_STORAGE)()
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath = [AVATAR_STORAGE_DIR]
     if AVATAR_HASH_USERDIRNAMES:
-        tmp = md5_constructor(instance.user.username).hexdigest()
-        tmppath.extend([tmp[0], tmp[1], instance.user.username])
+        tmp = md5_constructor(get_username(instance.user)).hexdigest()
+        tmppath.extend([tmp[0], tmp[1], get_username(instance.user)])
     else:
-        tmppath.append(instance.user.username)
+        tmppath.append(get_username(instance.user))
     if not filename:
         # Filename already stored in database
         filename = instance.avatar.name
