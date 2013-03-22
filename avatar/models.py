@@ -1,11 +1,11 @@
 import datetime
 import os
+import hashlib
 
 from django.db import models
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 from django.utils.translation import ugettext as _
-from django.utils.hashcompat import md5_constructor
 from django.utils.encoding import smart_str
 from django.db.models import signals
 
@@ -40,7 +40,7 @@ avatar_storage = get_storage_class(AVATAR_STORAGE)()
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath = [AVATAR_STORAGE_DIR]
     if AVATAR_HASH_USERDIRNAMES:
-        tmp = md5_constructor(instance.user.username).hexdigest()
+        tmp = hashlib.md5(instance.user.username).hexdigest()
         tmppath.extend([tmp[0], tmp[1], instance.user.username])
     else:
         tmppath.append(instance.user.username)
@@ -58,7 +58,7 @@ def avatar_file_path(instance=None, filename=None, size=None, ext=None):
         # File doesn't exist yet
         if AVATAR_HASH_FILENAMES:
             (root, ext) = os.path.splitext(filename)
-            filename = md5_constructor(smart_str(filename)).hexdigest()
+            filename = hashlib.md5(smart_str(filename)).hexdigest()
             filename = filename + ext
     if size:
         tmppath.extend(['resized', str(size)])
