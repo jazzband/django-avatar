@@ -7,6 +7,7 @@ from avatar.settings import (AVATAR_DEFAULT_URL, AVATAR_CACHE_TIMEOUT,
                              AUTO_GENERATE_AVATAR_SIZES, AVATAR_DEFAULT_SIZE)
 
 cached_funcs = set()
+cached_sizes = set()
 
 def get_cache_key(user_or_username, size, prefix):
     """
@@ -28,6 +29,7 @@ def cache_result(func):
     def cached_func(user, size):
         prefix = func.__name__
         cached_funcs.add(prefix)
+        cached_sizes.add(size)
         key = get_cache_key(user, size, prefix=prefix)
         return cache.get(key) or cache_set(key, func(user, size))
     return cached_func
@@ -36,9 +38,11 @@ def invalidate_cache(user, size=None):
     """
     Function to be called when saving or changing an user's avatars.
     """
-    sizes = set(AUTO_GENERATE_AVATAR_SIZES)
-    if size is not None:
-        sizes.add(size)
+    if size is None:
+        # Invalidate all sizes of this image
+        sizes = cached_sizes
+    else:    
+        sizes = set((size,))
     for prefix in cached_funcs:
         for size in sizes:
             cache.delete(get_cache_key(user, size, prefix))
