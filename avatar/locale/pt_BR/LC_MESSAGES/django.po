@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-09 04:13-0300\n"
+"POT-Creation-Date: 2011-03-28 10:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,53 +16,131 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: models.py:32
+#: forms.py:34
+#, python-format
+msgid ""
+"%(ext)s is an invalid file extension. Authorized extensions are : %"
+"(valid_exts_list)s"
+msgstr ""
+
+#: forms.py:38
+#, python-format
+msgid ""
+"Your file is too big (%(size)s), the maximum allowed size is %"
+"(max_valid_size)s"
+msgstr ""
+
+#: forms.py:44
+#, python-format
+msgid ""
+"You already have %(nb_avatars)d avatars, and the maximum allowed is %"
+"(nb_max_avatars)d."
+msgstr ""
+
+#: forms.py:56 forms.py:67
+msgid "Choices"
+msgstr ""
+
+#: models.py:75
 #, python-format
 msgid "Avatar for %s"
 msgstr "Avatar para %s"
 
-#: views.py:68
+#: views.py:73 views.py:95
 msgid "Successfully uploaded a new avatar."
 msgstr "Nova foto de perfil enviada com sucesso."
 
-#: views.py:76
+#: views.py:132
 msgid "Successfully updated your avatar."
 msgstr "Sua foto de perfil foi atualizada com sucesso."
 
-#: views.py:114
+#: views.py:166
 msgid "Successfully deleted the requested avatars."
 msgstr "As fotos de perfil selecionadas foram excluídas com sucesso."
 
-#: management/__init__.py:9
-msgid "Avatar Updated"
-msgstr "Foto de Perfil Atualizada"
+#: templates/avatar/add.html:5 templates/avatar/change.html:5
+msgid "Your current avatar: "
+msgstr ""
 
-#: management/__init__.py:9
-msgid "avatar have been updated"
-msgstr "foto de perfil foi atualizada"
+#: templates/avatar/add.html:8 templates/avatar/change.html:8
+msgid "You haven't uploaded an avatar yet. Please upload one now."
+msgstr ""
 
-#: management/__init__.py:10
-msgid "Friend Updated Avatar"
-msgstr "Amigo Atualizou Foto de Perfil"
+#: templates/avatar/add.html:12 templates/avatar/change.html:19
+msgid "Upload New Image"
+msgstr ""
 
-#: management/__init__.py:10
-msgid "a friend has updated his avatar"
-msgstr "um amigo atualizou a foto de perfil"
+#: templates/avatar/change.html:14
+msgid "Choose new Default"
+msgstr ""
 
-#: templates/notifications/avatar_friend_updated/notice.html:2
+#: templates/avatar/confirm_delete.html:5
+msgid "Please select the avatars that you would like to delete."
+msgstr ""
+
+#: templates/avatar/confirm_delete.html:8
 #, python-format
 msgid ""
-"<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated his avatar <a "
+"You have no avatars to delete. Please <a href=\"%(avatar_change_url)s"
+"\">upload one</a> now."
+msgstr ""
+
+#: templates/avatar/confirm_delete.html:14
+msgid "Delete These"
+msgstr ""
+
+#: templates/notification/avatar_friend_updated/full.txt:1
+#, fuzzy, python-format
+msgid ""
+"%(avatar_creator)s has updated their avatar %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> atualizou a foto de perfil "
+"<a href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templates/notification/avatar_friend_updated/notice.html:2
+#, fuzzy, python-format
+msgid ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated their avatar <a "
 "href=\"%(avatar_url)s\">%(avatar)s</a>."
 msgstr ""
-"<a href=\"%(user_url)s\">%(avatar_creator)s</a> atualizou a foto de perfil <a "
-"href=\"%(avatar_url)s\">%(avatar)s</a>."
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> atualizou a foto de perfil "
+"<a href=\"%(avatar_url)s\">%(avatar)s</a>."
 
-#: templates/notifications/avatar_updated/notice.html:2
+#: templates/notification/avatar_updated/full.txt:1
 #, python-format
-msgid "A new tribe <a href=\"%(avatar_url)s\">%(avatar)s</a> has been created."
-msgstr "Uma nova foto de perfil <a href=\"%(avatar_url)s\">%(avatar)s</a> foi criada."
+msgid ""
+"Your avatar has been updated.  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
 
-#: templatetags/avatar_tags.py:47
+#: templates/notification/avatar_updated/notice.html:2
+#, fuzzy, python-format
+msgid "You have updated your avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> atualizou a foto de perfil "
+"<a href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templatetags/avatar_tags.py:45
 msgid "Default Avatar"
 msgstr "Foto de Perfil Padrão"
+
+#~ msgid "Avatar Updated"
+#~ msgstr "Foto de Perfil Atualizada"
+
+#~ msgid "avatar have been updated"
+#~ msgstr "foto de perfil foi atualizada"
+
+#~ msgid "Friend Updated Avatar"
+#~ msgstr "Amigo Atualizou Foto de Perfil"
+
+#~ msgid "a friend has updated his avatar"
+#~ msgstr "um amigo atualizou a foto de perfil"
+
+#~ msgid ""
+#~ "A new tribe <a href=\"%(avatar_url)s\">%(avatar)s</a> has been created."
+#~ msgstr ""
+#~ "Uma nova foto de perfil <a href=\"%(avatar_url)s\">%(avatar)s</a> foi "
+#~ "criada."

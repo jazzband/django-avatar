@@ -1,11 +1,13 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.core.files.base import ContentFile
+from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
-from django.conf import settings
-from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
@@ -16,7 +18,7 @@ from avatar.util import get_primary_avatar, get_default_avatar_url
 
 def _get_next(request):
     """
-    The part that's the least straightforward about views in this module is how they 
+    The part that's the least straightforward about views in this module is how they
     determine their redirects after they have finished computation.
 
     In short, they will try and determine the next place to go in the following order:
@@ -34,23 +36,39 @@ def _get_next(request):
         next = request.path
     return next
 
+
 def _get_avatars(user):
     # Default set. Needs to be sliced, but that's it. Keep the natural order.
     avatars = user.avatar_set.all()
-    
+
     # Current avatar
     primary_avatar = avatars.order_by('-primary')[:1]
     if primary_avatar:
         avatar = primary_avatar[0]
     else:
         avatar = None
-    
+
     if AVATAR_MAX_AVATARS_PER_USER == 1:
         avatars = primary_avatar
     else:
         # Slice the default set now that we used the queryset for the primary avatar
         avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
     return (avatar, avatars)
+
+
+@csrf_exempt
+def webcam_upload(request, id):
+    # TODO: add proper security by attaching session to flash request
+    user = get_object_or_404(User, pk=id)
+    if request.method == "POST":
+        avatar = Avatar(user=user, primary=True)
+        avatar.avatar.save("%s_webcam_%s.jpg" %
+                          (user.pk, Avatar.objects.filter(user=user).count()),
+                           ContentFile(request.raw_post_data))
+        avatar.save()
+        messages.success(request, _("Successfully uploaded a new avatar."))
+        return HttpResponse(status=200, content="ok")
+
 
 @login_required
 def add(request, extra_context=None, next_override=None,
@@ -62,10 +80,7 @@ def add(request, extra_context=None, next_override=None,
         request.FILES or None, user=request.user)
     if request.method == "POST" and 'avatar' in request.FILES:
         if upload_avatar_form.is_valid():
-            avatar = Avatar(
-                user = request.user,
-                primary = True,
-            )
+            avatar = Avatar(user=request.user, primary=True)
             image_file = request.FILES['avatar']
             avatar.avatar.save(image_file.name, image_file)
             avatar.save()
@@ -77,8 +92,8 @@ def add(request, extra_context=None, next_override=None,
             extra_context,
             context_instance = RequestContext(
                 request,
-                { 'avatar': avatar, 
-                  'avatars': avatars, 
+                { 'avatar': avatar,
+                  'avatars': avatars,
                   'upload_avatar_form': upload_avatar_form,
                   'next': next_override or _get_next(request), }
             )
@@ -101,8 +116,8 @@ def change(request, extra_context=None, next_override=None,
     if request.method == "POST":
         updated = False
         if 'choice' in request.POST and primary_avatar_form.is_valid():
-            avatar = Avatar.objects.get(id=
-                primary_avatar_form.cleaned_data['choice'])
+            avatar = Avatar.objects.get(
+                id=primary_avatar_form.cleaned_data['choice'])
             avatar.primary = True
             avatar.save()
             updated = True
@@ -115,7 +130,7 @@ def change(request, extra_context=None, next_override=None,
         extra_context,
         context_instance = RequestContext(
             request,
-            { 'avatar': avatar, 
+            { 'avatar': avatar,
               'avatars': avatars,
               'upload_avatar_form': upload_avatar_form,
               'primary_avatar_form': primary_avatar_form,
@@ -149,13 +164,64 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
         extra_context,
         context_instance = RequestContext(
             request,
-            { 'avatar': avatar, 
+            { 'avatar': avatar,
               'avatars': avatars,
               'delete_avatar_form': delete_avatar_form,
               'next': next_override or _get_next(request), }
         )
     )
-    
+
+
+def avatar_gallery(request, username, template_name="avatar/gallery.html"):
+    user = get_object_or_404(User, username=username)
+    return render_to_response(template_name, {
+        "other_user": user,
+        "avatars": user.avatar_set.all(),
+    }, context_instance=RequestContext(request))
+
+
+def avatar(request, username, id, template_name="avatar/avatar.html"):
+    user = get_object_or_404(User, username=username)
+    avatars = user.avatar_set.order_by("-date_uploaded")
+    index = None
+    avatar = None
+    if avatars:
+        avatar = avatars.get(pk=id)
+        if not avatar:
+            return Http404
+
+        index = avatars.filter(date_uploaded__gt=avatar.date_uploaded).count()
+        count = avatars.count()
+
+        if index == 0:
+            prev = avatars.reverse()[0]
+            if count <= 1:
+                next = avatars[0]
+            else:
+                next = avatars[1]
+        else:
+            prev = avatars[index-1]
+
+        if (index+1)>=count:
+            next = avatars[0]
+            prev_index = index-1
+            if prev_index < 0:
+                prev_index = 0
+            prev = avatars[prev_index]
+        else:
+            next = avatars[index+1]
+
+    return render_to_response(template_name, {
+        "other_user": user,
+        "avatar": avatar,
+        "index": index+1,
+        "avatars": avatars,
+        "next": next,
+        "prev": prev,
+        "count": count,
+    }, context_instance=RequestContext(request))
+
+
 def render_primary(request, extra_context={}, user=None, size=AVATAR_DEFAULT_SIZE, *args, **kwargs):
     size = int(size)
     avatar = get_primary_avatar(user, size=size)
@@ -169,4 +235,3 @@ def render_primary(request, extra_context={}, user=None, size=AVATAR_DEFAULT_SIZ
     else:
         url = get_default_avatar_url()
         return HttpResponseRedirect(url)
-    

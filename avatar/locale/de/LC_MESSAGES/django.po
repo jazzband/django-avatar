@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-16 15:19+0100\n"
+"POT-Creation-Date: 2011-03-28 10:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: forms.py:33
+#: forms.py:34
 #, python-format
 msgid ""
 "%(ext)s is an invalid file extension. Authorized extensions are : %"
@@ -26,7 +26,7 @@ msgstr ""
 "%(ext)s ist ein ungültiges Dateiformat. Erlaubte Formate sind: %"
 "(valid_exts_list)s"
 
-#: forms.py:37
+#: forms.py:38
 #, python-format
 msgid ""
 "Your file is too big (%(size)s), the maximum allowed size is %"
@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 "Die Datei ist zu groß (%(size)s), die Maximalgröße ist %(max_valid_size)s"
 
-#: forms.py:43
+#: forms.py:44
 #, python-format
 msgid ""
 "You already have %(nb_avatars)d avatars, and the maximum allowed is %"
@@ -43,38 +43,26 @@ msgstr ""
 "Sie haben bereits %(nb_avatars)d Avatarbilder hochgeladen. Das maximale "
 "Anzahl ist %(nb_max_avatars)d."
 
-#: models.py:71
+#: forms.py:56 forms.py:67
+msgid "Choices"
+msgstr ""
+
+#: models.py:75
 #, python-format
 msgid "Avatar for %s"
 msgstr "Avatar für %s"
 
-#: views.py:90
+#: views.py:73 views.py:95
 msgid "Successfully uploaded a new avatar."
 msgstr "Erfolgreich einen neuen Avatar hochgeladen."
 
-#: views.py:128
+#: views.py:132
 msgid "Successfully updated your avatar."
 msgstr "Erfolgreich Ihren Avatar aktualisiert."
 
 #: views.py:166
 msgid "Successfully deleted the requested avatars."
 msgstr "Erfolgreich den Avatar gelöscht."
-
-#: management/__init__.py:9
-msgid "Avatar Updated"
-msgstr "Avatar aktualisiert"
-
-#: management/__init__.py:9
-msgid "your avatar has been updated"
-msgstr "Ihr Avatar wurde aktualisiert"
-
-#: management/__init__.py:10
-msgid "Friend Updated Avatar"
-msgstr "Freund aktualisierte Avatar"
-
-#: management/__init__.py:10
-msgid "a friend has updated their avatar"
-msgstr "Avatar eines Freundes wurde aktualisiert"
 
 #: templates/avatar/add.html:5 templates/avatar/change.html:5
 msgid "Your current avatar: "
@@ -110,6 +98,16 @@ msgstr ""
 msgid "Delete These"
 msgstr "Auswahl löschen"
 
+#: templates/notification/avatar_friend_updated/full.txt:1
+#, fuzzy, python-format
+msgid ""
+"%(avatar_creator)s has updated their avatar %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> hat den Avatar aktualisiert "
+"<a href=\"%(avatar_url)s\">%(avatar)s</a>."
+
 #: templates/notification/avatar_friend_updated/notice.html:2
 #, python-format
 msgid ""
@@ -119,6 +117,14 @@ msgstr ""
 "<a href=\"%(user_url)s\">%(avatar_creator)s</a> hat den Avatar aktualisiert "
 "<a href=\"%(avatar_url)s\">%(avatar)s</a>."
 
+#: templates/notification/avatar_updated/full.txt:1
+#, python-format
+msgid ""
+"Your avatar has been updated.  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+
 #: templates/notification/avatar_updated/notice.html:2
 #, python-format
 msgid "You have updated your avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
@@ -126,6 +132,18 @@ msgstr ""
 "Sie haben Ihren Avatar aktualisiert <a href=\"%(avatar_url)s\">%(avatar)s</"
 "a>."
 
-#: templatetags/avatar_tags.py:40
+#: templatetags/avatar_tags.py:45
 msgid "Default Avatar"
 msgstr "Standard-Avatar"
+
+#~ msgid "Avatar Updated"
+#~ msgstr "Avatar aktualisiert"
+
+#~ msgid "your avatar has been updated"
+#~ msgstr "Ihr Avatar wurde aktualisiert"
+
+#~ msgid "Friend Updated Avatar"
+#~ msgstr "Freund aktualisierte Avatar"
+
+#~ msgid "a friend has updated their avatar"
+#~ msgstr "Avatar eines Freundes wurde aktualisiert"

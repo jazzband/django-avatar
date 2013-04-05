@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '2.0a2'
+version = '2.0a9'
 
 LONG_DESCRIPTION = """
 Using django-avatar
@@ -110,6 +110,9 @@ Global Settings
 There are a number of settings available to easily customize the avatars that
 appear on the site.  Listed below are those settings:
 
+AVATAR_GRAVATAR_BASE_URL
+    The base URL where to get avatars at gravatar.com. Defaults to ``http://www.gravatar.com/avatar/``.
+
 AUTO_GENERATE_AVATAR_SIZES
     An iterable of integers representing the sizes of avatars to generate on
     upload.  This can save rendering time later on if you pre-generate the
@@ -157,14 +160,18 @@ setup(
     keywords='avatar,django',
     author='Eric Florenzano',
     author_email='floguy@gmail.com',
-    url='http://github.com/ericflo/django-avatar/',
+    maintainer='Jannis Leidel',
+    maintainer_email='jannis@leidel.info',
+    url='http://github.com/jezdez/django-avatar/',
     license='BSD',
     packages=find_packages(),
-    package_data = {
+    package_data={
         'avatar': [
+            'templates/notification/*/*.*',
             'templates/avatar/*.html',
             'locale/*/LC_MESSAGES/*',
-            'media/avatar/img/default.jpg'
+            'media/avatar/img/default.jpg',
+            'testdata/*',
         ],
     },
     include_package_data=True,
