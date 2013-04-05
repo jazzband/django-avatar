@@ -12,7 +12,6 @@ from avatar.settings import (AVATAR_DEFAULT_URL, AVATAR_CACHE_TIMEOUT,
 cached_funcs = set()
 cached_sizes = set()
 
-
 def get_cache_key(user_or_username, size, prefix):
     """
     Returns a cache key consisten of a username and image size.
