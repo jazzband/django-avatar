@@ -1,10 +1,10 @@
 import urllib
 import urlparse
+import hashlib
 
 from django import template
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
-from django.utils.hashcompat import md5_constructor
 from django.core.urlresolvers import reverse
 
 from django.contrib.auth.models import User
@@ -28,7 +28,7 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
         params = {'s': str(size)}
         if AVATAR_GRAVATAR_DEFAULT:
             params['d'] = AVATAR_GRAVATAR_DEFAULT
-        path = "%s/?%s" % (md5_constructor(user.email).hexdigest(),
+        path = "%s/?%s" % (hashlib.md5(user.email).hexdigest(),
                            urllib.urlencode(params))
         return urlparse.urljoin(AVATAR_GRAVATAR_BASE_URL, path)
 
