@@ -251,3 +251,22 @@ def render_primary(request, extra_context={}, user=None, size=AVATAR_DEFAULT_SIZ
     else:
         url = get_default_avatar_url()
         return HttpResponseRedirect(url)
+try:
+    from allauth.socialaccount.helpers import _copy_avatar
+    from allauth.socialaccount.models import SocialAccount
+    allauth = True
+except ImportError:
+    allauth = False
+    
+@login_required
+def get_social_avatars(request, next_override=None):
+    if allauth:
+        user = request.user
+        accounts = SocialAccount.objects.filter(user=user)
+        for account in accounts:
+            _copy_avatar(request, user, account)
+            avatar_url = account.get_avatar_url()
+    else:
+        print 'This feature requires django-allauth'
+    return HttpResponseRedirect(next_override or _get_next(request))
+    
