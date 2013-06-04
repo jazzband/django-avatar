@@ -110,11 +110,21 @@ def change(request, extra_context=None, next_override=None,
         kwargs = {'initial': {'choice': avatar.id}}
     else:
         kwargs = {}
-    upload_avatar_form = upload_form(user=request.user, **kwargs)
+    upload_avatar_form = upload_form(request.POST or None,
+        request.FILES or None, user=request.user)
     primary_avatar_form = primary_form(request.POST or None,
         user=request.user, avatars=avatars, **kwargs)
     if request.method == "POST":
         updated = False
+        if 'avatar' in request.FILES:
+            if upload_avatar_form.is_valid():
+                print '-avatar valid'
+                avatar = Avatar(user=request.user, primary=True)
+                image_file = request.FILES['avatar']
+                avatar.avatar.save(image_file.name, image_file)
+                avatar.save()
+                messages.success(request, _(AVATAR_UPLOADED_MSG))
+                updated = True
         if 'choice' in request.POST and primary_avatar_form.is_valid():
             avatar = Avatar.objects.get(
                 id=primary_avatar_form.cleaned_data['choice'])
@@ -124,7 +134,7 @@ def change(request, extra_context=None, next_override=None,
             messages.success(request, _(AVATAR_UPDATED_MSG))
         if updated:
             avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
-        return HttpResponseRedirect(next_override or _get_next(request))
+            return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
         'avatar/change.html',
         extra_context,
