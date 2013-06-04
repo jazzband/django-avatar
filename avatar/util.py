@@ -106,3 +106,14 @@ def get_primary_avatar(user, size=AVATAR_DEFAULT_SIZE):
         if not avatar.thumbnail_exists(size):
             avatar.create_thumbnail(size)
     return avatar
+
+import httplib
+import urlparse
+def url_exists(url):
+    url_s = urlparse.urlsplit(url)
+    httplib.HTTPConnection.debuglevel = 1
+    conn = httplib.HTTPConnection(url_s.netloc)
+    conn.request('HEAD', url_s.path)
+    response = conn.getresponse()
+    conn.close()
+    return response.status in (200, 301, 302)

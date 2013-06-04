@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
                              AVATAR_DEFAULT_SIZE, AVATAR_GRAVATAR_BASE_URL)
 from avatar.util import (
-    get_primary_avatar, get_default_avatar_url, cache_result, User, get_user)
+    get_primary_avatar, get_default_avatar_url, cache_result, User, get_user, url_exists)
 from avatar.models import Avatar
 
 register = template.Library()
@@ -21,13 +21,17 @@ register = template.Library()
 def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
     avatar = get_primary_avatar(user, size=size)
     if avatar:
-        return avatar.avatar_url(size)
+        url = avatar.avatar_url(size)
+        exists = url_exists(url)
+        if not exists:  
+            avatar.create_thumbnail(size)
+        return url
 
     if AVATAR_GRAVATAR_BACKUP:
         params = {'s': str(size)}
         if AVATAR_GRAVATAR_DEFAULT:
             params['d'] = AVATAR_GRAVATAR_DEFAULT
-        path = "%s/?%s" % (hashlib.md5(user.email).hexdigest(),
+        path = "%s?%s" % (hashlib.md5(user.email).hexdigest(),
                            urllib.urlencode(params))
         return urlparse.urljoin(AVATAR_GRAVATAR_BASE_URL, path)
 
@@ -112,3 +116,9 @@ class UsersAvatarObjectNode(template.Node):
         return u""
 
 register.tag('primary_avatar_object', primary_avatar_object)
+
+def avatar_choice_url(avatar, size=AVATAR_DEFAULT_SIZE):
+    if not avatar.thumbnail_exists(size):
+        avatar.create_thumbnail(size)
+    return avatar.avatar_url(size)
+register.simple_tag(avatar_choice_url)

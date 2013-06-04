@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
-from avatar.settings import AVATAR_MAX_AVATARS_PER_USER, AVATAR_DEFAULT_SIZE
+from avatar.settings import AVATAR_MAX_AVATARS_PER_USER, AVATAR_DEFAULT_SIZE, AVATAR_UPDATED_MSG, AVATAR_DELETED_MSG, AVATAR_UPLOADED_MSG
 from avatar.signals import avatar_updated
 from avatar.util import (
     get_primary_avatar, get_default_avatar_url, User, get_user)
@@ -66,7 +66,7 @@ def webcam_upload(request, id):
                           (user.pk, Avatar.objects.filter(user=user).count()),
                            ContentFile(request.raw_post_data))
         avatar.save()
-        messages.success(request, _("Successfully uploaded a new avatar."))
+        messages.success(request, _(AVATAR_UPLOADED_MSG))
         return HttpResponse(status=200, content="ok")
 
 
@@ -84,7 +84,7 @@ def add(request, extra_context=None, next_override=None,
             image_file = request.FILES['avatar']
             avatar.avatar.save(image_file.name, image_file)
             avatar.save()
-            messages.success(request, _("Successfully uploaded a new avatar."))
+            messages.success(request, _(AVATAR_UPLOADED_MSG))
             avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
             return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
@@ -121,7 +121,7 @@ def change(request, extra_context=None, next_override=None,
             avatar.primary = True
             avatar.save()
             updated = True
-            messages.success(request, _("Successfully updated your avatar."))
+            messages.success(request, _(AVATAR_UPDATED_MSG))
         if updated:
             avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
         return HttpResponseRedirect(next_override or _get_next(request))
@@ -157,7 +157,7 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
                         avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
                         break
             Avatar.objects.filter(id__in=ids).delete()
-            messages.success(request, _("Successfully deleted the requested avatars."))
+            messages.success(request, _(AVATAR_DELETED_MSG))
             return HttpResponseRedirect(next_override or _get_next(request))
     return render_to_response(
         'avatar/confirm_delete.html',
