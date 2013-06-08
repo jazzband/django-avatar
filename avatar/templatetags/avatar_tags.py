@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
                              AVATAR_DEFAULT_SIZE, AVATAR_GRAVATAR_BASE_URL)
 from avatar.util import (
-    get_primary_avatar, get_default_avatar_url, cache_result, User, get_user, url_exists)
+    get_primary_avatar, get_default_avatar_url, cache_result, User, get_user)
 from avatar.models import Avatar
 
 register = template.Library()
@@ -21,26 +21,17 @@ register = template.Library()
 def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
     avatar = get_primary_avatar(user, size=size)
     if avatar:
-        url = avatar.avatar_url(size)
-        exists = url_exists(url)
-        if not exists:  
+        if not avatar.thumbnail_exists(size):
             avatar.create_thumbnail(size)
+        url = avatar.avatar_url(size)
         return url
 
-    if AVATAR_GRAVATAR_BACKUP:
-        params = {'s': str(size)}
-        if AVATAR_GRAVATAR_DEFAULT:
-            params['d'] = AVATAR_GRAVATAR_DEFAULT
-        path = "%s?%s" % (hashlib.md5(user.email).hexdigest(),
-                           urllib.urlencode(params))
-        return urlparse.urljoin(AVATAR_GRAVATAR_BASE_URL, path)
-
-    return get_default_avatar_url()
+    return get_default_avatar_url(user, size)
 
 
 @cache_result
 @register.simple_tag
-def avatar(user, size=AVATAR_DEFAULT_SIZE, **kwargs):
+def avatar(user, size=AVATAR_DEFAULT_SIZE, template=None, **kwargs):
     if not isinstance(user, User):
         try:
             user = get_user(user)
@@ -58,7 +49,12 @@ def avatar(user, size=AVATAR_DEFAULT_SIZE, **kwargs):
         'alt': alt,
         'size': size,
     })
-    return render_to_string('avatar/avatar_tag.html', context)
+    if template == 'img':
+        return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (url, alt,
+        size, size)
+    if not template:
+        template = 'avatar/avatar_tag.html'
+    return render_to_string(template, context)
 
 
 @register.filter
@@ -86,8 +82,6 @@ def primary_avatar(user, size=AVATAR_DEFAULT_SIZE):
 @cache_result
 @register.simple_tag
 def render_avatar(avatar, size=AVATAR_DEFAULT_SIZE):
-    if not avatar.thumbnail_exists(size):
-        avatar.create_thumbnail(size)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
         avatar.avatar_url(size), str(avatar), size, size)
 
@@ -114,11 +108,9 @@ class UsersAvatarObjectNode(template.Node):
         else:
             context[key] = None
         return u""
-
 register.tag('primary_avatar_object', primary_avatar_object)
 
+@cache_result
+@register.simple_tag
 def avatar_choice_url(avatar, size=AVATAR_DEFAULT_SIZE):
-    if not avatar.thumbnail_exists(size):
-        avatar.create_thumbnail(size)
     return avatar.avatar_url(size)
-register.simple_tag(avatar_choice_url)

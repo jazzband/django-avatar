@@ -1,4 +1,6 @@
 import hashlib
+import urllib
+import urlparse
 
 from django.conf import settings
 from django.core.cache import cache
@@ -15,7 +17,8 @@ else:
     custom_user_model = True
 
 from avatar.settings import (AVATAR_DEFAULT_URL, AVATAR_CACHE_TIMEOUT,
-                             AUTO_GENERATE_AVATAR_SIZES, AVATAR_DEFAULT_SIZE)
+                             AUTO_GENERATE_AVATAR_SIZES, AVATAR_DEFAULT_SIZE,
+                             AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT, AVATAR_GRAVATAR_BASE_URL)
 
 cached_funcs = set()
 
@@ -72,7 +75,14 @@ def invalidate_cache(user, size=None):
         for size in sizes:
             cache.delete(get_cache_key(user, size, prefix))
 
-def get_default_avatar_url():
+def get_default_avatar_url(user, size):
+    if AVATAR_GRAVATAR_BACKUP:
+        params = {'s': str(size)}
+        if AVATAR_GRAVATAR_DEFAULT:
+            params['d'] = AVATAR_GRAVATAR_DEFAULT
+        path = "%s?%s" % (hashlib.md5(user.email).hexdigest(),
+                           urllib.urlencode(params))
+        return urlparse.urljoin(AVATAR_GRAVATAR_BASE_URL, path)
     base_url = getattr(settings, 'STATIC_URL', None)
     if not base_url:
         base_url = getattr(settings, 'MEDIA_URL', '')
@@ -106,14 +116,3 @@ def get_primary_avatar(user, size=AVATAR_DEFAULT_SIZE):
         if not avatar.thumbnail_exists(size):
             avatar.create_thumbnail(size)
     return avatar
-
-import httplib
-import urlparse
-def url_exists(url):
-    url_s = urlparse.urlsplit(url)
-    httplib.HTTPConnection.debuglevel = 1
-    conn = httplib.HTTPConnection(url_s.netloc)
-    conn.request('HEAD', url_s.path)
-    response = conn.getresponse()
-    conn.close()
-    return response.status in (200, 301, 302)

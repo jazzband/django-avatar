@@ -130,6 +130,10 @@ class Avatar(models.Model):
             return  # What should we do here?  Render a "sorry, didn't work" img?
 
     def avatar_url(self, size):
+        int(size)
+        #gaurentee an image exists for size to avoid displaying the worng avatar
+        if not self.thumbnail_exists(size):
+            self.create_thumbnail(size)
         return self.avatar.storage.url(self.avatar_name(size))
 
     def get_absolute_url(self):
