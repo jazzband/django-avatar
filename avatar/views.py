@@ -1,5 +1,5 @@
 from django.core.files.base import ContentFile
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
@@ -269,4 +269,32 @@ def get_social_avatars(request, next_override=None):
     else:
         print 'This feature requires django-allauth'
     return HttpResponseRedirect(next_override or _get_next(request))
+
+from urllib2 import urlopen, unquote
+from PIL import Image
+from django.core.files.temp import NamedTemporaryFile
+from django.core.files import File
+@login_required
+def make_avatar(request, img_url=None, next_override=None):
+    if img_url:  
+        img = urlopen(img_url)
+        img_name = img_url.split('/')[-1]
+        temp_img = NamedTemporaryFile()
+        temp_img.write(img.read())
+        temp_img.flush()
+        image = Image.open(temp_img.name)
+        if image.mode != "RGB":
+            image = image.convert("RGB")
+        size = image.size
+        prop = 200.0 / float(image.size[0])
+        size = (int(prop*float(image.size[0])), int(prop*float(image.size[1])))
+        image.thumbnail(size, Image.ANTIALIAS)
+        image.save(temp_img.name, 'JPEG')
+        avatar = Avatar(user=request.user, primary=True)
+        avatar.avatar.save(''.join([img_name, '.jpg']), File(temp_img))
+        avatar.save()
+        if request.is_ajax():
+            return HttpResponse('ok')
+        return HttpResponseRedirect(next_override or _get_next(request))
+        
     

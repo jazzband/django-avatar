@@ -114,3 +114,4 @@ register.tag('primary_avatar_object', primary_avatar_object)
 @register.simple_tag
 def avatar_choice_url(avatar, size=AVATAR_DEFAULT_SIZE):
     return avatar.avatar_url(size)
+    

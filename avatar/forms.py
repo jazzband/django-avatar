@@ -67,3 +67,4 @@ class DeleteAvatarForm(forms.Form):
         self.fields['choices'] = forms.MultipleChoiceField(label=_("Choices"),
             choices=[(c.id, avatar_img(c, size)) for c in avatars],
             widget=widgets.CheckboxSelectMultiple)
+

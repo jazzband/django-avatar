@@ -10,4 +10,5 @@ urlpatterns = patterns(
     url(r'^list/(?P<username>[\+\w\@\.]+)/$', 'avatar_gallery', name='avatar_gallery'),
     url(r'^list/(?P<username>[\+\w\@\.]+)/(?P<id>[\d]+)/$', 'avatar', name='avatar'),
     url(r'^get-social-avatars/$', 'get_social_avatars', name='get_social_avatars'),
+    url(r'^make/(?P<img_url>.+)/$', 'make_avatar', name='make_avatar'),
 )
