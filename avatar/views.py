@@ -4,11 +4,12 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
+from django.core.urlresolvers import reverse
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
+from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm, MakeAvatarForm
 from avatar.models import Avatar
 from avatar.settings import AVATAR_MAX_AVATARS_PER_USER, AVATAR_DEFAULT_SIZE, AVATAR_UPDATED_MSG, AVATAR_DELETED_MSG, AVATAR_UPLOADED_MSG
 from avatar.signals import avatar_updated
@@ -71,7 +72,7 @@ def webcam_upload(request, id):
 
 
 @login_required
-def add(request, extra_context=None, next_override=None,
+def add(request, extra_context=None, next_override=None, make_primary=True,
         upload_form=UploadAvatarForm, *args, **kwargs):
     if extra_context is None:
         extra_context = {}
@@ -80,7 +81,7 @@ def add(request, extra_context=None, next_override=None,
         request.FILES or None, user=request.user)
     if request.method == "POST" and 'avatar' in request.FILES:
         if upload_avatar_form.is_valid():
-            avatar = Avatar(user=request.user, primary=True)
+            avatar = Avatar(user=request.user, primary=make_primary)
             image_file = request.FILES['avatar']
             avatar.avatar.save(image_file.name, image_file)
             avatar.save()
@@ -100,8 +101,8 @@ def add(request, extra_context=None, next_override=None,
         )
 
 @login_required
-def change(request, extra_context=None, next_override=None,
-        upload_form=UploadAvatarForm, primary_form=PrimaryAvatarForm,
+def change(request, img_url=None, extra_context=None, next_override=None,
+        upload_form=UploadAvatarForm, primary_form=PrimaryAvatarForm, make_primary=False,
         *args, **kwargs):
     if extra_context is None:
         extra_context = {}
@@ -111,30 +112,41 @@ def change(request, extra_context=None, next_override=None,
     else:
         kwargs = {}
     upload_avatar_form = upload_form(request.POST or None,
-        request.FILES or None, user=request.user)
+            request.FILES or None, user=request.user)
     primary_avatar_form = primary_form(request.POST or None,
         user=request.user, avatars=avatars, **kwargs)
+    
+    if 'url' in request.REQUEST:
+        img_url = request.REQUEST['url']
+
+    if request.method == "GET" and img_url:
+        upload_avatar_form = upload_form({'url':img_url}, request.FILES or None, user=request.user)
+        if  upload_avatar_form.is_valid():
+            return make(request, img_url, next_override='%s?next=%s' % (reverse('avatar_change'), _get_next(request)))
+
     if request.method == "POST":
         updated = False
         if 'avatar' in request.FILES:
             if upload_avatar_form.is_valid():
-                print '-avatar valid'
-                avatar = Avatar(user=request.user, primary=True)
+                avatar = Avatar(user=request.user, primary=make_primary)
                 image_file = request.FILES['avatar']
                 avatar.avatar.save(image_file.name, image_file)
                 avatar.save()
                 messages.success(request, _(AVATAR_UPLOADED_MSG))
-                updated = True
+                if make_primary: updated = True
+        if 'url' in request.POST and upload_avatar_form.is_valid():
+            return make(request, img_url, make_primary=make_primary, next_override=_get_next(request))
         if 'choice' in request.POST and primary_avatar_form.is_valid():
             avatar = Avatar.objects.get(
                 id=primary_avatar_form.cleaned_data['choice'])
             avatar.primary = True
             avatar.save()
             updated = True
-            messages.success(request, _(AVATAR_UPDATED_MSG))
         if updated:
+            messages.success(request, _(AVATAR_UPDATED_MSG))
             avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
             return HttpResponseRedirect(next_override or _get_next(request))
+
     return render_to_response(
         'avatar/change.html',
         extra_context,
@@ -275,10 +287,15 @@ from PIL import Image
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files import File
 @login_required
-def make_avatar(request, img_url=None, next_override=None):
-    if img_url:  
+def make(request, img_url=None, extra_context={}, next_override=None, upload_form=UploadAvatarForm, make_primary=True):
+    upload_avatar_form = upload_form({'url':img_url},
+            request.FILES or None, user=request.user)
+    if img_url and upload_avatar_form.is_valid():    
         img = urlopen(img_url)
         img_name = img_url.split('/')[-1]
+        img_name = img_name.split('?')[0]
+        keepcharacters = ('.','_')
+        file_name = "".join(c for c in img_name if c.isalnum() or c in keepcharacters).rstrip()
         temp_img = NamedTemporaryFile()
         temp_img.write(img.read())
         temp_img.flush()
@@ -290,11 +307,26 @@ def make_avatar(request, img_url=None, next_override=None):
         size = (int(prop*float(image.size[0])), int(prop*float(image.size[1])))
         image.thumbnail(size, Image.ANTIALIAS)
         image.save(temp_img.name, 'JPEG')
-        avatar = Avatar(user=request.user, primary=True)
-        avatar.avatar.save(''.join([img_name, '.jpg']), File(temp_img))
+        avatar = Avatar(user=request.user, primary=make_primary)
+        avatar.avatar.save(''.join([file_name, '.jpg']), File(temp_img))
         avatar.save()
         if request.is_ajax():
             return HttpResponse('ok')
+        if make_primary:
+            messages.success(request, _(AVATAR_UPDATED_MSG))
+        else:
+            messages.success(request, _(AVATAR_UPLOADED_MSG))
         return HttpResponseRedirect(next_override or _get_next(request))
+    else:
+        if request.is_ajax():
+            return HttpResponse(upload_avatar_form.non_field_errors())
+        if request.method == "GET":
+            for error in upload_avatar_form.non_field_errors():
+                messages.error(request, _(error))
+    next = request.META.get('HTTP_REFERER', None)
+    #return change(request, img_url, next_override=next_override)
+    #if 'next' in request.REQUEST:
+    return HttpResponseRedirect(next_override or '%s?url=%s&next=%s' % (reverse('avatar_change'), img_url, next))
+
         
     
