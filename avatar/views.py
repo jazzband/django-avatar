@@ -230,6 +230,11 @@ def avatar(request, username, id, template_name="avatar/avatar.html"):
 
 def render_primary(request, extra_context={}, user=None, size=AVATAR_DEFAULT_SIZE, *args, **kwargs):
     size = int(size)
+    if not isinstance(user, User):
+        try:
+            user = get_user(user)
+        except User.DoesNotExist:
+            return None
     avatar = get_primary_avatar(user, size=size)
     if avatar:
         # FIXME: later, add an option to render the resized avatar dynamically
@@ -239,5 +244,13 @@ def render_primary(request, extra_context={}, user=None, size=AVATAR_DEFAULT_SIZ
         # the CDN store those files instead
         return HttpResponseRedirect(avatar.avatar_url(size))
     else:
-        url = get_default_avatar_url()
+        if AVATAR_GRAVATAR_BACKUP:
+            params = {'s': str(size)}
+            if AVATAR_GRAVATAR_DEFAULT:
+                params['d'] = AVATAR_GRAVATAR_DEFAULT
+            path = "%s/?%s" % (hashlib.md5(user.email).hexdigest(),
+                               urllib.urlencode(params))
+            url = urlparse.urljoin(AVATAR_GRAVATAR_BASE_URL, path)
+        else:
+            url = get_default_avatar_url()
         return HttpResponseRedirect(url)
