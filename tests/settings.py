@@ -1,4 +1,8 @@
-from django.conf.urls.defaults import patterns, include, handler500, handler404
+try:
+    from django.conf.urls import patterns, include, handler500, handler404
+except ImportError:
+    # Django < 1.4
+    from django.conf.urls.defaults import patterns, include, handler500, handler404
  
 DEFAULT_CHARSET = 'utf-8'
  
