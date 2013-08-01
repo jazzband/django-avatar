@@ -1,36 +1,36 @@
-from django.conf.urls.defaults import patterns, include, handler500, handler404
- 
-DEFAULT_CHARSET = 'utf-8'
- 
+import django
+
 DATABASE_ENGINE = 'sqlite3'
-DATABASE_NAME = ':memory:'
- 
-ROOT_URLCONF = 'settings'
 
-STATIC_URL = '/site_media/static/'
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
+}
 
-SITE_ID = 1
-
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sites',
     'django.contrib.comments',
     'avatar',
-)
- 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.app_directories.load_template_source',
-)
- 
+]
+
+ROOT_URLCONF = 'tests.urls'
+
+SITE_ID = 1
+
+SECRET_KEY = 'something-something'
+
+if django.VERSION[:2] < (1, 6):
+    TEST_RUNNER = 'discover_runner.DiscoverRunner'
+
+ROOT_URLCONF = 'tests.urls'
+
+STATIC_URL = '/site_media/static/'
+
 AVATAR_ALLOWED_FILE_EXTS = ('.jpg', '.png')
 AVATAR_MAX_SIZE = 1024 * 1024
 AVATAR_MAX_AVATARS_PER_USER = 20
- 
-urlpatterns = patterns('',
-    (r'^avatar/', include('avatar.urls')),
-)
-
-def __exported_functionality__():
-    return (handler500, handler404)

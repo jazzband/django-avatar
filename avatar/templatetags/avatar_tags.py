@@ -9,8 +9,8 @@ from django.core.urlresolvers import reverse
 
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
                              AVATAR_DEFAULT_SIZE, AVATAR_GRAVATAR_BASE_URL)
-from avatar.util import (
-    get_primary_avatar, get_default_avatar_url, cache_result, User, get_user)
+from avatar.util import (get_primary_avatar, get_default_avatar_url,
+                         cache_result, get_user_model, get_user)
 from avatar.models import Avatar
 
 register = template.Library()
@@ -37,12 +37,12 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
 @cache_result
 @register.simple_tag
 def avatar(user, size=AVATAR_DEFAULT_SIZE, **kwargs):
-    if not isinstance(user, User):
+    if not isinstance(user, get_user_model()):
         try:
             user = get_user(user)
             alt = unicode(user)
             url = avatar_url(user, size)
-        except User.DoesNotExist:
+        except get_user_model().DoesNotExist:
             url = get_default_avatar_url()
             alt = _("Default Avatar")
     else:
@@ -59,7 +59,7 @@ def avatar(user, size=AVATAR_DEFAULT_SIZE, **kwargs):
 
 @register.filter
 def has_avatar(user):
-    if not isinstance(user, User):
+    if not isinstance(user, get_user_model()):
         return False
     return Avatar.objects.filter(user=user, primary=True).exists()
 

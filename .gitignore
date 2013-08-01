@@ -6,3 +6,5 @@ pip-log.txt
 *~
 dist/
 *.egg-info/
+avatars
+.coverage

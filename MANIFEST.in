@@ -3,6 +3,6 @@ include LICENSE.txt
 include CONTRIBUTORS.txt
 include avatar/media/avatar/img/default.jpg
 recursive-include docs *
+recursive-include tests *
 recursive-include avatar/templates *.html *.txt
 recursive-include avatar/locale/*/LC_MESSAGES *.mo *.po
-recursive-include avatar/testdata *

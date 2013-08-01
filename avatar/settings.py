@@ -2,7 +2,7 @@ from django.conf import settings
 
 try:
     from PIL import Image
-    dir(Image) # Placate PyFlakes
+    dir(Image)  # Placate PyFlakes
 except ImportError:
     import Image
 
