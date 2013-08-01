@@ -7,7 +7,7 @@ from django.db import models
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 from django.utils.translation import ugettext as _
-from django.utils.encoding import smart_str
+from django.utils.encoding import force_bytes
 from django.utils import six
 from django.db.models import signals
 
@@ -55,7 +55,7 @@ def avatar_file_path(instance=None, filename=None, size=None, ext=None):
         # File doesn't exist yet
         if AVATAR_HASH_FILENAMES:
             (root, ext) = os.path.splitext(filename)
-            filename = hashlib.md5(smart_str(filename)).hexdigest()
+            filename = hashlib.md5(force_bytes(filename)).hexdigest()
             filename = filename + ext
     if size:
         tmppath.extend(['resized', str(size)])
@@ -106,18 +106,18 @@ class Avatar(models.Model):
             orig = self.avatar.storage.open(self.avatar.name, 'rb')
             image = Image.open(orig)
             quality = quality or AVATAR_THUMB_QUALITY
-            (w, h) = image.size
+            w, h = image.size
             if w != size or h != size:
                 if w > h:
-                    diff = (w - h) / 2
+                    diff = int((w - h) / 2)
                     image = image.crop((diff, 0, w - diff, h))
                 else:
-                    diff = (h - w) / 2
+                    diff = int((h - w) / 2)
                     image = image.crop((0, diff, w, h - diff))
                 if image.mode != "RGB":
                     image = image.convert("RGB")
-                image = image.resize((int(size), int(size)), AVATAR_RESIZE_METHOD)
-                thumb = six.StringIO()
+                image = image.resize((size, size), AVATAR_RESIZE_METHOD)
+                thumb = six.BytesIO()
                 image.save(thumb, AVATAR_THUMB_FORMAT, quality=quality)
                 thumb_file = ContentFile(thumb.getvalue())
             else:

@@ -1,15 +1,16 @@
-import urllib
 import hashlib
 
 try:
-    from urllib.parse import urljoin
+    from urllib.parse import urljoin, urlencode
 except ImportError:
     from urlparse import urljoin
+    from urllib import urlencode
 
 from django import template
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils import six
+from django.utils.encoding import force_bytes
 from django.utils.translation import ugettext as _
 
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
@@ -32,8 +33,8 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
         params = {'s': str(size)}
         if AVATAR_GRAVATAR_DEFAULT:
             params['d'] = AVATAR_GRAVATAR_DEFAULT
-        path = "%s/?%s" % (hashlib.md5(user.email).hexdigest(),
-                           urllib.urlencode(params))
+        path = "%s/?%s" % (hashlib.md5(force_bytes(user.email)).hexdigest(),
+                           urlencode(params))
         return urljoin(AVATAR_GRAVATAR_BASE_URL, path)
 
     return get_default_avatar_url()
