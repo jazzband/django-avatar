@@ -98,6 +98,7 @@ def render_avatar(avatar, size=AVATAR_DEFAULT_SIZE):
         avatar.avatar_url(size), str(avatar), size, size)
 
 
+@register.tag
 def primary_avatar_object(parser, token):
     split = token.split_contents()
     if len(split) == 4:
@@ -120,5 +121,3 @@ class UsersAvatarObjectNode(template.Node):
         else:
             context[key] = None
         return six.text_type()
-
-register.tag('primary_avatar_object', primary_avatar_object)
