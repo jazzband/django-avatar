@@ -116,7 +116,7 @@ class Avatar(models.Model):
                     image = image.crop((0, diff, w, h - diff))
                 if image.mode != "RGB":
                     image = image.convert("RGB")
-                image = image.resize((size, size), AVATAR_RESIZE_METHOD)
+                image = image.resize((int(size), int(size)), AVATAR_RESIZE_METHOD)
                 thumb = six.StringIO()
                 image.save(thumb, AVATAR_THUMB_FORMAT, quality=quality)
                 thumb_file = ContentFile(thumb.getvalue())
