@@ -41,13 +41,13 @@ def avatar(user, size=AVATAR_DEFAULT_SIZE, **kwargs):
     if not isinstance(user, get_user_model()):
         try:
             user = get_user(user)
-            alt = unicode(user)
+            alt = six.text_type(user)
             url = avatar_url(user, size)
         except get_user_model().DoesNotExist:
             url = get_default_avatar_url()
             alt = _("Default Avatar")
     else:
-        alt = unicode(user)
+        alt = six.text_type(user)
         url = avatar_url(user, size)
     context = dict(kwargs, **{
         'user': user,
