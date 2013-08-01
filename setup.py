@@ -21,7 +21,7 @@ def find_version(*file_paths):
 setup(
     name='django-avatar',
     version=find_version("avatar", "__init__.py"),
-    description="django-avatar",
+    description="A Django app for handling user avatars",
     long_description=read('README.rst'),
     classifiers=[
         'Development Status :: 4 - Beta',
