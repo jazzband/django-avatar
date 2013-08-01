@@ -14,11 +14,6 @@ from django.db.models import signals
 from avatar.util import get_username
 
 try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-
-try:
     from PIL import Image
 except ImportError:
     import Image
@@ -109,7 +104,7 @@ class Avatar(models.Model):
         invalidate_cache(self.user, size)
         try:
             orig = self.avatar.storage.open(self.avatar.name, 'rb').read()
-            image = Image.open(StringIO(orig))
+            image = Image.open(six.StringIO(orig))
             quality = quality or AVATAR_THUMB_QUALITY
             (w, h) = image.size
             if w != size or h != size:
@@ -122,7 +117,7 @@ class Avatar(models.Model):
                 if image.mode != "RGB":
                     image = image.convert("RGB")
                 image = image.resize((size, size), AVATAR_RESIZE_METHOD)
-                thumb = StringIO()
+                thumb = six.StringIO()
                 image.save(thumb, AVATAR_THUMB_FORMAT, quality=quality)
                 thumb_file = ContentFile(thumb.getvalue())
             else:
