@@ -7,9 +7,13 @@ from django.db import models
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 from django.utils.translation import ugettext as _
-from django.utils.encoding import force_bytes
 from django.utils import six
 from django.db.models import signals
+
+try:
+    from django.utils.encoding import force_bytes
+except ImportError:
+    force_bytes = str
 
 from avatar.util import get_username
 

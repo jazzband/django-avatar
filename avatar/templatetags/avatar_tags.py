@@ -10,8 +10,12 @@ from django import template
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils import six
-from django.utils.encoding import force_bytes
 from django.utils.translation import ugettext as _
+
+try:
+    from django.utils.encoding import force_bytes
+except ImportError:
+    force_bytes = str
 
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
                              AVATAR_DEFAULT_SIZE, AVATAR_GRAVATAR_BASE_URL)

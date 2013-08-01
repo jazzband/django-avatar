@@ -2,9 +2,13 @@ import hashlib
 
 from django.conf import settings
 from django.core.cache import cache
-from django.utils.encoding import force_bytes
 from django.utils import six
 from django.template.defaultfilters import slugify
+
+try:
+    from django.utils.encoding import force_bytes
+except ImportError:
+    force_bytes = str
 
 try:
     from django.contrib.auth import get_user_model
