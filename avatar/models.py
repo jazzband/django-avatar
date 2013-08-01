@@ -103,8 +103,8 @@ class Avatar(models.Model):
         # invalidate the cache of the thumbnail with the given size first
         invalidate_cache(self.user, size)
         try:
-            orig = self.avatar.storage.open(self.avatar.name, 'rb').read()
-            image = Image.open(six.StringIO(orig))
+            orig = self.avatar.storage.open(self.avatar.name, 'rb')
+            image = Image.open(orig)
             quality = quality or AVATAR_THUMB_QUALITY
             (w, h) = image.size
             if w != size or h != size:
