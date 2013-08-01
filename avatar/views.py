@@ -56,20 +56,6 @@ def _get_avatars(user):
     return (avatar, avatars)
 
 
-@csrf_exempt
-def webcam_upload(request, id):
-    # TODO: add proper security by attaching session to flash request
-    user = get_object_or_404(get_user_model(), pk=id)
-    if request.method == "POST":
-        avatar = Avatar(user=user, primary=True)
-        avatar.avatar.save("%s_webcam_%s.jpg" %
-                          (user.pk, Avatar.objects.filter(user=user).count()),
-                           ContentFile(request.raw_post_data))
-        avatar.save()
-        messages.success(request, _("Successfully uploaded a new avatar."))
-        return HttpResponse(status=200, content="ok")
-
-
 @login_required
 def add(request, extra_context=None, next_override=None,
         upload_form=UploadAvatarForm, *args, **kwargs):
