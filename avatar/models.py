@@ -1,6 +1,7 @@
 import datetime
 import os
 import hashlib
+from PIL import Image
 
 from django.conf import settings
 from django.db import models
@@ -16,11 +17,6 @@ except ImportError:
     force_bytes = str
 
 from avatar.util import get_username
-
-try:
-    from PIL import Image
-except ImportError:
-    import Image
 
 try:
     from django.utils.timezone import now
