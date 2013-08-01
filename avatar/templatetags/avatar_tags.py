@@ -1,6 +1,10 @@
 import urllib
-import urlparse
 import hashlib
+
+try:
+    from urllib.parse import urljoin
+except ImportError:
+    from urlparse import urljoin
 
 from django import template
 from django.core.urlresolvers import reverse
@@ -30,7 +34,7 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
             params['d'] = AVATAR_GRAVATAR_DEFAULT
         path = "%s/?%s" % (hashlib.md5(user.email).hexdigest(),
                            urllib.urlencode(params))
-        return urlparse.urljoin(AVATAR_GRAVATAR_BASE_URL, path)
+        return urljoin(AVATAR_GRAVATAR_BASE_URL, path)
 
     return get_default_avatar_url()
 
