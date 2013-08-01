@@ -8,6 +8,7 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_str
+from django.utils import six
 from django.db.models import signals
 
 from avatar.util import get_username
@@ -86,7 +87,7 @@ class Avatar(models.Model):
     date_uploaded = models.DateTimeField(default=now)
 
     def __unicode__(self):
-        return _(u'Avatar for %s') % self.user
+        return _(six.u('Avatar for %s')) % self.user
 
     def save(self, *args, **kwargs):
         avatars = Avatar.objects.filter(user=self.user)

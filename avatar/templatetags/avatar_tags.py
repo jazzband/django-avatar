@@ -3,9 +3,10 @@ import urlparse
 import hashlib
 
 from django import template
-from django.template.loader import render_to_string
-from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
+from django.template.loader import render_to_string
+from django.utils import six
+from django.utils.translation import ugettext as _
 
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
                              AVATAR_DEFAULT_SIZE, AVATAR_GRAVATAR_BASE_URL)
@@ -73,7 +74,7 @@ def primary_avatar(user, size=AVATAR_DEFAULT_SIZE):
     work for us. If that special view is then cached by a CDN for instance,
     we will avoid many db calls.
     """
-    alt = unicode(user)
+    alt = six.text_type(user)
     url = reverse('avatar_render_primary', kwargs={'user': user, 'size': size})
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (url, alt,
         size, size)
@@ -109,6 +110,6 @@ class UsersAvatarObjectNode(template.Node):
             context[key] = avatar[0]
         else:
             context[key] = None
-        return u""
+        return six.text_type()
 
 register.tag('primary_avatar_object', primary_avatar_object)

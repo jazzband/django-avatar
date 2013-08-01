@@ -1,6 +1,7 @@
 from django.core.files.base import ContentFile
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render, redirect
+from django.utils import six
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
 
@@ -144,10 +145,10 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
     if request.method == 'POST':
         if delete_avatar_form.is_valid():
             ids = delete_avatar_form.cleaned_data['choices']
-            if unicode(avatar.id) in ids and avatars.count() > len(ids):
+            if six.text_type(avatar.id) in ids and avatars.count() > len(ids):
                 # Find the next best avatar, and set it as the new primary
                 for a in avatars:
-                    if unicode(a.id) not in ids:
+                    if six.text_type(a.id) not in ids:
                         a.primary = True
                         a.save()
                         avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
