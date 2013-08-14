@@ -5,6 +5,7 @@ from PIL import Image
 
 from django.conf import settings
 from django.db import models
+from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 from django.utils.translation import ugettext as _
@@ -121,7 +122,7 @@ class Avatar(models.Model):
                 image.save(thumb, AVATAR_THUMB_FORMAT, quality=quality)
                 thumb_file = ContentFile(thumb.getvalue())
             else:
-                thumb_file = ContentFile(orig)
+                thumb_file = File(orig)
             thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
         except IOError:
             return  # What should we do here?  Render a "sorry, didn't work" img?
