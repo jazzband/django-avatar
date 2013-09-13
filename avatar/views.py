@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from django.conf import settings
+from avatar.conf import settings
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
 from avatar.signals import avatar_updated

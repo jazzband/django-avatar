@@ -2,7 +2,6 @@ import os.path
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.conf import settings
 
 from avatar.conf import settings
 from avatar.util import get_primary_avatar, get_user_model
