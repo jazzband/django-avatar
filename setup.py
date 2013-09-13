@@ -52,7 +52,9 @@ setup(
             'media/avatar/img/default.jpg',
         ],
     },
-    install_requires=['Pillow>=2.0'],
-    include_package_data=True,
+    install_requires=[
+        'Pillow>=2.0',
+        'django-appconf>=0.6',
+    ],
     zip_safe=False,
 )

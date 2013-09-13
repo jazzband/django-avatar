@@ -3,7 +3,6 @@ import os
 import hashlib
 from PIL import Image
 
-from django.conf import settings
 from django.db import models
 from django.core.files import File
 from django.core.files.base import ContentFile
@@ -12,27 +11,21 @@ from django.utils.translation import ugettext as _
 from django.utils import six
 from django.db.models import signals
 
-from avatar.util import get_username, force_bytes
+from avatar.conf import settings
+from avatar.util import get_username, force_bytes, invalidate_cache
 
 try:
     from django.utils.timezone import now
 except ImportError:
     now = datetime.datetime.now
 
-from avatar.util import invalidate_cache
-from avatar.settings import (AVATAR_STORAGE_DIR, AVATAR_RESIZE_METHOD,
-                             AVATAR_MAX_AVATARS_PER_USER, AVATAR_THUMB_FORMAT,
-                             AVATAR_HASH_USERDIRNAMES, AVATAR_HASH_FILENAMES,
-                             AVATAR_THUMB_QUALITY, AUTO_GENERATE_AVATAR_SIZES,
-                             AVATAR_DEFAULT_SIZE, AVATAR_STORAGE,
-                             AVATAR_CLEANUP_DELETED)
 
-avatar_storage = get_storage_class(AVATAR_STORAGE)()
+avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 
 
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
-    tmppath = [AVATAR_STORAGE_DIR]
-    if AVATAR_HASH_USERDIRNAMES:
+    tmppath = [settings.AVATAR_STORAGE_DIR]
+    if settings.AVATAR_HASH_USERDIRNAMES:
         tmp = hashlib.md5(get_username(instance.user)).hexdigest()
         tmppath.extend([tmp[0], tmp[1], get_username(instance.user)])
     else:
@@ -40,7 +33,7 @@ def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     if not filename:
         # Filename already stored in database
         filename = instance.avatar.name
-        if ext and AVATAR_HASH_FILENAMES:
+        if ext and settings.AVATAR_HASH_FILENAMES:
             # An extension was provided, probably because the thumbnail
             # is in a different format than the file. Use it. Because it's
             # only enabled if AVATAR_HASH_FILENAMES is true, we can trust
@@ -49,7 +42,7 @@ def avatar_file_path(instance=None, filename=None, size=None, ext=None):
             filename = root + "." + ext
     else:
         # File doesn't exist yet
-        if AVATAR_HASH_FILENAMES:
+        if settings.AVATAR_HASH_FILENAMES:
             (root, ext) = os.path.splitext(filename)
             filename = hashlib.md5(force_bytes(filename)).hexdigest()
             filename = filename + ext
@@ -84,7 +77,7 @@ class Avatar(models.Model):
         avatars = Avatar.objects.filter(user=self.user)
         if self.pk:
             avatars = avatars.exclude(pk=self.pk)
-        if AVATAR_MAX_AVATARS_PER_USER > 1:
+        if settings.AVATAR_MAX_AVATARS_PER_USER > 1:
             if self.primary:
                 avatars = avatars.filter(primary=True)
                 avatars.update(primary=False)
@@ -101,7 +94,7 @@ class Avatar(models.Model):
         try:
             orig = self.avatar.storage.open(self.avatar.name, 'rb')
             image = Image.open(orig)
-            quality = quality or AVATAR_THUMB_QUALITY
+            quality = quality or settings.AVATAR_THUMB_QUALITY
             w, h = image.size
             if w != size or h != size:
                 if w > h:
@@ -112,9 +105,9 @@ class Avatar(models.Model):
                     image = image.crop((0, diff, w, h - diff))
                 if image.mode != "RGB":
                     image = image.convert("RGB")
-                image = image.resize((size, size), AVATAR_RESIZE_METHOD)
+                image = image.resize((size, size), settings.AVATAR_RESIZE_METHOD)
                 thumb = six.BytesIO()
-                image.save(thumb, AVATAR_THUMB_FORMAT, quality=quality)
+                image.save(thumb, settings.AVATAR_THUMB_FORMAT, quality=quality)
                 thumb_file = ContentFile(thumb.getvalue())
             else:
                 thumb_file = File(orig)
@@ -126,10 +119,10 @@ class Avatar(models.Model):
         return self.avatar.storage.url(self.avatar_name(size))
 
     def get_absolute_url(self):
-        return self.avatar_url(AVATAR_DEFAULT_SIZE)
+        return self.avatar_url(settings.AVATAR_DEFAULT_SIZE)
 
     def avatar_name(self, size):
-        ext = find_extension(AVATAR_THUMB_FORMAT)
+        ext = find_extension(settings.AVATAR_THUMB_FORMAT)
         return avatar_file_path(
             instance=self,
             size=size,
@@ -144,12 +137,12 @@ def invalidate_avatar_cache(sender, instance, **kwargs):
 def create_default_thumbnails(sender, instance, created=False, **kwargs):
     invalidate_avatar_cache(sender, instance)
     if created:
-        for size in AUTO_GENERATE_AVATAR_SIZES:
+        for size in settings.AVATAR_AUTO_GENERATE_SIZES:
             instance.create_thumbnail(size)
 
 
 def remove_avatar_images(instance=None, **kwargs):
-    for size in AUTO_GENERATE_AVATAR_SIZES:
+    for size in settings.AVATAR_AUTO_GENERATE_SIZES:
         if instance.thumbnail_exists(size):
             instance.avatar.storage.delete(instance.avatar_name(size))
     instance.avatar.storage.delete(instance.avatar.name)
@@ -158,5 +151,5 @@ def remove_avatar_images(instance=None, **kwargs):
 signals.post_save.connect(create_default_thumbnails, sender=Avatar)
 signals.post_delete.connect(invalidate_avatar_cache, sender=Avatar)
 
-if AVATAR_CLEANUP_DELETED:
+if settings.AVATAR_CLEANUP_DELETED:
     signals.post_delete.connect(remove_avatar_images, sender=Avatar)

@@ -1,6 +1,5 @@
 import hashlib
 
-from django.conf import settings
 from django.core.cache import cache
 from django.utils import six
 from django.template.defaultfilters import slugify
@@ -22,8 +21,8 @@ except ImportError:
 else:
     custom_user_model = True
 
-from avatar.settings import (AVATAR_DEFAULT_URL, AVATAR_CACHE_TIMEOUT,
-                             AUTO_GENERATE_AVATAR_SIZES, AVATAR_DEFAULT_SIZE)
+from avatar.conf import settings
+
 
 cached_funcs = set()
 
@@ -56,11 +55,11 @@ def get_cache_key(user_or_username, size, prefix):
 
 
 def cache_set(key, value):
-    cache.set(key, value, AVATAR_CACHE_TIMEOUT)
+    cache.set(key, value, settings.AVATAR_CACHE_TIMEOUT)
     return value
 
 
-def cache_result(default_size=AVATAR_DEFAULT_SIZE):
+def cache_result(default_size=settings.AVATAR_DEFAULT_SIZE):
     """
     Decorator to cache the result of functions that take a ``user`` and a
     ``size`` value.
@@ -70,7 +69,6 @@ def cache_result(default_size=AVATAR_DEFAULT_SIZE):
             prefix = func.__name__
             cached_funcs.add(prefix)
             key = get_cache_key(user, size or default_size, prefix=prefix)
-            print key
             result = cache.get(key)
             if result is None:
                 result = func(user, size or default_size)
@@ -84,7 +82,7 @@ def invalidate_cache(user, size=None):
     """
     Function to be called when saving or changing an user's avatars.
     """
-    sizes = set(AUTO_GENERATE_AVATAR_SIZES)
+    sizes = set(settings.AVATAR_AUTO_GENERATE_SIZES)
     if size is not None:
         sizes.add(size)
     for prefix in cached_funcs:
@@ -96,20 +94,23 @@ def get_default_avatar_url():
     base_url = getattr(settings, 'STATIC_URL', None)
     if not base_url:
         base_url = getattr(settings, 'MEDIA_URL', '')
-    # Don't use base_url if the default avatar url starts with http:// of https://
-    if AVATAR_DEFAULT_URL.startswith('http://') or AVATAR_DEFAULT_URL.startswith('https://'):
-        return AVATAR_DEFAULT_URL
+
+    # Don't use base_url if the default url starts with http:// of https://
+    if settings.AVATAR_DEFAULT_URL.startswith(('http://', 'https://')):
+        return settings.AVATAR_DEFAULT_URL
     # We'll be nice and make sure there are no duplicated forward slashes
     ends = base_url.endswith('/')
-    begins = AVATAR_DEFAULT_URL.startswith('/')
+
+    begins = settings.AVATAR_DEFAULT_URL.startswith('/')
     if ends and begins:
         base_url = base_url[:-1]
     elif not ends and not begins:
-        return '%s/%s' % (base_url, AVATAR_DEFAULT_URL)
-    return '%s%s' % (base_url, AVATAR_DEFAULT_URL)
+        return '%s/%s' % (base_url, settings.AVATAR_DEFAULT_URL)
+
+    return '%s%s' % (base_url, settings.AVATAR_DEFAULT_URL)
 
 
-def get_primary_avatar(user, size=AVATAR_DEFAULT_SIZE):
+def get_primary_avatar(user, size=settings.AVATAR_DEFAULT_SIZE):
     User = get_user_model()
     if not isinstance(user, User):
         try:

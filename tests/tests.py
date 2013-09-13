@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from avatar.settings import AVATAR_DEFAULT_URL, AVATAR_MAX_AVATARS_PER_USER
+from avatar.conf import settings
 from avatar.util import get_primary_avatar, get_user_model
 from avatar.models import Avatar
 from PIL import Image
@@ -72,7 +72,7 @@ class AvatarUploadTests(TestCase):
         if not base_url:
             base_url = settings.MEDIA_URL
         self.assertTrue(base_url in loc)
-        self.assertTrue(loc.endswith(AVATAR_DEFAULT_URL))
+        self.assertTrue(loc.endswith(settings.AVATAR_DEFAULT_URL))
 
     def testNonExistingUser(self):
         a = get_primary_avatar("nonexistinguser")
@@ -110,7 +110,7 @@ class AvatarUploadTests(TestCase):
         self.assertEqual(avatars[0].id, primaries[0].id)
 
     def testTooManyAvatars(self):
-        for i in range(0, AVATAR_MAX_AVATARS_PER_USER):
+        for i in range(0, settings.AVATAR_MAX_AVATARS_PER_USER):
             self.testNormalImageUpload()
         count_before = Avatar.objects.filter(user=self.user).count()
         response = upload_helper(self, "test.png")

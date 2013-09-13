@@ -6,9 +6,9 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
+from django.conf import settings
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
-from avatar.settings import AVATAR_MAX_AVATARS_PER_USER, AVATAR_DEFAULT_SIZE
 from avatar.signals import avatar_updated
 from avatar.util import (get_primary_avatar, get_default_avatar_url,
                          get_user_model, get_user)
@@ -16,20 +16,21 @@ from avatar.util import (get_primary_avatar, get_default_avatar_url,
 
 def _get_next(request):
     """
-    The part that's the least straightforward about views in this module is how they
-    determine their redirects after they have finished computation.
+    The part that's the least straightforward about views in this module is
+    how they determine their redirects after they have finished computation.
 
-    In short, they will try and determine the next place to go in the following order:
+    In short, they will try and determine the next place to go in the
+    following order:
 
-    1. If there is a variable named ``next`` in the *POST* parameters, the view will
-    redirect to that variable's value.
-    2. If there is a variable named ``next`` in the *GET* parameters, the view will
-    redirect to that variable's value.
-    3. If Django can determine the previous page from the HTTP headers, the view will
-    redirect to that previous page.
+    1. If there is a variable named ``next`` in the *POST* parameters, the
+       view will redirect to that variable's value.
+    2. If there is a variable named ``next`` in the *GET* parameters,
+       the view will redirect to that variable's value.
+    3. If Django can determine the previous page from the HTTP headers,
+       the view will redirect to that previous page.
     """
     next = request.POST.get('next', request.GET.get('next',
-        request.META.get('HTTP_REFERER', None)))
+                            request.META.get('HTTP_REFERER', None)))
     if not next:
         next = request.path
     return next
@@ -46,11 +47,12 @@ def _get_avatars(user):
     else:
         avatar = None
 
-    if AVATAR_MAX_AVATARS_PER_USER == 1:
+    if settings.AVATAR_MAX_AVATARS_PER_USER == 1:
         avatars = primary_avatar
     else:
-        # Slice the default set now that we used the queryset for the primary avatar
-        avatars = avatars[:AVATAR_MAX_AVATARS_PER_USER]
+        # Slice the default set now that we used
+        # the queryset for the primary avatar
+        avatars = avatars[:settings.AVATAR_MAX_AVATARS_PER_USER]
     return (avatar, avatars)
 
 
@@ -61,7 +63,8 @@ def add(request, extra_context=None, next_override=None,
         extra_context = {}
     avatar, avatars = _get_avatars(request.user)
     upload_avatar_form = upload_form(request.POST or None,
-        request.FILES or None, user=request.user)
+                                     request.FILES or None,
+                                     user=request.user)
     if request.method == "POST" and 'avatar' in request.FILES:
         if upload_avatar_form.is_valid():
             avatar = Avatar(user=request.user, primary=True)
@@ -94,7 +97,8 @@ def change(request, extra_context=None, next_override=None,
         kwargs = {}
     upload_avatar_form = upload_form(user=request.user, **kwargs)
     primary_avatar_form = primary_form(request.POST or None,
-        user=request.user, avatars=avatars, **kwargs)
+                                       user=request.user,
+                                       avatars=avatars, **kwargs)
     if request.method == "POST":
         updated = False
         if 'choice' in request.POST and primary_avatar_form.is_valid():
@@ -125,7 +129,8 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
         extra_context = {}
     avatar, avatars = _get_avatars(request.user)
     delete_avatar_form = DeleteAvatarForm(request.POST or None,
-        user=request.user, avatars=avatars)
+                                          user=request.user,
+                                          avatars=avatars)
     if request.method == 'POST':
         if delete_avatar_form.is_valid():
             ids = delete_avatar_form.cleaned_data['choices']
@@ -135,11 +140,14 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
                     if six.text_type(a.id) not in ids:
                         a.primary = True
                         a.save()
-                        avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
+                        avatar_updated.send(sender=Avatar, user=request.user,
+                                            avatar=avatar)
                         break
             Avatar.objects.filter(id__in=ids).delete()
-            messages.success(request, _("Successfully deleted the requested avatars."))
+            messages.success(request,
+                             _("Successfully deleted the requested avatars."))
             return redirect(next_override or _get_next(request))
+
     context = {
         'avatar': avatar,
         'avatars': avatars,
@@ -156,10 +164,13 @@ def avatar_gallery(request, username, template_name="avatar/gallery.html"):
         user = get_user(username)
     except get_user_model().DoesNotExist:
         raise Http404
-    return render(request, template_name, {
+
+    context = {
         "other_user": user,
         "avatars": user.avatar_set.all(),
-    })
+    }
+
+    return render(request, template_name, context)
 
 
 def avatar(request, username, id, template_name="avatar/avatar.html"):
@@ -207,7 +218,7 @@ def avatar(request, username, id, template_name="avatar/avatar.html"):
     })
 
 
-def render_primary(request, extra_context={}, user=None, size=AVATAR_DEFAULT_SIZE, *args, **kwargs):
+def render_primary(request, user=None, size=settings.AVATAR_DEFAULT_SIZE):
     size = int(size)
     avatar = get_primary_avatar(user, size=size)
     if avatar:
@@ -216,6 +227,8 @@ def render_primary(request, extra_context={}, user=None, size=AVATAR_DEFAULT_SIZ
         # be useful in certain situations, particulary if there is a CDN and
         # we want to minimize the storage usage on our static server, letting
         # the CDN store those files instead
-        return redirect(avatar.avatar_url(size))
+        url = avatar.avatar_url(size)
     else:
-        return redirect(get_default_avatar_url())
+        url = get_default_avatar_url()
+
+    return redirect(url)

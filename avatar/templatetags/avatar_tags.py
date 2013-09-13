@@ -12,8 +12,7 @@ from django.template.loader import render_to_string
 from django.utils import six
 from django.utils.translation import ugettext as _
 
-from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
-                             AVATAR_DEFAULT_SIZE, AVATAR_GRAVATAR_BASE_URL)
+from avatar.conf import settings
 from avatar.util import (get_primary_avatar, get_default_avatar_url,
                          cache_result, get_user_model, get_user, force_bytes)
 from avatar.models import Avatar
@@ -23,25 +22,25 @@ register = template.Library()
 
 @cache_result()
 @register.simple_tag
-def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
+def avatar_url(user, size=settings.AVATAR_DEFAULT_SIZE):
     avatar = get_primary_avatar(user, size=size)
     if avatar:
         return avatar.avatar_url(size)
 
-    if AVATAR_GRAVATAR_BACKUP:
+    if settings.AVATAR_GRAVATAR_BACKUP:
         params = {'s': str(size)}
-        if AVATAR_GRAVATAR_DEFAULT:
-            params['d'] = AVATAR_GRAVATAR_DEFAULT
+        if settings.AVATAR_GRAVATAR_DEFAULT:
+            params['d'] = settings.AVATAR_GRAVATAR_DEFAULT
         path = "%s/?%s" % (hashlib.md5(force_bytes(user.email)).hexdigest(),
                            urlencode(params))
-        return urljoin(AVATAR_GRAVATAR_BASE_URL, path)
+        return urljoin(settings.AVATAR_GRAVATAR_BASE_URL, path)
 
     return get_default_avatar_url()
 
 
 @cache_result()
 @register.simple_tag
-def avatar(user, size=AVATAR_DEFAULT_SIZE, **kwargs):
+def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
     if not isinstance(user, get_user_model()):
         try:
             user = get_user(user)
@@ -71,7 +70,7 @@ def has_avatar(user):
 
 @cache_result()
 @register.simple_tag
-def primary_avatar(user, size=AVATAR_DEFAULT_SIZE):
+def primary_avatar(user, size=settings.AVATAR_DEFAULT_SIZE):
     """
     This tag tries to get the default avatar for a user without doing any db
     requests. It achieve this by linking to a special view that will do all the
@@ -86,7 +85,7 @@ def primary_avatar(user, size=AVATAR_DEFAULT_SIZE):
 
 @cache_result()
 @register.simple_tag
-def render_avatar(avatar, size=AVATAR_DEFAULT_SIZE):
+def render_avatar(avatar, size=settings.AVATAR_DEFAULT_SIZE):
     if not avatar.thumbnail_exists(size):
         avatar.create_thumbnail(size)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
