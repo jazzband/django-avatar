@@ -2,6 +2,7 @@ import os
 
 from django import forms
 from django.forms import widgets
+from django.utils import six
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
@@ -15,7 +16,7 @@ def avatar_img(avatar, size):
     if not avatar.thumbnail_exists(size):
         avatar.create_thumbnail(size)
     return mark_safe('<img src="%s" alt="%s" width="%s" height="%s" />' %
-                     (avatar.avatar_url(size), unicode(avatar), size, size))
+                     (avatar.avatar_url(size), six.text_type(avatar), size, size))
 
 
 class UploadAvatarForm(forms.Form):
