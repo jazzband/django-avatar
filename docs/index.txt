@@ -12,24 +12,17 @@ Installation
 ------------
 
 If you have pip_ installed, you can simply run the following command
-to install django-avatar:
+to install django-avatar::
 
     pip install django-avatar
 
 Included with this application is a file named ``setup.py``. It's possible to
 use this file to install this application to your system, by invoking the
-following command:
+following command::
 
     python setup.py install
 
 Once that's done, you should be able to begin using django-avatar at will.
-
-Contents:
-
-.. toctree::
-
-   install.txt
-   usage
 
 Usage
 -----
@@ -95,7 +88,6 @@ template rendering system:
 ``{{ request.user|has_avatar }}``
     Given a user object returns a boolean if the user has an avatar.
 
-
 Global Settings
 ---------------
 
@@ -124,7 +116,6 @@ AVATAR_GRAVATAR_BACKUP
 AVATAR_DEFAULT_URL
     The default URL to default to if ``AVATAR_GRAVATAR_BACKUP`` is set to False
     and there is no ``Avatar`` instance found in the system for the given user.
-
 
 Management Commands
 -------------------

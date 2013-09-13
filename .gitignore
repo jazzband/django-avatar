@@ -8,3 +8,4 @@ dist/
 *.egg-info/
 avatars
 .coverage
+docs/_build
