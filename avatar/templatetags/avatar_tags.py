@@ -21,7 +21,7 @@ from avatar.models import Avatar
 register = template.Library()
 
 
-@cache_result
+@cache_result()
 @register.simple_tag
 def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
     avatar = get_primary_avatar(user, size=size)
@@ -39,7 +39,7 @@ def avatar_url(user, size=AVATAR_DEFAULT_SIZE):
     return get_default_avatar_url()
 
 
-@cache_result
+@cache_result()
 @register.simple_tag
 def avatar(user, size=AVATAR_DEFAULT_SIZE, **kwargs):
     if not isinstance(user, get_user_model()):
@@ -69,7 +69,7 @@ def has_avatar(user):
     return Avatar.objects.filter(user=user, primary=True).exists()
 
 
-@cache_result
+@cache_result()
 @register.simple_tag
 def primary_avatar(user, size=AVATAR_DEFAULT_SIZE):
     """
@@ -80,17 +80,17 @@ def primary_avatar(user, size=AVATAR_DEFAULT_SIZE):
     """
     alt = six.text_type(user)
     url = reverse('avatar_render_primary', kwargs={'user': user, 'size': size})
-    return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (url, alt,
-        size, size)
+    return ("""<img src="%s" alt="%s" width="%s" height="%s" />""" %
+            (url, alt, size, size))
 
 
-@cache_result
+@cache_result()
 @register.simple_tag
 def render_avatar(avatar, size=AVATAR_DEFAULT_SIZE):
     if not avatar.thumbnail_exists(size):
         avatar.create_thumbnail(size)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
-        avatar.avatar_url(size), str(avatar), size, size)
+        avatar.avatar_url(size), six.text_type(avatar), size, size)
 
 
 @register.tag
@@ -98,8 +98,8 @@ def primary_avatar_object(parser, token):
     split = token.split_contents()
     if len(split) == 4:
         return UsersAvatarObjectNode(split[1], split[3])
-    else:
-        raise template.TemplateSyntaxError('%r tag takes three arguments.' % split[0])
+    raise template.TemplateSyntaxError('%r tag takes three arguments.' %
+                                       split[0])
 
 
 class UsersAvatarObjectNode(template.Node):

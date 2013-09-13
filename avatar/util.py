@@ -55,21 +55,29 @@ def get_cache_key(user_or_username, size, prefix):
                              hashlib.md5(force_bytes(key)).hexdigest())
 
 
-def cache_result(func):
+def cache_set(key, value):
+    cache.set(key, value, AVATAR_CACHE_TIMEOUT)
+    return value
+
+
+def cache_result(default_size=AVATAR_DEFAULT_SIZE):
     """
     Decorator to cache the result of functions that take a ``user`` and a
     ``size`` value.
     """
-    def cache_set(key, value):
-        cache.set(key, value, AVATAR_CACHE_TIMEOUT)
-        return value
-
-    def cached_func(user, size):
-        prefix = func.__name__
-        cached_funcs.add(prefix)
-        key = get_cache_key(user, size, prefix=prefix)
-        return cache.get(key) or cache_set(key, func(user, size))
-    return cached_func
+    def decorator(func):
+        def cached_func(user, size=None):
+            prefix = func.__name__
+            cached_funcs.add(prefix)
+            key = get_cache_key(user, size or default_size, prefix=prefix)
+            print key
+            result = cache.get(key)
+            if result is None:
+                result = func(user, size or default_size)
+                cache_set(key, result)
+            return result
+        return cached_func
+    return decorator
 
 
 def invalidate_cache(user, size=None):
