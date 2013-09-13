@@ -1,14 +1,4 @@
-This application is mainly developed by Eric Florenzano.
+This application was originally written by Eric Florenzano.
+It is now maintained by Jannis Leidel and a league of awesome contributors.
 
-Ahmad Al-Ibrahim
-Alex Gaynor
-Ben Browitt
-Brian Rosner
-Daniel T. Alvarenga
-Jakob Torp Svendsen
-James Tauber
-James Turnbull
-Jannis Leidel
-John Debs
-Mathieu Pillard
-Ross Poulton
+See the full list here: https://github.com/jezdez/django-avatar/graphs/contributors

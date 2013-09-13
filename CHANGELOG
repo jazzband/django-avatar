@@ -1,5 +1,0 @@
-1.0.3
------
-
- * check for django-friends using INSTALLED_APPS to prevent imports from
-   happening.
