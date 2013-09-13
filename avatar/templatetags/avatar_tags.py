@@ -12,15 +12,10 @@ from django.template.loader import render_to_string
 from django.utils import six
 from django.utils.translation import ugettext as _
 
-try:
-    from django.utils.encoding import force_bytes
-except ImportError:
-    force_bytes = str
-
 from avatar.settings import (AVATAR_GRAVATAR_BACKUP, AVATAR_GRAVATAR_DEFAULT,
                              AVATAR_DEFAULT_SIZE, AVATAR_GRAVATAR_BASE_URL)
 from avatar.util import (get_primary_avatar, get_default_avatar_url,
-                         cache_result, get_user_model, get_user)
+                         cache_result, get_user_model, get_user, force_bytes)
 from avatar.models import Avatar
 
 register = template.Library()
