@@ -2,6 +2,7 @@ import os.path
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.test.utils import override_settings
 
 from avatar.conf import settings
 from avatar.util import get_primary_avatar, get_user_model
@@ -126,3 +127,16 @@ class AvatarUploadTests(TestCase):
     # def testChangePrimaryAvatar
     # def testDeleteThumbnailAndRecreation
     # def testAutomaticThumbnailCreation
+
+    @override_settings(AVATAR_THUMB_FORMAT='png')
+    def testAutomaticThumbnailCreationRGBA(self):
+        upload_helper(self, "django.png")
+        avatar = get_primary_avatar(self.user)
+        image = Image.open(avatar.avatar.storage.open(avatar.avatar_name(settings.AVATAR_DEFAULT_SIZE), 'rb'))
+        self.assertEqual(image.mode, 'RGBA')
+
+    def testAutomaticThumbnailCreationCMYK(self):
+        upload_helper(self, "django_pony_cmyk.jpg")
+        avatar = get_primary_avatar(self.user)
+        image = Image.open(avatar.avatar.storage.open(avatar.avatar_name(settings.AVATAR_DEFAULT_SIZE), 'rb'))
+        self.assertEqual(image.mode, 'RGB')
