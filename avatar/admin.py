@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
+from django.utils import six
+from django.template.loader import render_to_string
 
 from avatar.models import Avatar
 from avatar.signals import avatar_updated
-from avatar.templatetags.avatar_tags import avatar
 from avatar.util import get_user_model
 
 
@@ -14,7 +15,13 @@ class AvatarAdmin(admin.ModelAdmin):
     list_per_page = 50
 
     def get_avatar(self, avatar_in):
-        return avatar(avatar_in.user, 80)
+        context = dict({
+            'user': avatar_in.user,
+            'url': avatar_in.avatar.url,
+            'alt': six.text_type(avatar_in.user),
+            'size': 80,
+        })
+        return render_to_string('avatar/avatar_tag.html',context)
 
     get_avatar.short_description = _('Avatar')
     get_avatar.allow_tags = True
