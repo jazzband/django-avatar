@@ -21,7 +21,7 @@ class AvatarAdmin(admin.ModelAdmin):
             'alt': six.text_type(avatar_in.user),
             'size': 80,
         })
-        return render_to_string('avatar/avatar_tag.html',context)
+        return render_to_string('avatar/avatar_tag.html', context)
 
     get_avatar.short_description = _('Avatar')
     get_avatar.allow_tags = True
