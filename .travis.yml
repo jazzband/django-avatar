@@ -11,6 +11,7 @@ install:
 script: make test
 env:
   - DJANGO=1.4.7
+  - DJANGO=1.5.1
   - DJANGO=1.5.3
   - DJANGO=stable/1.6.x
 matrix:
