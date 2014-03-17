@@ -9,6 +9,7 @@ class AvatarConf(AppConf):
     RESIZE_METHOD = Image.ANTIALIAS
     STORAGE_DIR = 'avatars'
     GRAVATAR_BASE_URL = 'https://www.gravatar.com/avatar/'
+    GRAVATAR_FIELD = 'email'
     GRAVATAR_BACKUP = True
     GRAVATAR_DEFAULT = None
     DEFAULT_URL = 'avatar/img/default.jpg'

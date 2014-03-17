@@ -32,19 +32,19 @@ that are required. A minimal integration can work like this:
 
 1.  List this application in the ``INSTALLED_APPS`` portion of your settings
     file. Your settings file will look something like::
-   
+
         INSTALLED_APPS = (
             # ...
             'avatar',
         )
 
 2.  Update your database::
-   
+
         python manage.py syncdb
 
 3.  Add the avatar urls to the end of your root urlconf. Your urlconf
     will look something like::
-    
+
         urlpatterns = patterns('',
             # ...
             (r'^avatar/', include('avatar.urls')),
@@ -52,20 +52,20 @@ that are required. A minimal integration can work like this:
 
 4.  Somewhere in your template navigation scheme, link to the change avatar
     page::
-    
+
         <a href="{% url 'avatar_change' %}">Change your avatar</a>
 
 5.  Wherever you want to display an avatar for a user, first load the avatar
     template tags::
-    
+
         {% load avatar_tags %}
-    
+
     Then, use the ``avatar`` tag to display an avatar of a default size::
-    
+
         {% avatar user %}
-    
+
     Or specify a size (in pixels) explicitly::
-    
+
         {% avatar user 65 %}
 
 Template tags and filter
@@ -118,14 +118,19 @@ AVATAR_GRAVATAR_BACKUP
     True.
 
 AVATAR_GRAVATAR_DEFAULT
-    A string determining the style of the default Gravatar. Available options 
-    listed in the 
-    (Gravatar documentation)[https://en.gravatar.com/site/implement/images/#default-image]. 
+    A string determining the style of the default Gravatar. Available options
+    listed in the
+    (Gravatar documentation)[https://en.gravatar.com/site/implement/images/#default-image].
     Ex. 'retro'. Defaults to None.
 
 AVATAR_DEFAULT_URL
     The default URL to default to if ``AVATAR_GRAVATAR_BACKUP`` is set to False
     and there is no ``Avatar`` instance found in the system for the given user.
+
+AVATAR_GRAVATAR_FIELD
+    The name of the user's field containing the gravatar email. Defaults to
+    ``email``. If you put, for example, ``gravatar``, django-avatar will get the
+    user's gravatar in ``user.gravatar``.
 
 AVATAR_MAX_SIZE
     File size limit for avatar upload. Default is ``1024 * 1024`` (1mb).
