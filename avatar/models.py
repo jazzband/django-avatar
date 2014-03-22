@@ -119,7 +119,7 @@ class Avatar(models.Model):
         try:
             orig = self.avatar.storage.open(self.avatar.name, 'rb')
             image = Image.open(orig)
-            image = self.tanspose_image(image)
+            image = self.transpose_image(image)
             quality = quality or settings.AVATAR_THUMB_QUALITY
             w, h = image.size
             if w != size or h != size:
