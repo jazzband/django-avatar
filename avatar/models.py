@@ -26,8 +26,8 @@ avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath = [settings.AVATAR_STORAGE_DIR]
     if settings.AVATAR_HASH_USERDIRNAMES:
-        tmp = hashlib.md5(get_username(instance.user)).hexdigest()
-        tmppath.extend([tmp[0], tmp[1], get_username(instance.user)])
+        dirname = hashlib.md5(force_bytes(get_username(instance.user))).hexdigest()
+        tmppath.extend([dirname])
     else:
         tmppath.append(get_username(instance.user))
     if not filename:
