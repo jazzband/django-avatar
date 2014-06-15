@@ -58,7 +58,7 @@ def _get_avatars(user):
 
 @login_required
 def add(request, extra_context=None, next_override=None,
-        upload_form=UploadAvatarForm, *args, **kwargs):
+        upload_form=UploadAvatarForm, template_name = None, *args, **kwargs):
     if extra_context is None:
         extra_context = {}
     avatar, avatars = _get_avatars(request.user)
@@ -81,7 +81,7 @@ def add(request, extra_context=None, next_override=None,
         'next': next_override or _get_next(request),
     }
     context.update(extra_context)
-    return render(request, 'avatar/add.html', context)
+    return render(request, template_name if template_name != None else 'avatar/add.html', context)
 
 
 @login_required
@@ -218,16 +218,18 @@ def avatar(request, username, id, template_name="avatar/avatar.html"):
     })
 
 
-def render_primary(request, user=None, size=settings.AVATAR_DEFAULT_SIZE):
-    size = int(size)
-    avatar = get_primary_avatar(user, size=size)
+def render_primary(request, user=None, width=settings.AVATAR_DEFAULT_SIZE, height = None):
+    if height == None: height = width
+    width = int(width)
+    height = int(height)
+    avatar = get_primary_avatar(user, width=width, height=height)
     if avatar:
         # FIXME: later, add an option to render the resized avatar dynamically
         # instead of redirecting to an already created static file. This could
         # be useful in certain situations, particulary if there is a CDN and
         # we want to minimize the storage usage on our static server, letting
         # the CDN store those files instead
-        url = avatar.avatar_url(size)
+        url = avatar.avatar_url(width, height)
     else:
         url = get_default_avatar_url()
 
