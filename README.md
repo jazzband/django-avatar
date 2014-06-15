@@ -11,4 +11,5 @@ django-avatar
 
 这里在settings.py中配置需要删除所有尺寸
 
-`AVATAR_UPDATE_SIZES = [(x1,y1),(x2,y2),...]`
+`AVATAR_UPDATE_SIZES = [(x1,y1),(x2,y2),...]`     
+3.头像在admin页面的显示的一个[小bug](http://blog.csdn.net/a_9884108/article/details/18792107)
