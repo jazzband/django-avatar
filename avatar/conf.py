@@ -8,6 +8,7 @@ class AvatarConf(AppConf):
     DEFAULT_SIZE = 80
     RESIZE_METHOD = Image.ANTIALIAS
     STORAGE_DIR = 'avatars'
+    GRAVATAR_FIELD = 'email'
     GRAVATAR_BASE_URL = 'http://www.gravatar.com/avatar/'
     GRAVATAR_BACKUP = True
     GRAVATAR_DEFAULT = None

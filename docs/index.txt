@@ -117,6 +117,11 @@ AVATAR_DEFAULT_URL
     The default URL to default to if ``AVATAR_GRAVATAR_BACKUP`` is set to False
     and there is no ``Avatar`` instance found in the system for the given user.
 
+AVATAR_GRAVATAR_FIELD
+    The name of the user's field containing the gravatar email. Defaults to
+    ``email``. If you put, for example, ``gravatar``, django-avatar will get the
+    user's gravatar in ``user.gravatar``.
+
 Management Commands
 -------------------
 
