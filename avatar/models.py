@@ -88,12 +88,38 @@ class Avatar(models.Model):
     def thumbnail_exists(self, size):
         return self.avatar.storage.exists(self.avatar_name(size))
 
+    def transpose_image(self, image):
+        """
+            Transpose based on EXIF information.
+            Borrowed from django-imagekit:
+            imagekit.processors.Transpose
+        """
+        EXIF_ORIENTATION_STEPS = {
+            1: [],
+            2: ['FLIP_LEFT_RIGHT'],
+            3: ['ROTATE_180'],
+            4: ['FLIP_TOP_BOTTOM'],
+            5: ['ROTATE_270', 'FLIP_LEFT_RIGHT'],
+            6: ['ROTATE_270'],
+            7: ['ROTATE_90', 'FLIP_LEFT_RIGHT'],
+            8: ['ROTATE_90'],
+        }
+        try:
+            orientation = image._getexif()[0x0112]
+            ops = EXIF_ORIENTATION_STEPS[orientation]
+        except:
+            ops = []
+        for method in ops:
+            image = image.transpose(getattr(Image, method))
+        return image
+
     def create_thumbnail(self, size, quality=None):
         # invalidate the cache of the thumbnail with the given size first
         invalidate_cache(self.user, size)
         try:
             orig = self.avatar.storage.open(self.avatar.name, 'rb')
             image = Image.open(orig)
+            image = self.transpose_image(image)
             quality = quality or settings.AVATAR_THUMB_QUALITY
             w, h = image.size
             if w != size or h != size:

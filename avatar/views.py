@@ -1,3 +1,8 @@
+#coding=utf-8
+
+import os
+import uuid
+
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.utils import six
@@ -69,7 +74,13 @@ def add(request, extra_context=None, next_override=None,
         if upload_avatar_form.is_valid():
             avatar = Avatar(user=request.user, primary=True)
             image_file = request.FILES['avatar']
-            avatar.avatar.save(image_file.name, image_file)
+            
+            filename_parts = os.path.splitext(image_file.name)
+            extension = filename_parts[1]
+            filename = u'%s%s' % (unicode(uuid.uuid4()), unicode(extension))
+            #filename = image_file.name
+            
+            avatar.avatar.save(filename, image_file)
             avatar.save()
             messages.success(request, _("Successfully uploaded a new avatar."))
             avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
