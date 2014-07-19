@@ -25,5 +25,5 @@ class AvatarConf(AppConf):
     AUTO_GENERATE_SIZES = (DEFAULT_SIZE,)
 
     def configure_auto_generate_avatar_sizes(self, value):
-        return value or getattr(settings, 'AUTO_GENERATE_AVATAR_SIZES',
+        return value or getattr(settings, 'AVATAR_AUTO_GENERATE_SIZES',
                                 (self.DEFAULT_SIZE,))
