@@ -1,5 +1,3 @@
-#coding=utf-8
-
 import os
 import uuid
 
@@ -78,7 +76,6 @@ def add(request, extra_context=None, next_override=None,
             filename_parts = os.path.splitext(image_file.name)
             extension = filename_parts[1]
             filename = u'%s%s' % (unicode(uuid.uuid4()), unicode(extension))
-            #filename = image_file.name
             
             avatar.avatar.save(filename, image_file)
             avatar.save()
