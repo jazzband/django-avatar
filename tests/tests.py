@@ -7,7 +7,12 @@ from django.test.utils import override_settings
 from avatar.conf import settings
 from avatar.util import get_primary_avatar, get_user_model
 from avatar.models import Avatar
-from PIL import Image
+
+try:
+    from PIL import Image
+    dir(Image) # Placate PyFlakes
+except ImportError:
+    import Image
 
 
 def upload_helper(o, filename):
@@ -40,6 +45,13 @@ class AvatarUploadTests(TestCase):
         self.assertEqual(response.context['upload_avatar_form'].errors, {})
         avatar = get_primary_avatar(self.user)
         self.assertNotEqual(avatar, None)
+
+    def testUnsupportedImageFormatUpload(self):
+        """ Check with python-magic that we detect corrupted / unapprovd image files correctly """
+        response = upload_helper(self, "test.tiff")
+        self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(len(response.redirect_chain), 0) # Redirect only if it worked
+        self.failIfEqual(response.context['upload_avatar_form'].errors, {})
 
     def testImageWithoutExtension(self):
         # use with AVATAR_ALLOWED_FILE_EXTS = ('.jpg', '.png')

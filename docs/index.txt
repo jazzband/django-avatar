@@ -126,6 +126,16 @@ AVATAR_GRAVATAR_FIELD
     ``email``. If you put, for example, ``gravatar``, django-avatar will get the
     user's gravatar in ``user.gravatar``.
 
+AVATAR_ALLOWED_MIMETYPES
+     Limit allowed avatar image uploads by their actual content payload and what
+     image codecs we wish to support. This limits website user content site
+     attack vectors against image codec buffer overflow and similar bugs.
+     `You must have python-imaging library installed <https://github.com/ahupp/python-magic>`_.
+     Suggested safe setting: ``("image/png", "image/gif", "image/jpeg")``.
+     When enabled you'll get the following error on the form upload *File content is invalid.
+     Detected: image/tiff Allowed content types are: image/png, image/gif, image/jpg*.
+
+
 Management Commands
 -------------------
 

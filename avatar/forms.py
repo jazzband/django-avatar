@@ -30,6 +30,31 @@ class UploadAvatarForm(forms.Form):
     def clean_avatar(self):
         data = self.cleaned_data['avatar']
 
+        if settings.AVATAR_ALLOWED_MIMETYPES:
+            try:
+                import magic
+            except ImportError:
+                raise ImportError("python-magic library must be installed in "
+                                  "order to use uploaded file content "
+                                  "limitation")
+
+            # Construct 256 bytes needed for mime validation
+            magic_buffer = ""
+            for chunk in data.chunks():
+                magic_buffer += chunk
+                if len(magic_buffer) >= 256:
+                    break
+
+            # https://github.com/ahupp/python-magic#usage
+            mime = magic.from_buffer(magic_buffer, mime=True)
+
+            if mime not in settings.AVATAR_ALLOWED_MIMETYPES:
+                raise forms.ValidationError(
+                    _(u"File content is invalid. Detected: %(mimetype)s "
+                       "Allowed content types are: %(valid_mime_list)s") %
+                       {'valid_mime_list': ", ".join(AVATAR_ALLOWED_MIMETYPES),
+                        'mimetype': mime})
+
         if settings.AVATAR_ALLOWED_FILE_EXTS:
             root, ext = os.path.splitext(data.name.lower())
             if ext not in settings.AVATAR_ALLOWED_FILE_EXTS:
@@ -57,6 +82,7 @@ class UploadAvatarForm(forms.Form):
                 'nb_avatars': count,
                 'nb_max_avatars': settings.AVATAR_MAX_AVATARS_PER_USER,
             })
+
         return
 
 
