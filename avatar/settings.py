@@ -2,12 +2,12 @@ from django.conf import settings
 
 try:
     from PIL import Image
-    dir(Image) # Placate PyFlakes
+    dir(Image)  # Placate PyFlakes
 except ImportError:
     import Image
 
 AVATAR_DEFAULT_SIZE = getattr(settings, 'AVATAR_DEFAULT_SIZE', 80)
-AUTO_GENERATE_AVATAR_SIZES = getattr(settings, 'AUTO_GENERATE_AVATAR_SIZES', (AVATAR_DEFAULT_SIZE,))
+AVATAR_AUTO_GENERATE_SIZES = getattr(settings, 'AUTO_GENERATE_AVATAR_SIZES', (AVATAR_DEFAULT_SIZE,))
 AVATAR_RESIZE_METHOD = getattr(settings, 'AVATAR_RESIZE_METHOD', Image.ANTIALIAS)
 AVATAR_STORAGE_DIR = getattr(settings, 'AVATAR_STORAGE_DIR', 'avatars')
 AVATAR_GRAVATAR_BASE_URL = getattr(settings, 'AVATAR_GRAVATAR_BASE_URL', 'http://www.gravatar.com/avatar/')

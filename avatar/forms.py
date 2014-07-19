@@ -21,7 +21,7 @@ def avatar_img(avatar, size):
 
 class UploadAvatarForm(forms.Form):
 
-    avatar = forms.ImageField(label=_(u"Avatar"))
+    avatar = forms.ImageField(label=_("Avatar"))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
@@ -49,11 +49,17 @@ class UploadAvatarForm(forms.Form):
             mime = magic.from_buffer(magic_buffer, mime=True)
 
             if mime not in settings.AVATAR_ALLOWED_MIMETYPES:
-                raise forms.ValidationError(
-                    _(u"File content is invalid. Detected: %(mimetype)s "
-                       "Allowed content types are: %(valid_mime_list)s") %
-                       {'valid_mime_list': ", ".join(AVATAR_ALLOWED_MIMETYPES),
-                        'mimetype': mime})
+                err = _(
+                    u"File content is invalid. Detected: %(mimetype)s "
+                    "Allowed content types are: %(valid_mime_list)s"
+                )
+
+                conf = {
+                    'valid_mime_list': ", ".join(settings.AVATAR_ALLOWED_MIMETYPES),
+                    'mimetype': mime
+                }
+
+                raise forms.ValidationError(err % conf)
 
         if settings.AVATAR_ALLOWED_FILE_EXTS:
             root, ext = os.path.splitext(data.name.lower())

@@ -72,11 +72,11 @@ def add(request, extra_context=None, next_override=None,
         if upload_avatar_form.is_valid():
             avatar = Avatar(user=request.user, primary=True)
             image_file = request.FILES['avatar']
-            
+
             filename_parts = os.path.splitext(image_file.name)
             extension = filename_parts[1]
-            filename = u'%s%s' % (unicode(uuid.uuid4()), unicode(extension))
-            
+            filename = '%s%s' % (uuid.uuid4(), extension)
+
             avatar.avatar.save(filename, image_file)
             avatar.save()
             messages.success(request, _("Successfully uploaded a new avatar."))
