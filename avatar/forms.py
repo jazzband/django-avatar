@@ -50,7 +50,7 @@ class UploadAvatarForm(forms.Form):
 
             if mime not in settings.AVATAR_ALLOWED_MIMETYPES:
                 err = _(
-                    u"File content is invalid. Detected: %(mimetype)s "
+                    "File content is invalid. Detected: %(mimetype)s "
                     "Allowed content types are: %(valid_mime_list)s"
                 )
 

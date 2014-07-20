@@ -100,7 +100,7 @@ msgid ""
 "\">upload one</a> now."
 msgstr ""
 "Nemáte žiadne profilové fotografie, ktoré by ste mohli zmazať. "
-"Nahrať si ich môžete <a href=\"%(avatar_change_url)\">tu</a>."
+"Nahrať si ich môžete <a href=\"%(avatar_change_url)s\">tu</a>."
 
 #: templates/avatar/confirm_delete.html:15
 msgid "Delete These"
