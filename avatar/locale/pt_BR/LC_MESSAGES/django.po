@@ -19,24 +19,28 @@ msgstr ""
 #: forms.py:34
 #, python-format
 msgid ""
-"%(ext)s is an invalid file extension. Authorized extensions are : %"
-"(valid_exts_list)s"
-msgstr "Extensão informada inválida. Os Formatos permitidos são : %"
+"%(ext)s is an invalid file extension. Authorized extensions are : "
+"%(valid_exts_list)s"
+msgstr ""
+"Extensão informada inválida %(ext)s. Os Formatos permitidos são : "
+"%(valid_exts_list)s"
 
 #: forms.py:38
 #, python-format
 msgid ""
-"Your file is too big (%(size)s), the maximum allowed size is %"
-"(max_valid_size)s"
-msgstr "Arquivo muito grande (%(size)s), o máximo permitido é %"
-"(max_valid_size)s"
+"Your file is too big (%(size)s), the maximum allowed size is "
+"%(max_valid_size)s"
+msgstr "Arquivo muito grande (%(size)s), o máximo permitido é "
+"%(max_valid_size)s"
 
 #: forms.py:44
 #, python-format
 msgid ""
-"You already have %(nb_avatars)d avatars, and the maximum allowed is %"
-"(nb_max_avatars)d."
-msgstr "Você já possui %(nb_avatars)d fotos. O máximo permitido é %"
+"You already have %(nb_avatars)d avatars, and the maximum allowed is "
+"%(nb_max_avatars)d."
+msgstr ""
+"Você já possui %(nb_avatars)d fotos. O máximo permitido é "
+"%(nb_max_avatars)d."
 
 #: forms.py:56 forms.py:67
 msgid "Choices"
