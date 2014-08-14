@@ -17,6 +17,7 @@ class AvatarConf(AppConf):
     MAX_SIZE = 1024 * 1024
     THUMB_FORMAT = 'JPEG'
     THUMB_QUALITY = 85
+    USERID_HAS_USERDIRNAMES = False
     HASH_FILENAMES = False
     HASH_USERDIRNAMES = False
     ALLOWED_FILE_EXTS = None
