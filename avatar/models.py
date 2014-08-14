@@ -25,14 +25,11 @@ avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath = [settings.AVATAR_STORAGE_DIR]
-    userdirname = get_username(instance.user)
-    if settings.AVATAR_USERID_HAS_USERDIRNAMES:
-        userdirname = str(instance.user_id)
     if settings.AVATAR_HASH_USERDIRNAMES:
-        tmp = hashlib.md5(userdirname).hexdigest()
-        tmppath.extend([tmp[0], tmp[1], userdirname])
+        tmp = hashlib.md5(get_username(instance.user)).hexdigest()
+        tmppath.extend([tmp[0], tmp[1], get_username(instance.user)])
     else:
-        tmppath.append(userdirname)
+        tmppath.append(get_username(instance.user))
     if not filename:
         # Filename already stored in database
         filename = instance.avatar.name
