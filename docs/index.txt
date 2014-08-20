@@ -32,19 +32,19 @@ that are required. A minimal integration can work like this:
 
 1.  List this application in the ``INSTALLED_APPS`` portion of your settings
     file. Your settings file will look something like::
-   
+
         INSTALLED_APPS = (
             # ...
             'avatar',
         )
 
 2.  Update your database::
-   
+
         python manage.py syncdb
 
 3.  Add the avatar urls to the end of your root urlconf. Your urlconf
     will look something like::
-    
+
         urlpatterns = patterns('',
             # ...
             (r'^avatar/', include('avatar.urls')),
@@ -52,20 +52,20 @@ that are required. A minimal integration can work like this:
 
 4.  Somewhere in your template navigation scheme, link to the change avatar
     page::
-    
+
         <a href="{% url 'avatar_change' %}">Change your avatar</a>
 
 5.  Wherever you want to display an avatar for a user, first load the avatar
     template tags::
-    
+
         {% load avatar_tags %}
-    
+
     Then, use the ``avatar`` tag to display an avatar of a default size::
-    
+
         {% avatar user %}
-    
+
     Or specify a size (in pixels) explicitly::
-    
+
         {% avatar user 65 %}
 
 Template tags and filter
@@ -112,6 +112,12 @@ AVATAR_STORAGE_DIR
     non-filesystem storage device, this will simply be appended to the beginning
     of the file name.
 
+AVATAR_USERID_AS_USERDIRNAME
+    By default, ``User.username`` will be use as directory name under ``AVATAR_STORAGE_DIR`.
+    If set to ``True``, ``User.id`` wil be use instead of ``User.username``.
+    Usefull if user can change his username into app to avoid duplicate content.
+    Defaults to ``False``.
+
 AVATAR_GRAVATAR_BACKUP
     A boolean determining whether to default to the Gravatar service if no
     ``Avatar`` instance is found in the system for the given user. Defaults to
@@ -127,22 +133,30 @@ AVATAR_GRAVATAR_FIELD
     user's gravatar in ``user.gravatar``.
 
 AVATAR_ALLOWED_MIMETYPES
-     Limit allowed avatar image uploads by their actual content payload and what
-     image codecs we wish to support. This limits website user content site
-     attack vectors against image codec buffer overflow and similar bugs.
-     `You must have python-imaging library installed <https://github.com/ahupp/python-magic>`_.
-     Suggested safe setting: ``("image/png", "image/gif", "image/jpeg")``.
-     When enabled you'll get the following error on the form upload *File content is invalid.
-     Detected: image/tiff Allowed content types are: image/png, image/gif, image/jpg*.
+    Limit allowed avatar image uploads by their actual content payload and what
+    image codecs we wish to support. This limits website user content site
+    attack vectors against image codec buffer overflow and similar bugs.
+    `You must have python-imaging library installed <https://github.com/ahupp/python-magic>`_.
+    Suggested safe setting: ``("image/png", "image/gif", "image/jpeg")``.
+    When enabled you'll get the following error on the form upload *File content is invalid.
+    Detected: image/tiff Allowed content types are: image/png, image/gif, image/jpg*.
 
 
 Management Commands
 -------------------
 
-This application does include one management command: ``rebuild_avatars``. It
-takes no arguments and, when run, re-renders all of the thumbnails for all of
-the avatars for the pixel sizes specified in the ``AUTO_GENERATE_AVATAR_SIZES``
-setting.
+This application does include two management command: ``rebuild_avatars`` and ``migrate_avatars``.
+
+rebuild_avatars
+    It takes no arguments and, when run, re-renders all of the thumbnails for all of
+    the avatars for the pixel sizes specified in the ``AUTO_GENERATE_AVATAR_SIZES``
+    setting.
+
+migrate_avatars
+    It takes no arguments and, when run, check all avatar userdirname folders.
+    If folder doesn't correspond with actual userdirname pattern (affect with options like
+    ``AVATAR_USERID_AS_USERDIRNAME`` or ``AVATAR_HASH_USERDIRNAMES``), it move avatar files to the right place,
+    call ``rebuild_avatars`` and delete useless folders.
 
 
 .. _pip: http://www.pip-installer.org/
