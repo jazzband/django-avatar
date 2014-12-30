@@ -20,7 +20,7 @@ except ImportError:
     now = datetime.datetime.now
 
 
-avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
+avatar_storage = get_storage_class(settings.AVATAR_STORAGE)(**settings.AVATAR_STORAGE_PARAMS)
 
 
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
