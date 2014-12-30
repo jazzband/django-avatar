@@ -39,7 +39,7 @@ class UploadAvatarForm(forms.Form):
                                   "limitation")
 
             # Construct 256 bytes needed for mime validation
-            magic_buffer = ""
+            magic_buffer = six.b('')
             for chunk in data.chunks():
                 magic_buffer += chunk
                 if len(magic_buffer) >= 256:
@@ -47,7 +47,8 @@ class UploadAvatarForm(forms.Form):
 
             # https://github.com/ahupp/python-magic#usage
             mime = magic.from_buffer(magic_buffer, mime=True)
-
+            if six.PY3:
+                mime = mime.decode('utf-8')
             if mime not in settings.AVATAR_ALLOWED_MIMETYPES:
                 err = _(
                     "File content is invalid. Detected: %(mimetype)s "
