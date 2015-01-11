@@ -111,7 +111,11 @@ class Avatar(models.Model):
                 thumb_file = ContentFile(thumb.getvalue())
             else:
                 thumb_file = File(orig)
-            thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
+            storage = self.avatar.storage
+            thum_name = self.avatar_name(size)
+            if storage.exists(thum_name):
+                storage.delete(thum_name)
+            storage.save(thum_name, thumb_file)
         except IOError:
             return  # What should we do here?  Render a "sorry, didn't work" img?
 
