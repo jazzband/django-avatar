@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from avatar.conf import settings
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
+from avatar.settings import AVATAR_ADMIN_TEST
 from avatar.signals import avatar_updated
 from avatar.util import (get_primary_avatar, get_default_avatar_url,
                          get_user_model, get_user)
@@ -216,6 +217,119 @@ def avatar(request, username, id, template_name="avatar/avatar.html"):
         "prev": prev,
         "count": count,
     })
+
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+
+@login_required
+def add_avatar_for_user(request, for_user=None, extra_context=None,
+        next_override=None,
+        upload_form=UploadAvatarForm, *args, **kwargs):
+    target_user = get_object_or_404(User, username=for_user, is_active=True)
+    if not AVATAR_ADMIN_TEST(request, target_user):
+        raise PermissionDenied
+    if extra_context is None:
+        extra_context = {}
+    avatar, avatars = _get_avatars(target_user)
+    upload_avatar_form = upload_form(request.POST or None,
+        request.FILES or None, user=target_user)
+    if request.method == "POST" and 'avatar' in request.FILES:
+        if upload_avatar_form.is_valid():
+            avatar = Avatar(
+                user = target_user,
+                primary = True,
+            )
+            image_file = request.FILES['avatar']
+            avatar.avatar.save(image_file.name, image_file)
+            avatar.save()
+            messages.add_message(request, messages.INFO, _("Successfully uploaded a new avatar"))
+            avatar_updated.send(sender=Avatar, user=target_user, avatar=avatar)
+            return redirect(next_override or _get_next(request))
+    context = {
+        'avatar': avatar,
+        'avatars': avatars,
+        'target_user': target_user,
+        'upload_avatar_form': upload_avatar_form,
+        'next': next_override or _get_next(request),
+    }
+    context.update(extra_context)
+    return render(request, 'avatar/add_for_user.html', context)
+
+@login_required
+def change_avatar_for_user(request, for_user=None, extra_context=None,
+        next_override=None,
+        upload_form=UploadAvatarForm, primary_form=PrimaryAvatarForm,
+        *args, **kwargs):
+    target_user = get_object_or_404(User, username=for_user, is_active=True)
+    if not AVATAR_ADMIN_TEST(request, target_user):
+        raise PermissionDenied
+    if extra_context is None:
+        extra_context = {}
+    avatar, avatars = _get_avatars(target_user)
+    if avatar:
+        kwargs = {'initial': {'choice': avatar.id}}
+    else:
+        kwargs = {}
+    upload_avatar_form = upload_form(user=target_user, **kwargs)
+    primary_avatar_form = primary_form(request.POST or None,
+        user=target_user, avatars=avatars, **kwargs)
+    if request.method == "POST":
+        updated = False
+        if 'choice' in request.POST and primary_avatar_form.is_valid():
+            avatar = Avatar.objects.get(id=
+                primary_avatar_form.cleaned_data['choice'])
+            avatar.primary = True
+            avatar.save()
+            updated = True
+            messages.add_message(request, messages.INFO, _("Successfully updated this user's avatars"))
+        if updated:
+            avatar_updated.send(sender=Avatar, user=target_user, avatar=avatar)
+        return redirect(next_override or _get_next(request))
+    context = {
+        'avatar': avatar,
+        'avatars': avatars,
+        'target_user': target_user,
+        'upload_avatar_form': upload_avatar_form,
+        'next': next_override or _get_next(request),
+    }
+    context.update(extra_context)
+    return render(request, 'avatar/add_for_user.html', context)
+
+@login_required
+def delete_avatar_for_user(request, for_user=None, extra_context=None,
+        next_override=None, *args, **kwargs):
+    target_user = get_object_or_404(User, username=for_user, is_active=True)
+    if not AVATAR_ADMIN_TEST(request, target_user):
+        raise PermissionDenied
+    if extra_context is None:
+        extra_context = {}
+    avatar, avatars = _get_avatars(target_user)
+    delete_avatar_form = DeleteAvatarForm(request.POST or None,
+        user=target_user, avatars=avatars)
+    if request.method == 'POST':
+        if delete_avatar_form.is_valid():
+            ids = delete_avatar_form.cleaned_data['choices']
+            if unicode(avatar.id) in ids and avatars.count() > len(ids):
+                # Find the next best avatar, and set it as the new primary
+                for a in avatars:
+                    if unicode(a.id) not in ids:
+                        a.primary = True
+                        a.save()
+                        avatar_updated.send(sender=Avatar, user=target_user, avatar=avatar)
+                        break
+            Avatar.objects.filter(id__in=ids).delete()
+            messages.add_message(request, messages.INFO, _("Successfully deleted the requested avatars"))
+            return redirect(next_override or _get_next(request))
+    context = {
+        'avatar': avatar,
+        'avatars': avatars,
+        'target_user': target_user,
+        'upload_avatar_form': upload_avatar_form,
+        'next': next_override or _get_next(request),
+    }
+    context.update(extra_context)
+    return render(request, 'avatar/add_for_user.html', context)
 
 
 def render_primary(request, user=None, size=settings.AVATAR_DEFAULT_SIZE):
