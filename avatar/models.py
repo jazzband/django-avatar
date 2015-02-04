@@ -20,16 +20,19 @@ except ImportError:
     now = datetime.datetime.now
 
 
-avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
+avatar_storage = get_storage_class(settings.AVATAR_STORAGE)(**settings.AVATAR_STORAGE_PARAMS)
 
 
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath = [settings.AVATAR_STORAGE_DIR]
+    userdirname = get_username(instance.user)
+    if settings.AVATAR_USERID_AS_USERDIRNAME:
+        userdirname = str(instance.user_id)
     if settings.AVATAR_HASH_USERDIRNAMES:
-        tmp = hashlib.md5(get_username(instance.user)).hexdigest()
-        tmppath.extend([tmp[0], tmp[1], get_username(instance.user)])
+        tmp = hashlib.md5(userdirname).hexdigest()
+        tmppath.extend([tmp[0], tmp[1], userdirname])
     else:
-        tmppath.append(get_username(instance.user))
+        tmppath.append(userdirname)
     if not filename:
         # Filename already stored in database
         filename = instance.avatar.name
@@ -88,12 +91,38 @@ class Avatar(models.Model):
     def thumbnail_exists(self, size):
         return self.avatar.storage.exists(self.avatar_name(size))
 
+    def transpose_image(self, image):
+        """
+            Transpose based on EXIF information.
+            Borrowed from django-imagekit:
+            imagekit.processors.Transpose
+        """
+        EXIF_ORIENTATION_STEPS = {
+            1: [],
+            2: ['FLIP_LEFT_RIGHT'],
+            3: ['ROTATE_180'],
+            4: ['FLIP_TOP_BOTTOM'],
+            5: ['ROTATE_270', 'FLIP_LEFT_RIGHT'],
+            6: ['ROTATE_270'],
+            7: ['ROTATE_90', 'FLIP_LEFT_RIGHT'],
+            8: ['ROTATE_90'],
+        }
+        try:
+            orientation = image._getexif()[0x0112]
+            ops = EXIF_ORIENTATION_STEPS[orientation]
+        except:
+            ops = []
+        for method in ops:
+            image = image.transpose(getattr(Image, method))
+        return image
+
     def create_thumbnail(self, size, quality=None):
         # invalidate the cache of the thumbnail with the given size first
         invalidate_cache(self.user, size)
         try:
             orig = self.avatar.storage.open(self.avatar.name, 'rb')
             image = Image.open(orig)
+            image = self.transpose_image(image)
             quality = quality or settings.AVATAR_THUMB_QUALITY
             w, h = image.size
             if w != size or h != size:
@@ -103,7 +132,7 @@ class Avatar(models.Model):
                 else:
                     diff = int((h - w) / 2)
                     image = image.crop((0, diff, w, h - diff))
-                if image.mode != "RGB":
+                if image.mode not in ("RGB", "RGBA"):
                     image = image.convert("RGB")
                 image = image.resize((size, size), settings.AVATAR_RESIZE_METHOD)
                 thumb = six.BytesIO()
@@ -131,7 +160,8 @@ class Avatar(models.Model):
 
 
 def invalidate_avatar_cache(sender, instance, **kwargs):
-    invalidate_cache(instance.user)
+    if hasattr(instance, 'user'):
+        invalidate_cache(instance.user)
 
 
 def create_default_thumbnails(sender, instance, created=False, **kwargs):
@@ -142,10 +172,11 @@ def create_default_thumbnails(sender, instance, created=False, **kwargs):
 
 
 def remove_avatar_images(instance=None, **kwargs):
-    for size in settings.AVATAR_AUTO_GENERATE_SIZES:
-        if instance.thumbnail_exists(size):
-            instance.avatar.storage.delete(instance.avatar_name(size))
-    instance.avatar.storage.delete(instance.avatar.name)
+    if hasattr(instance, 'user'):
+        for size in settings.AVATAR_AUTO_GENERATE_SIZES:
+            if instance.thumbnail_exists(size):
+                instance.avatar.storage.delete(instance.avatar_name(size))
+        instance.avatar.storage.delete(instance.avatar.name)
 
 
 signals.post_save.connect(create_default_thumbnails, sender=Avatar)

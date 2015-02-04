@@ -21,7 +21,7 @@ def avatar_img(avatar, size):
 
 class UploadAvatarForm(forms.Form):
 
-    avatar = forms.ImageField(label=_("avatar"))
+    avatar = forms.ImageField(label=_("Avatar"))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
@@ -29,6 +29,38 @@ class UploadAvatarForm(forms.Form):
 
     def clean_avatar(self):
         data = self.cleaned_data['avatar']
+
+        if settings.AVATAR_ALLOWED_MIMETYPES:
+            try:
+                import magic
+            except ImportError:
+                raise ImportError("python-magic library must be installed in "
+                                  "order to use uploaded file content "
+                                  "limitation")
+
+            # Construct 256 bytes needed for mime validation
+            magic_buffer = six.b('')
+            for chunk in data.chunks():
+                magic_buffer += chunk
+                if len(magic_buffer) >= 256:
+                    break
+
+            # https://github.com/ahupp/python-magic#usage
+            mime = magic.from_buffer(magic_buffer, mime=True)
+            if six.PY3:
+                mime = mime.decode('utf-8')
+            if mime not in settings.AVATAR_ALLOWED_MIMETYPES:
+                err = _(
+                    "File content is invalid. Detected: %(mimetype)s "
+                    "Allowed content types are: %(valid_mime_list)s"
+                )
+
+                conf = {
+                    'valid_mime_list': ", ".join(settings.AVATAR_ALLOWED_MIMETYPES),
+                    'mimetype': mime
+                }
+
+                raise forms.ValidationError(err % conf)
 
         if settings.AVATAR_ALLOWED_FILE_EXTS:
             root, ext = os.path.splitext(data.name.lower())
@@ -57,6 +89,7 @@ class UploadAvatarForm(forms.Form):
                 'nb_avatars': count,
                 'nb_max_avatars': settings.AVATAR_MAX_AVATARS_PER_USER,
             })
+
         return
 
 
@@ -68,7 +101,7 @@ class PrimaryAvatarForm(forms.Form):
         avatars = kwargs.pop('avatars')
         super(PrimaryAvatarForm, self).__init__(*args, **kwargs)
         choices = [(avatar.id, avatar_img(avatar, size)) for avatar in avatars]
-        self.fields['choice'] = forms.ChoiceField(label=_("Choices"),
+        self.fields['choice'] = forms.ChoiceField(label=_("Available avatars:"),
                                                   choices=choices,
                                                   widget=widgets.RadioSelect)
 
@@ -81,6 +114,6 @@ class DeleteAvatarForm(forms.Form):
         avatars = kwargs.pop('avatars')
         super(DeleteAvatarForm, self).__init__(*args, **kwargs)
         choices = [(avatar.id, avatar_img(avatar, size)) for avatar in avatars]
-        self.fields['choices'] = forms.MultipleChoiceField(label=_("Choices"),
+        self.fields['choices'] = forms.MultipleChoiceField(label=_("Available avatars:"),
                                                            choices=choices,
                                                            widget=widgets.CheckboxSelectMultiple)

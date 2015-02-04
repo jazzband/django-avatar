@@ -1,0 +1,149 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-19 19:26+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Tomas Babej <tomasbabej@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: admin.py:19 forms.py:24
+msgid "Avatar"
+msgstr "Profilová fotografia"
+
+#: forms.py:53
+#, python-format
+msgid ""
+"File content is invalid. Detected: %(mimetype)s Allowed content types are: "
+"%(valid_mime_list)s"
+msgstr ""
+"Druh súboru je neplatný. Detekovaný: %(mimetype)s ."
+"Povolené typy sú: %(valid_mime_list)s"
+
+#: forms.py:68
+#, python-format
+msgid ""
+"%(ext)s is an invalid file extension. Authorized extensions are : "
+"%(valid_exts_list)s"
+msgstr ""
+"%(ext)s je neplatný typ súboru. Povolené typy sú: "
+"%(valid_exts_list)s"
+
+#: forms.py:75
+#, python-format
+msgid ""
+"Your file is too big (%(size)s), the maximum allowed size is "
+"%(max_valid_size)s"
+msgstr ""
+"Váš súbor je príliš veľký (%(size)s), maximálna povolená veľkost "
+"je %(max_valid_size)s"
+
+#: forms.py:85
+#, python-format
+msgid ""
+"You already have %(nb_avatars)d avatars, and the maximum allowed is "
+"%(nb_max_avatars)d."
+msgstr ""
+"Už teraz máte %(nb_avatars)d nahratých profilových fotografií. Maximálne "
+"povolené množstvo je %(nb_max_avatars)d."
+
+#: forms.py:103 forms.py:116
+msgid "Available avatars:"
+msgstr "Profilové fotografie k dispozícií:"
+
+#: views.py:82
+msgid "Successfully uploaded a new avatar."
+msgstr "Nová profilová fotografia bola úspešne nahraná."
+
+#: views.py:118
+msgid "Successfully updated your avatar."
+msgstr "Profilová fotografia aktualizovaná."
+
+#: views.py:156
+msgid "Successfully deleted the requested avatars."
+msgstr "Odstránenie zvolených profilových fotografií bolo úspešné."
+
+#: templates/avatar/add.html:6 templates/avatar/change.html:6
+msgid "Your current avatar: "
+msgstr "Vaša súčasná profilová fotografia:"
+
+#: templates/avatar/add.html:9 templates/avatar/change.html:9
+msgid "You haven't uploaded an avatar yet. Please upload one now."
+msgstr "Zatiaľ nemáte žiadnu profilovú fotografiu."
+
+#: templates/avatar/add.html:13 templates/avatar/change.html:20
+msgid "Upload New Image"
+msgstr "Nahrať novú fotografiu"
+
+#: templates/avatar/change.html:15
+msgid "Choose new Default"
+msgstr "Vybrať novú profilovú fotografiu"
+
+#: templates/avatar/confirm_delete.html:6
+msgid "Please select the avatars that you would like to delete."
+msgstr "Prosím zvoľte fotografie, ktoré si želáte zmazať."
+
+#: templates/avatar/confirm_delete.html:9
+#, python-format
+msgid ""
+"You have no avatars to delete. Please <a href=\"%(avatar_change_url)s"
+"\">upload one</a> now."
+msgstr ""
+"Nemáte žiadne profilové fotografie, ktoré by ste mohli zmazať. "
+"Nahrať si ich môžete <a href=\"%(avatar_change_url)s\">tu</a>."
+
+#: templates/avatar/confirm_delete.html:15
+msgid "Delete These"
+msgstr "Zmazať"
+
+#: templates/notification/avatar_friend_updated/full.txt:1
+#, python-format
+msgid ""
+"%(avatar_creator)s has updated their avatar %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"%(avatar_creator)s si aktualizoval svoju profilovú fotografiu %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+
+
+#: templates/notification/avatar_friend_updated/notice.html:2
+#, python-format
+msgid ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated their avatar <a "
+"href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> si aktualizoval svoju profilovú fotografiu <a "
+"href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templates/notification/avatar_updated/full.txt:1
+#, python-format
+msgid ""
+"Your avatar has been updated.  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"Vaša profilová fotografia bola aktualizovaná.  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+
+
+#: templates/notification/avatar_updated/notice.html:2
+#, python-format
+msgid "You have updated your avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr "Aktualizovali ste si vašu profilovú fotografiu <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templatetags/avatar_tags.py:51
+msgid "Default Avatar"
+msgstr "Predvolená profilová fotografia"
