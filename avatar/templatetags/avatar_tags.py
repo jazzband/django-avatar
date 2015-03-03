@@ -20,9 +20,11 @@ from avatar.models import Avatar
 register = template.Library()
 
 
-@cache_result()
 @register.simple_tag
 def avatar_url(user, size=settings.AVATAR_DEFAULT_SIZE):
+    return cache_result(size)(avatar_url_uncached)(user)
+
+def avatar_url_uncached(user, size=settings.AVATAR_DEFAULT_SIZE):
     avatar = get_primary_avatar(user, size=size)
     if avatar:
         return avatar.avatar_url(size)
@@ -38,9 +40,11 @@ def avatar_url(user, size=settings.AVATAR_DEFAULT_SIZE):
     return get_default_avatar_url()
 
 
-@cache_result()
 @register.simple_tag
 def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
+    return cache_result(size)(avatar_uncached)(user)
+
+def avatar_uncached(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
     if not isinstance(user, get_user_model()):
         try:
             user = get_user(user)
@@ -68,9 +72,11 @@ def has_avatar(user):
     return Avatar.objects.filter(user=user, primary=True).exists()
 
 
-@cache_result()
 @register.simple_tag
 def primary_avatar(user, size=settings.AVATAR_DEFAULT_SIZE):
+    return cache_result(size)(primary_avatar_uncached)(user)
+
+def primary_avatar_uncached(user, size=settings.AVATAR_DEFAULT_SIZE):
     """
     This tag tries to get the default avatar for a user without doing any db
     requests. It achieve this by linking to a special view that will do all the
@@ -83,7 +89,6 @@ def primary_avatar(user, size=settings.AVATAR_DEFAULT_SIZE):
             (url, alt, size, size))
 
 
-@cache_result()
 @register.simple_tag
 def render_avatar(avatar, size=settings.AVATAR_DEFAULT_SIZE):
     if not avatar.thumbnail_exists(size):
