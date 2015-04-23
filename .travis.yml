@@ -18,6 +18,10 @@ env:
   - DJANGO=stable/1.8.x
 matrix:
   exclude:
+    - python: 2.6
+      env: DJANGO=stable/1.7.x
+    - python: 2.6
+      env: DJANGO=stable/1.8.x
     - python: 3.2
       env: DJANGO=1.4.20
     - python: 3.3
