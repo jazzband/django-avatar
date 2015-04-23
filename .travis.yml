@@ -4,18 +4,23 @@ python:
   - 2.7
   - 3.2
   - 3.3
+  - 3.4
 install:
   - pip install -e .
   - pip install -r tests/requirements.txt
   - pip install https://github.com/django/django/archive/${DJANGO}.zip#egg=django
 script: make test
 env:
-  - DJANGO=1.4.7
+  - DJANGO=1.4.20
   - DJANGO=1.5.3
   - DJANGO=stable/1.6.x
+  - DJANGO=stable/1.7.x
+  - DJANGO=stable/1.8.x
 matrix:
   exclude:
     - python: 3.2
-      env: DJANGO=1.4.7
+      env: DJANGO=1.4.20
     - python: 3.3
-      env: DJANGO=1.4.7
+      env: DJANGO=1.4.20
+    - python: 3.4
+      env: DJANGO=1.4.20
