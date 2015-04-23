@@ -12,16 +12,16 @@ install:
 script: make test
 env:
   - DJANGO=1.4.20
-  - DJANGO=1.5.3
-  - DJANGO=stable/1.6.x
-  - DJANGO=stable/1.7.x
-  - DJANGO=stable/1.8.x
+  - DJANGO=1.5.12
+  - DJANGO=1.6.11
+  - DJANGO=1.7.7
+  - DJANGO=1.8
 matrix:
   exclude:
     - python: 2.6
-      env: DJANGO=stable/1.7.x
+      env: DJANGO=1.7.7
     - python: 2.6
-      env: DJANGO=stable/1.8.x
+      env: DJANGO=1.8
     - python: 3.2
       env: DJANGO=1.4.20
     - python: 3.3
