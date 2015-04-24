@@ -98,7 +98,7 @@ Global Settings
 There are a number of settings available to easily customize the avatars that
 appear on the site. Listed below are those settings:
 
-AUTO_GENERATE_AVATAR_SIZES
+AVATAR_AUTO_GENERATE_SIZES
     An iterable of integers representing the sizes of avatars to generate on
     upload. This can save rendering time later on if you pre-generate the
     resized versions. Defaults to ``(80,)``
