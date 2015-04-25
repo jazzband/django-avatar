@@ -126,7 +126,7 @@ Management Commands
 
 This application does include one management command: ``rebuild_avatars``. It
 takes no arguments and, when run, re-renders all of the thumbnails for all of
-the avatars for the pixel sizes specified in the ``AUTO_GENERATE_AVATAR_SIZES``
+the avatars for the pixel sizes specified in the ``AVATAR_AUTO_GENERATE_SIZES``
 setting.
 
 
