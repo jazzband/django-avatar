@@ -1,8 +1,10 @@
 import os.path
 
+from django.contrib.admin.sites import AdminSite
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
+from avatar.admin import AvatarAdmin
 from avatar.conf import settings
 from avatar.util import get_primary_avatar, get_user_model
 from avatar.models import Avatar
@@ -18,14 +20,27 @@ def upload_helper(o, filename):
     return response
 
 
-class AvatarUploadTests(TestCase):
+class AvatarTests(TestCase):
 
     def setUp(self):
         self.testdatapath = os.path.join(os.path.dirname(__file__), "data")
         self.user = get_user_model().objects.create_user('test', 'lennon@thebeatles.com', 'testpassword')
         self.user.save()
         self.client.login(username='test', password='testpassword')
+        self.site = AdminSite()
         Image.init()
+
+    def testAdminGetAvatarReturnsDifferentImageTags(self):
+        self.testNormalImageUpload()
+        self.testNormalImageUpload()
+        primary = Avatar.objects.get(primary=True)
+        old = Avatar.objects.get(primary=False)
+
+        aa = AvatarAdmin(Avatar, self.site)
+        primary_link = aa.get_avatar(primary)
+        old_link = aa.get_avatar(old)
+
+        self.assertNotEqual(primary_link, old_link)
 
     def testNonImageUpload(self):
         response = upload_helper(self, "nonimagefile")
