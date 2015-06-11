@@ -8,6 +8,7 @@ from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 from django.utils.translation import ugettext as _
+from django.utils.encoding import force_text
 from django.utils import six
 from django.db.models import signals
 
@@ -26,10 +27,12 @@ avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath = [settings.AVATAR_STORAGE_DIR]
     if settings.AVATAR_HASH_USERDIRNAMES:
-        tmp = hashlib.md5(get_username(instance.user)).hexdigest()
-        tmppath.extend([tmp[0], tmp[1], get_username(instance.user)])
-    else:
+        tmp = hashlib.md5(force_bytes(get_username(instance.user))).hexdigest()
+        tmppath.extend(tmp[0:2])
+    if settings.AVATAR_EXPOSE_USERNAMES:
         tmppath.append(get_username(instance.user))
+    else:
+        tmppath.append(force_text(instance.user.pk))
     if not filename:
         # Filename already stored in database
         filename = instance.avatar.name
