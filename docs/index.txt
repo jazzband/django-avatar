@@ -117,7 +117,7 @@ AVATAR_GRAVATAR_BACKUP
     ``Avatar`` instance is found in the system for the given user. Defaults to
     True.
 
-GRAVATAR_DEFAULT
+AVATAR_GRAVATAR_DEFAULT
     A string determining the style of the default Gravatar. Available options 
     listed in the 
     (Gravatar documentation)[https://en.gravatar.com/site/implement/images/#default-image]. 
