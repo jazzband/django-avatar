@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-avatar 0.0.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-19 15:28+0200\n"
-"PO-Revision-Date: 2015-07-19 15:28+0100\n"
+"POT-Creation-Date: 2015-07-19 15:45+0200\n"
+"PO-Revision-Date: 2015-07-19 15:46+0100\n"
 "Last-Translator: Adam Dobrawy <naczelnik@jawnosc.tk>\n"
 "Language-Team: Adam Dobrawy <naczelnik@jawnosc.tk>\n"
 "Language: pl\n"
@@ -139,7 +139,7 @@ msgstr "Pomyślnie wysłano nowy avatar."
 
 #: views.py:110
 msgid "Successfully updated your avatar."
-msgstr "Pmyślnie zaktualizowano Twój avatar."
+msgstr "Pomyślnie zaktualizowano Twój avatar."
 
 #: views.py:148
 msgid "Successfully deleted the requested avatars."
