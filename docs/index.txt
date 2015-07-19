@@ -117,9 +117,18 @@ AVATAR_GRAVATAR_BACKUP
     ``Avatar`` instance is found in the system for the given user. Defaults to
     True.
 
+AVATAR_GRAVATAR_DEFAULT
+    A string determining the style of the default Gravatar. Available options 
+    listed in the 
+    (Gravatar documentation)[https://en.gravatar.com/site/implement/images/#default-image]. 
+    Ex. 'retro'. Defaults to None.
+
 AVATAR_DEFAULT_URL
     The default URL to default to if ``AVATAR_GRAVATAR_BACKUP`` is set to False
     and there is no ``Avatar`` instance found in the system for the given user.
+
+AVATAR_MAX_SIZE
+    File size limit for avatar upload. Default is ``1024 * 1024`` (1mb).
 
 Management Commands
 -------------------
