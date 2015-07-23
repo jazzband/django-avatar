@@ -1,7 +1,11 @@
 Changelog
 =========
 
-* 2.1 (not released)
+* 2.1.1 (not released)
+    * Added Polish locale
+    * Fixed RemovedInDjango19Warning warnings
+
+* 2.1 (May 2, 2015)
     * Django 1.7 and 1.8 support
     * Add South and Django migrations
     * Changed Gravatar link to use HTTPS by default
