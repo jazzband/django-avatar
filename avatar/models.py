@@ -70,6 +70,9 @@ class Avatar(models.Model):
                                blank=True)
     date_uploaded = models.DateTimeField(default=now)
 
+    class Meta:
+        app_label = 'avatar'
+
     def __unicode__(self):
         return _(six.u('Avatar for %s')) % self.user
 
