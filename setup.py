@@ -40,9 +40,9 @@ setup(
     keywords='avatar, django',
     author='Eric Florenzano',
     author_email='floguy@gmail.com',
-    maintainer='Jannis Leidel',
-    maintainer_email='jannis@leidel.info',
-    url='http://github.com/jezdez/django-avatar/',
+    maintainer='Grant McConnaughey',
+    maintainer_email='grantmcconnaughey@gmail.com',
+    url='http://github.com/grantmcconnaughey/django-avatar/',
     license='BSD',
     packages=find_packages(exclude=['tests']),
     package_data={
