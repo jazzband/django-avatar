@@ -44,7 +44,7 @@ msgstr ""
 
 #: forms.py:56 forms.py:67
 msgid "Choices"
-msgstr ""
+msgstr "Choix"
 
 #: models.py:75
 #, python-format
@@ -122,6 +122,9 @@ msgid ""
 "\n"
 "http://%(current_site)s%(avatar_url)s\n"
 msgstr ""
+"Votre avatar a été mis à jour.  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
 
 #: templates/notification/avatar_updated/notice.html:2
 #, python-format
