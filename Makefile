@@ -5,7 +5,7 @@ export PYTHONPATH=.
 
 test:
 	flake8 avatar --ignore=E124,E501,E127,E128
-	coverage run --branch --source=avatar `which django-admin.py` test tests
+	coverage run --source=avatar `which django-admin.py` test tests
 	coverage report
 
 publish: clean
