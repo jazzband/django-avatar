@@ -72,7 +72,6 @@ class Avatar(models.Model):
 
     class Meta:
         app_label = 'avatar'
-        unique_together = ('user', 'primary')
 
     def __unicode__(self):
         return _(six.u('Avatar for %s')) % self.user
