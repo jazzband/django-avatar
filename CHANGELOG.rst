@@ -6,6 +6,7 @@ Changelog
     * Added Django 1.9 support
     * Removed Python 2.6 support
     * Removed Django 1.4, 1.5, and 1.6 support
+    * Added database-level enforcement of unique user/primary pair in Avatar model.
 
 * 2.1.1 (August 10, 2015)
     * Added Polish locale
