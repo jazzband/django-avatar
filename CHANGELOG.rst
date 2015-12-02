@@ -1,7 +1,7 @@
 Changelog
 =========
 
-* 2.2 (Not released)
+* 2.2.0 (December 2, 2015)
     * Added Python 3.5 support
     * Added Django 1.9 support
     * Removed Python 2.6 support
