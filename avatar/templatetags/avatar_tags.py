@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils import six
 from django.utils.translation import ugettext as _
+from django.utils.module_loading import import_string
 
 from avatar.conf import settings
 from avatar.util import (get_primary_avatar, get_default_avatar_url,
@@ -19,6 +20,14 @@ from avatar.models import Avatar
 
 register = template.Library()
 
+get_facebook_id = None
+
+if settings.AVATAR_FACEBOOK_BACKUP:
+    if callable(settings.AVATAR_FACEBOOK_GET_ID):
+        get_facebook_id = settings.AVATAR_FACEBOOK_GET_ID
+    else:
+        get_facebook_id = import_string(settings.AVATAR_FACEBOOK_GET_ID)
+
 
 @cache_result()
 @register.simple_tag
@@ -26,6 +35,13 @@ def avatar_url(user, size=settings.AVATAR_DEFAULT_SIZE):
     avatar = get_primary_avatar(user, size=size)
     if avatar:
         return avatar.avatar_url(size)
+
+    if settings.AVATAR_FACEBOOK_BACKUP:
+        fb_id = get_facebook_id(user)
+        if fb_id:
+            return 'https://graph.facebook.com/{fb_id}/picture?type=square&width={size}&height={size}'.format(
+                fb_id=fb_id, size=size
+            )
 
     if settings.AVATAR_GRAVATAR_BACKUP:
         params = {'s': str(size)}

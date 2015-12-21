@@ -24,6 +24,8 @@ class AvatarConf(AppConf):
     STORAGE = settings.DEFAULT_FILE_STORAGE
     CLEANUP_DELETED = False
     AUTO_GENERATE_SIZES = (DEFAULT_SIZE,)
+    FACEBOOK_BACKUP = False
+    FACEBOOK_GET_ID = None
 
     def configure_auto_generate_avatar_sizes(self, value):
         return value or getattr(settings, 'AVATAR_AUTO_GENERATE_SIZES',
