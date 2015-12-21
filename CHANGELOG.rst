@@ -1,6 +1,9 @@
 Changelog
 =========
 
+* 2.2.1 (Not released)
+    * Added AVATAR_GRAVATAR_FIELD setting to define the user field to get the gravatar email.
+
 * 2.2.0 (December 2, 2015)
     * Added Python 3.5 support
     * Added Django 1.9 support

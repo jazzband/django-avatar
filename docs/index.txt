@@ -128,9 +128,9 @@ AVATAR_DEFAULT_URL
     and there is no ``Avatar`` instance found in the system for the given user.
 
 AVATAR_GRAVATAR_FIELD
-    The name of the user's field containing the gravatar email. Defaults to
-    ``email``. If you put, for example, ``gravatar``, django-avatar will get the
-    user's gravatar in ``user.gravatar``.
+    The name of the user's field containing the gravatar email. For example, if you set
+    this to ``gravatar`` then django-avatar will get the user's gravatar in ``user.gravatar``.
+    Defaults to ``email``.
 
 AVATAR_MAX_SIZE
     File size limit for avatar upload. Default is ``1024 * 1024`` (1mb).
