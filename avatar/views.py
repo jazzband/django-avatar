@@ -1,3 +1,11 @@
+import hashlib
+
+try:
+    from urllib.parse import urljoin, urlencode
+except ImportError:
+    from urlparse import urljoin
+    from urllib import urlencode
+
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.utils import six
@@ -11,7 +19,7 @@ from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
 from avatar.signals import avatar_updated
 from avatar.util import (get_primary_avatar, get_default_avatar_url,
-                         get_user_model, get_user)
+                         get_user_model, get_user, force_bytes)
 
 
 def _get_next(request):
@@ -220,6 +228,12 @@ def avatar(request, username, id, template_name="avatar/avatar.html"):
 
 def render_primary(request, user=None, size=settings.AVATAR_DEFAULT_SIZE):
     size = int(size)
+    if not isinstance(user, get_user_model()):
+        try:
+            user = get_user(user)
+        except get_user_model().DoesNotExist:
+            return None    
+
     avatar = get_primary_avatar(user, size=size)
     if avatar:
         # FIXME: later, add an option to render the resized avatar dynamically
@@ -228,7 +242,14 @@ def render_primary(request, user=None, size=settings.AVATAR_DEFAULT_SIZE):
         # we want to minimize the storage usage on our static server, letting
         # the CDN store those files instead
         url = avatar.avatar_url(size)
+    elif settings.AVATAR_GRAVATAR_BACKUP:
+        params = {'s': str(size)}
+        if settings.AVATAR_GRAVATAR_DEFAULT:
+            params['d'] = settings.AVATAR_GRAVATAR_DEFAULT
+        path = "%s/?%s" % (hashlib.md5(force_bytes(user.email)).hexdigest(),
+                           urlencode(params))
+        url = urljoin(settings.AVATAR_GRAVATAR_BASE_URL, path)
     else:
         url = get_default_avatar_url()
-
+    
     return redirect(url)
