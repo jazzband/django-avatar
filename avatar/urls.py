@@ -2,11 +2,11 @@ try:
     from django.conf.urls import patterns, url
 except ImportError:
     # Django < 1.4
-    from django.conf.urls.defaults import patterns, url
+    from django.conf.urls.defaults import url
 
 from avatar import views
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^add/$', views.add, name='avatar_add'),
     url(r'^change/$', views.change, name='avatar_change'),
     url(r'^delete/$', views.delete, name='avatar_delete'),
@@ -19,4 +19,4 @@ urlpatterns = patterns('',
     url(r'^list/(?P<username>[\+\w\@\.]+)/(?P<id>[\d]+)/$',
         views.avatar,
         name='avatar'),
-)
+]
