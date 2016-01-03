@@ -21,7 +21,7 @@ msgstr ""
 msgid ""
 "%(ext)s is an invalid file extension. Authorized extensions are : %"
 "(valid_exts_list)s"
-msgstr "Extensão informada inválida. Os Formatos permitidos são : %"
+msgstr "%(ext)s é uma extensão informada inválida. Os Formatos permitidos são : %"
 "(valid_exts_list)s"
 #: forms.py:38
 #, python-format
