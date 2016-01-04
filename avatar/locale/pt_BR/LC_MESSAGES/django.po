@@ -21,8 +21,8 @@ msgstr ""
 msgid ""
 "%(ext)s is an invalid file extension. Authorized extensions are : %"
 "(valid_exts_list)s"
-msgstr "Extensão informada inválida. Os Formatos permitidos são : %"
-
+msgstr "%(ext)s é uma extensão informada inválida. Os Formatos permitidos são : %"
+"(valid_exts_list)s"
 #: forms.py:38
 #, python-format
 msgid ""
@@ -37,7 +37,7 @@ msgid ""
 "You already have %(nb_avatars)d avatars, and the maximum allowed is %"
 "(nb_max_avatars)d."
 msgstr "Você já possui %(nb_avatars)d fotos. O máximo permitido é %"
-
+"(nb_max_avatars)d."
 #: forms.py:56 forms.py:67
 msgid "Choices"
 msgstr "Opções"
