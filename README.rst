@@ -12,6 +12,9 @@ django-avatar
 .. image:: https://travis-ci.org/grantmcconnaughey/django-avatar.svg
     :target: https://travis-ci.org/grantmcconnaughey/django-avatar
 
+.. image:: https://coveralls.io/repos/grantmcconnaughey/django-avatar/badge.svg?branch=master&service=github
+  :target: https://coveralls.io/github/grantmcconnaughey/django-avatar?branch=master
+
 Django-avatar is a reusable application for handling user avatars.  It has the
 ability to default to Gravatar if no avatar is found for a certain user.
 Django-avatar automatically generates thumbnails and stores them to your default
