@@ -2,6 +2,13 @@
 django-avatar
 =============
 
+.. image:: https://badge.fury.io/py/django-avatar.svg
+    :target: https://badge.fury.io/py/django-avatar
+
+.. image:: https://readthedocs.org/projects/django-avatar/badge/?version=latest
+    :target: http://django-avatar.readthedocs.org/en/latest/?badge=latest
+    :alt: Documentation Status
+
 .. image:: https://travis-ci.org/grantmcconnaughey/django-avatar.svg
     :target: https://travis-ci.org/grantmcconnaughey/django-avatar
 
