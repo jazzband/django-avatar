@@ -1,3 +1,4 @@
+import binascii
 import datetime
 import os
 import hashlib
@@ -47,7 +48,10 @@ def avatar_file_path(instance=None, filename=None, size=None, ext=None):
         # File doesn't exist yet
         if settings.AVATAR_HASH_FILENAMES:
             (root, ext) = os.path.splitext(filename)
-            filename = hashlib.md5(force_bytes(filename)).hexdigest()
+            if settings.AVATAR_RANDOMIZE_HASHES:
+                filename = binascii.hexlify(os.urandom(16)).decode('ascii')
+            else:
+                filename = hashlib.md5(force_bytes(filename)).hexdigest()
             filename = filename + ext
     if size:
         tmppath.extend(['resized', str(size)])
