@@ -38,17 +38,17 @@ that are required. A minimal integration can work like this:
             'avatar',
         )
 
-2.  Update your database::
+2.  Migrate your database::
 
-        python manage.py syncdb
+        python manage.py migrate
 
 3.  Add the avatar urls to the end of your root urlconf. Your urlconf
     will look something like::
 
-        urlpatterns = patterns('',
+        urlpatterns = [
             # ...
             (r'^avatar/', include('avatar.urls')),
-        )
+        ]
 
 4.  Somewhere in your template navigation scheme, link to the change avatar
     page::
@@ -72,7 +72,7 @@ Template tags and filter
 ------------------------
 
 To begin using these template tags, you must first load the tags into the
-template rendering system:
+template rendering system::
 
     {% load avatar_tags %}
 
@@ -120,7 +120,7 @@ AVATAR_GRAVATAR_BACKUP
 AVATAR_GRAVATAR_DEFAULT
     A string determining the style of the default Gravatar. Available options
     listed in the
-    (Gravatar documentation)[https://en.gravatar.com/site/implement/images/#default-image].
+    `Gravatar documentation <https://en.gravatar.com/site/implement/images/#default-image>`_.
     Ex. 'retro'. Defaults to None.
 
 AVATAR_DEFAULT_URL
