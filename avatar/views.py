@@ -11,7 +11,7 @@ from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
 from avatar.signals import avatar_updated
 from avatar.util import (get_primary_avatar, get_default_avatar_url,
-                         get_user_model, get_user)
+                         get_user_model, get_user, invalidate_cache)
 
 
 def _get_next(request):
@@ -107,6 +107,7 @@ def change(request, extra_context=None, next_override=None,
             avatar.primary = True
             avatar.save()
             updated = True
+            invalidate_cache(request.user)
             messages.success(request, _("Successfully updated your avatar."))
         if updated:
             avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)

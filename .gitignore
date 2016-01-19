@@ -9,3 +9,4 @@ dist/
 avatars
 .coverage
 docs/_build
+htmlcov/
