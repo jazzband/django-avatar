@@ -9,10 +9,4 @@ urlpatterns = [
     url(r'^render_primary/(?P<user>[\w\d\@\.\-_]{3,30})/(?P<size>[\d]+)/$',
         views.render_primary,
         name='avatar_render_primary'),
-    url(r'^list/(?P<username>[\+\w\@\.]+)/$',
-        views.avatar_gallery,
-        name='avatar_gallery'),
-    url(r'^list/(?P<username>[\+\w\@\.]+)/(?P<id>[\d]+)/$',
-        views.avatar,
-        name='avatar'),
 ]
