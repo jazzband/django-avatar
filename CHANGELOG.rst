@@ -4,6 +4,7 @@ Changelog
 * 3.0 (Not released):
     * Added the ability to hide usernames/emails from avatar URLs.
     * Added the ability to use a Facebook Graph avatar as a backup.
+    * Added a way to customize where avatars are stored.
     * Added a setting to disable the avatar cache.
     * Fixed issue where cache was not invalidated after updating avatar
     * Renamed the ``avatar.util`` module to ``avatar.utils``.
