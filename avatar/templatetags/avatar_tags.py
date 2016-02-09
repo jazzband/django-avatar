@@ -14,8 +14,8 @@ from django.utils.translation import ugettext as _
 from django.utils.module_loading import import_string
 
 from avatar.conf import settings
-from avatar.util import (get_primary_avatar, get_default_avatar_url,
-                         cache_result, get_user_model, get_user, force_bytes)
+from avatar.utils import (get_primary_avatar, get_default_avatar_url,
+                          cache_result, get_user_model, get_user, force_bytes)
 from avatar.models import Avatar
 
 register = template.Library()

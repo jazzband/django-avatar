@@ -15,7 +15,7 @@ from django.utils import six
 from django.db.models import signals
 
 from avatar.conf import settings
-from avatar.util import get_username, force_bytes, invalidate_cache
+from avatar.utils import get_username, force_bytes, invalidate_cache
 
 try:
     from django.utils.timezone import now

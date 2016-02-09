@@ -51,7 +51,6 @@ def cache_result(default_size=settings.AVATAR_DEFAULT_SIZE):
     Decorator to cache the result of functions that take a ``user`` and a
     ``size`` value.
     """
-
     if not settings.AVATAR_CACHE_ENABLED:
         def decorator(func):
             return func

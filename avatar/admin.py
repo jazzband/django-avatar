@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 
 from avatar.models import Avatar
 from avatar.signals import avatar_updated
-from avatar.util import get_user_model
+from avatar.utils import get_user_model
 
 
 class AvatarAdmin(admin.ModelAdmin):

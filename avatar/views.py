@@ -9,8 +9,8 @@ from avatar.conf import settings
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
 from avatar.signals import avatar_updated
-from avatar.util import (get_primary_avatar, get_default_avatar_url,
-                         invalidate_cache)
+from avatar.utils import (get_primary_avatar, get_default_avatar_url,
+                          invalidate_cache)
 
 
 def _get_next(request):

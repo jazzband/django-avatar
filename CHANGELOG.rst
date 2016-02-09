@@ -6,8 +6,10 @@ Changelog
     * Added the ability to use a Facebook Graph avatar as a backup.
     * Added a way to customize where avatars are stored.
     * Added a setting to disable the avatar cache.
+    * Updated thumbnail creation to preserve RGBA.
+    * Fixed issue where ``render_primary`` would not work if username/email was greater than 30 characters.
     * Fixed issue where cache was not invalidated after updating avatar
-    * Renamed the ``avatar.util`` module to ``avatar.utils``.
+    * **Backwards Incompatible:** Renamed the ``avatar.util`` module to ``avatar.utils``.
 
 * 2.2.1 (January 11, 2016)
     * Added AVATAR_GRAVATAR_FIELD setting to define the user field to get the gravatar email.
