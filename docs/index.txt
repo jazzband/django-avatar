@@ -135,6 +135,10 @@ AVATAR_GRAVATAR_FIELD
 AVATAR_MAX_SIZE
     File size limit for avatar upload. Default is ``1024 * 1024`` (1mb).
 
+AVATAR_PATH_HANDLER
+    Path to a method for avatar file path handling. Default is
+    ``avatar.models.avatar_path_handler``.
+
 Management Commands
 -------------------
 

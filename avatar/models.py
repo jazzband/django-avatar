@@ -7,6 +7,7 @@ from django.db import models
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
+from django.utils.module_loading import import_string
 from django.utils.translation import ugettext as _
 from django.utils import six
 from django.db.models import signals
@@ -22,8 +23,7 @@ except ImportError:
 
 avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 
-
-def avatar_file_path(instance=None, filename=None, size=None, ext=None):
+def avatar_path_handler(instance=None, filename=None, size=None, ext=None):
     tmppath = [settings.AVATAR_STORAGE_DIR]
     if settings.AVATAR_HASH_USERDIRNAMES:
         tmp = hashlib.md5(get_username(instance.user)).hexdigest()
@@ -50,6 +50,8 @@ def avatar_file_path(instance=None, filename=None, size=None, ext=None):
         tmppath.extend(['resized', str(size)])
     tmppath.append(os.path.basename(filename))
     return os.path.join(*tmppath)
+
+avatar_file_path = import_string(settings.AVATAR_PATH_HANDLER)
 
 
 def find_extension(format):
