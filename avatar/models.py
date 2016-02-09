@@ -1,3 +1,4 @@
+import binascii
 import datetime
 import os
 import hashlib
@@ -9,6 +10,7 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext as _
+from django.utils.encoding import force_text
 from django.utils import six
 from django.db.models import signals
 
@@ -26,10 +28,12 @@ avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 def avatar_path_handler(instance=None, filename=None, size=None, ext=None):
     tmppath = [settings.AVATAR_STORAGE_DIR]
     if settings.AVATAR_HASH_USERDIRNAMES:
-        tmp = hashlib.md5(get_username(instance.user)).hexdigest()
-        tmppath.extend([tmp[0], tmp[1], get_username(instance.user)])
-    else:
+        tmp = hashlib.md5(force_bytes(get_username(instance.user))).hexdigest()
+        tmppath.extend(tmp[0:2])
+    if settings.AVATAR_EXPOSE_USERNAMES:
         tmppath.append(get_username(instance.user))
+    else:
+        tmppath.append(force_text(instance.user.pk))
     if not filename:
         # Filename already stored in database
         filename = instance.avatar.name
@@ -44,7 +48,10 @@ def avatar_path_handler(instance=None, filename=None, size=None, ext=None):
         # File doesn't exist yet
         if settings.AVATAR_HASH_FILENAMES:
             (root, ext) = os.path.splitext(filename)
-            filename = hashlib.md5(force_bytes(filename)).hexdigest()
+            if settings.AVATAR_RANDOMIZE_HASHES:
+                filename = binascii.hexlify(os.urandom(16)).decode('ascii')
+            else:
+                filename = hashlib.md5(force_bytes(filename)).hexdigest()
             filename = filename + ext
     if size:
         tmppath.extend(['resized', str(size)])

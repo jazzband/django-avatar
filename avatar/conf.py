@@ -20,11 +20,16 @@ class AvatarConf(AppConf):
     THUMB_QUALITY = 85
     HASH_FILENAMES = False
     HASH_USERDIRNAMES = False
+    EXPOSE_USERNAMES = True
     ALLOWED_FILE_EXTS = None
     CACHE_TIMEOUT = 60 * 60
     STORAGE = settings.DEFAULT_FILE_STORAGE
     CLEANUP_DELETED = False
     AUTO_GENERATE_SIZES = (DEFAULT_SIZE,)
+    FACEBOOK_BACKUP = False
+    FACEBOOK_GET_ID = None
+    DISABLE_CACHE = False
+    RANDOMIZE_HASHES = False
 
     def configure_auto_generate_avatar_sizes(self, value):
         return value or getattr(settings, 'AVATAR_AUTO_GENERATE_SIZES',
