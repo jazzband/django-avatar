@@ -1,8 +1,12 @@
 Changelog
 =========
 
-* 2.2.2 (Not released):
+* 3.0 (Not released):
+    * Added the ability to hide usernames/emails from avatar URLs.
+    * Added the ability to use a Facebook Graph avatar as a backup.
+    * Added a setting to disable the avatar cache.
     * Fixed issue where cache was not invalidated after updating avatar
+    * Renamed the ``avatar.util`` module to ``avatar.utils``.
 
 * 2.2.1 (January 11, 2016)
     * Added AVATAR_GRAVATAR_FIELD setting to define the user field to get the gravatar email.

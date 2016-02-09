@@ -36,13 +36,6 @@ def avatar_url(user, size=settings.AVATAR_DEFAULT_SIZE):
     if avatar:
         return avatar.avatar_url(size)
 
-    if settings.AVATAR_FACEBOOK_BACKUP:
-        fb_id = get_facebook_id(user)
-        if fb_id:
-            return 'https://graph.facebook.com/{fb_id}/picture?type=square&width={size}&height={size}'.format(
-                fb_id=fb_id, size=size
-            )
-
     if settings.AVATAR_GRAVATAR_BACKUP:
         params = {'s': str(size)}
         if settings.AVATAR_GRAVATAR_DEFAULT:
@@ -50,6 +43,13 @@ def avatar_url(user, size=settings.AVATAR_DEFAULT_SIZE):
         path = "%s/?%s" % (hashlib.md5(force_bytes(getattr(user,
             settings.AVATAR_GRAVATAR_FIELD))).hexdigest(), urlencode(params))
         return urljoin(settings.AVATAR_GRAVATAR_BASE_URL, path)
+
+    if settings.AVATAR_FACEBOOK_BACKUP:
+        fb_id = get_facebook_id(user)
+        if fb_id:
+            return 'https://graph.facebook.com/{fb_id}/picture?type=square&width={size}&height={size}'.format(
+                fb_id=fb_id, size=size
+            )
 
     return get_default_avatar_url()
 

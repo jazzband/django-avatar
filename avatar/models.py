@@ -25,6 +25,7 @@ except ImportError:
 
 avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 
+
 def avatar_path_handler(instance=None, filename=None, size=None, ext=None):
     tmppath = [settings.AVATAR_STORAGE_DIR]
     if settings.AVATAR_HASH_USERDIRNAMES:

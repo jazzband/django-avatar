@@ -52,7 +52,7 @@ def cache_result(default_size=settings.AVATAR_DEFAULT_SIZE):
     ``size`` value.
     """
 
-    if settings.AVATAR_DISABLE_CACHE:
+    if not settings.AVATAR_CACHE_ENABLED:
         def decorator(func):
             return func
         return decorator
