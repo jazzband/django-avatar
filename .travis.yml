@@ -13,18 +13,18 @@ install:
   - pip install Django==${DJANGO}
 script: make test
 env:
-  - DJANGO=1.7.10
-  - DJANGO=1.8.8
-  - DJANGO=1.9.1
+  - DJANGO=1.7.11
+  - DJANGO=1.8.9
+  - DJANGO=1.9.2
 matrix:
   exclude:
     - python: 3.2
-      env: DJANGO=1.9.1
+      env: DJANGO=1.9.2
     - python: 3.3
-      env: DJANGO=1.9.1
+      env: DJANGO=1.9.2
     - python: 3.5
-      env: DJANGO=1.7.10
+      env: DJANGO=1.7.11
     - python: 3.5
-      env: DJANGO=1.8.8
+      env: DJANGO=1.8.9
 after_success:
   - coveralls
