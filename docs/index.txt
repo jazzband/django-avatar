@@ -134,10 +134,10 @@ AVATAR_GRAVATAR_BACKUP
     ``True``.
 
 AVATAR_GRAVATAR_DEFAULT
-    A string determining the style of the default Gravatar. Available options
-    listed in the
+    A string determining the default Gravatar.  Can be a URL to a custom image or a
+    style of Gravatar. Ex. `retro`.  All Available options listed in the
     `Gravatar documentation <https://en.gravatar.com/site/implement/images/#default-image>`_.
-    Ex. 'retro'. Defaults to ``None``.
+    Defaults to ``None``.
 
 AVATAR_GRAVATAR_FIELD
     The name of the user's field containing the gravatar email. For example, if you set
