@@ -13,6 +13,7 @@ class AvatarConf(AppConf):
     GRAVATAR_FIELD = 'email'
     GRAVATAR_BACKUP = True
     GRAVATAR_DEFAULT = None
+    AVATAR_GRAVATAR_FORCEDEFAULT = False
     DEFAULT_URL = 'avatar/img/default.jpg'
     MAX_AVATARS_PER_USER = 42
     MAX_SIZE = 1024 * 1024
