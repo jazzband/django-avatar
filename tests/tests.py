@@ -9,6 +9,7 @@ from avatar.admin import AvatarAdmin
 from avatar.conf import settings
 from avatar.utils import get_primary_avatar, get_user_model
 from avatar.models import Avatar
+from avatar.templatetags import avatar_tags
 from PIL import Image
 
 
@@ -159,17 +160,55 @@ class AvatarTests(TestCase):
         self.assertEqual(count_before, count_after)
 
     @override_settings(AVATAR_THUMB_FORMAT='png')
-    def testAutomaticThumbnailCreationRGBA(self):
+    def test_automatic_thumbnail_creation_RGBA(self):
         upload_helper(self, "django.png")
         avatar = get_primary_avatar(self.user)
         image = Image.open(avatar.avatar.storage.open(avatar.avatar_name(settings.AVATAR_DEFAULT_SIZE), 'rb'))
         self.assertEqual(image.mode, 'RGBA')
 
-    def testAutomaticThumbnailCreationCMYK(self):
+    def test_automatic_thumbnail_creation_CMYK(self):
         upload_helper(self, "django_pony_cmyk.jpg")
         avatar = get_primary_avatar(self.user)
         image = Image.open(avatar.avatar.storage.open(avatar.avatar_name(settings.AVATAR_DEFAULT_SIZE), 'rb'))
         self.assertEqual(image.mode, 'RGB')
+
+    def test_has_avatar_False_if_no_avatar(self):
+        self.assertFalse(avatar_tags.has_avatar(self.user))
+
+    def test_has_avatar_False_if_not_user_model(self):
+        self.assertFalse(avatar_tags.has_avatar("Look, I'm a string"))
+
+    def test_has_avatar_True(self):
+        upload_helper(self, "test.png")
+
+        self.assertTrue(avatar_tags.has_avatar(self.user))
+
+    def test_avatar_tag_works_with_username(self):
+        upload_helper(self, "test.png")
+        avatar = get_primary_avatar(self.user)
+
+        result = avatar_tags.avatar(self.user.username)
+
+        self.assertIn('<img src="{}"'.format(avatar.avatar_url(80)), result)
+        self.assertIn('alt="test" width="80" height="80" />', result)
+
+    def test_avatar_tag_works_with_user(self):
+        upload_helper(self, "test.png")
+        avatar = get_primary_avatar(self.user)
+
+        result = avatar_tags.avatar(self.user)
+
+        self.assertIn('<img src="{}"'.format(avatar.avatar_url(80)), result)
+        self.assertIn('alt="test" width="80" height="80" />', result)
+
+    def test_avatar_tag_works_with_custom_size(self):
+        upload_helper(self, "test.png")
+        avatar = get_primary_avatar(self.user)
+
+        result = avatar_tags.avatar(self.user, 100)
+
+        self.assertIn('<img src="{}"'.format(avatar.avatar_url(100)), result)
+        self.assertIn('alt="test" width="100" height="100" />', result)
 
     # def testAvatarOrder
     # def testReplaceAvatarWhenMaxIsOne
