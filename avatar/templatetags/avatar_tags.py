@@ -40,6 +40,8 @@ def avatar_url(user, size=settings.AVATAR_DEFAULT_SIZE):
         params = {'s': str(size)}
         if settings.AVATAR_GRAVATAR_DEFAULT:
             params['d'] = settings.AVATAR_GRAVATAR_DEFAULT
+        if settings.AVATAR_GRAVATAR_FORCEDEFAULT:
+            params['f'] = 'y'
         path = "%s/?%s" % (hashlib.md5(force_bytes(getattr(user,
             settings.AVATAR_GRAVATAR_FIELD))).hexdigest(), urlencode(params))
         return urljoin(settings.AVATAR_GRAVATAR_BASE_URL, path)
