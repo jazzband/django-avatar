@@ -139,6 +139,11 @@ AVATAR_GRAVATAR_DEFAULT
     `Gravatar documentation <https://en.gravatar.com/site/implement/images/#default-image>`_.
     Defaults to ``None``.
 
+AVATAR_GRAVATAR_FORCEDEFAULT
+    A bool indicating whether or not to always use the default Gravitar. More details can be found
+    in the `Gravatar documentation <https://en.gravatar.com/site/implement/images/#force-default>`_.
+    Defaults to ``False``.
+
 AVATAR_GRAVATAR_FIELD
     The name of the user's field containing the gravatar email. For example, if you set
     this to ``gravatar`` then django-avatar will get the user's gravatar in ``user.gravatar``.
