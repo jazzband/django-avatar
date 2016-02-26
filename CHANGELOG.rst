@@ -1,7 +1,7 @@
 Changelog
 =========
 
-* 3.0 (Not released):
+* 3.0 (February 26, 2016):
     * Added the ability to hide usernames/emails from avatar URLs.
     * Added the ability to use a Facebook Graph avatar as a backup.
     * Added a way to customize where avatars are stored.
