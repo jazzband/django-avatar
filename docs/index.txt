@@ -163,7 +163,7 @@ AVATAR_RESIZE_METHOD
 AVATAR_STORAGE_DIR
     The directory under ``MEDIA_ROOT`` to store the images. If using a
     non-filesystem storage device, this will simply be appended to the beginning
-    of the file name.
+    of the file name.  Defaults to ``avatars``.
 
 Management Commands
 -------------------
