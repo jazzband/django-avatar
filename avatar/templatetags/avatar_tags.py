@@ -70,12 +70,13 @@ def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
     else:
         alt = six.text_type(user)
         url = avatar_url(user, size)
-    context = dict(kwargs, **{
+    context = {
         'user': user,
         'url': url,
         'alt': alt,
         'size': size,
-    })
+        'kwargs': kwargs,
+    }
     return render_to_string('avatar/avatar_tag.html', context)
 
 
