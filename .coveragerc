@@ -16,7 +16,7 @@ exclude_lines =
     if __name__ == .__main__.:
 
 omit =
-    avatar/*/migrations/*
+    avatar/migrations/*
 
 show_missing = True
 precision = 2
