@@ -31,6 +31,9 @@ class AvatarConf(AppConf):
     FACEBOOK_GET_ID = None
     CACHE_ENABLED = True
     RANDOMIZE_HASHES = False
+    ADD_TEMPLATE = ''
+    CHANGE_TEMPLATE = ''
+    DELETE_TEMPLATE = ''
 
     def configure_auto_generate_avatar_sizes(self, value):
         return value or getattr(settings, 'AVATAR_AUTO_GENERATE_SIZES',

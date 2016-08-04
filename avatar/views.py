@@ -80,7 +80,8 @@ def add(request, extra_context=None, next_override=None,
         'next': next_override or _get_next(request),
     }
     context.update(extra_context)
-    return render(request, 'avatar/add.html', context)
+    template_name = settings.AVATAR_ADD_TEMPLATE or 'avatar/add.html'
+    return render(request, template_name, context)
 
 
 @login_required
@@ -120,7 +121,8 @@ def change(request, extra_context=None, next_override=None,
         'next': next_override or _get_next(request)
     }
     context.update(extra_context)
-    return render(request, 'avatar/change.html', context)
+    template_name = settings.AVATAR_CHANGE_TEMPLATE or 'avatar/change.html'
+    return render(request, template_name, context)
 
 
 @login_required
@@ -155,8 +157,8 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
         'next': next_override or _get_next(request),
     }
     context.update(extra_context)
-
-    return render(request, 'avatar/confirm_delete.html', context)
+    template_name = settings.AVATAR_DELETE_TEMPLATE or 'avatar/confirm_delete.html'
+    return render(request, template_name, context)
 
 
 def render_primary(request, user=None, size=settings.AVATAR_DEFAULT_SIZE):
