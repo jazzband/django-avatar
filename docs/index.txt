@@ -170,6 +170,15 @@ AVATAR_STORAGE_DIR
     non-filesystem storage device, this will simply be appended to the beginning
     of the file name.  Defaults to ``avatars``.
 
+AVATAR_ADD_TEMPLATE
+    Path to the Django template to use for adding a new avatar. Defaults to ``avatar/add.html``.
+
+AVATAR_CHANGE_TEMPLATE
+    Path to the Django template to use for changing a user's avatar. Defaults to ``avatar/change.html``.
+
+AVATAR_DELETE_TEMPLATE
+    Path to the Django template to use for confirming a delete of a user's avatar. Defaults to ``avatar/avatar/confirm_delete.html``.
+
 Management Commands
 -------------------
 
