@@ -16,7 +16,7 @@ Changelog
 
 * 2.2.1 (January 11, 2016)
     * Added AVATAR_GRAVATAR_FIELD setting to define the user field to get the gravatar email.
-    * Improved Django 1.9/1.10 compability
+    * Improved Django 1.9/1.10 compatibility
     * Improved Brazilian translations
 
 * 2.2.0 (December 2, 2015)
