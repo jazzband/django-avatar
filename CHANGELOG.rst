@@ -1,6 +1,9 @@
 Changelog
 =========
 
+* 3.1.0 (Not released)
+    * Added Django 1.10 support
+
 * 3.0.0 (February 26, 2016):
     * Added the ability to hide usernames/emails from avatar URLs.
     * Added the ability to use a Facebook Graph avatar as a backup.
