@@ -9,7 +9,7 @@ django-avatar
     :target: http://django-avatar.readthedocs.org/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: https://travis-ci.org/grantmcconnaughey/django-avatar.svg
+.. image:: https://travis-ci.org/grantmcconnaughey/django-avatar.svg?branch=master
     :target: https://travis-ci.org/grantmcconnaughey/django-avatar
 
 .. image:: https://coveralls.io/repos/grantmcconnaughey/django-avatar/badge.svg?branch=master&service=github
