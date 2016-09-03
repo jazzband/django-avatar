@@ -10,3 +10,5 @@ avatars
 .coverage
 docs/_build
 htmlcov/
+*.sqlite3
+test_proj/media
