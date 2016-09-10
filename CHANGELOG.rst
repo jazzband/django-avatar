@@ -1,7 +1,7 @@
 Changelog
 =========
 
-* 3.1.0 (Not released)
+* 3.1.0 (September 10, 2016)
     * Added the ability to override templates using ``AVATAR_ADD_TEMPLATE``, ``AVATAR_CHANGE_TEMPLATE``, and ``AVATAR_DELETE_TEMPLATE``.
     * Added the ability to pass additional HTML attributes using the ``{% avatar %}`` template tag.
     * Fixed unused verbosity setting in ``rebuild_avatars.py``.
