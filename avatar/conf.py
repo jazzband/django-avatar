@@ -11,7 +11,6 @@ class AvatarConf(AppConf):
     PATH_HANDLER = 'avatar.models.avatar_path_handler'
     GRAVATAR_BASE_URL = 'https://www.gravatar.com/avatar/'
     GRAVATAR_FIELD = 'email'
-    GRAVATAR_BACKUP = True
     GRAVATAR_DEFAULT = None
     AVATAR_GRAVATAR_FORCEDEFAULT = False
     DEFAULT_URL = 'avatar/img/default.jpg'
@@ -27,13 +26,17 @@ class AvatarConf(AppConf):
     STORAGE = settings.DEFAULT_FILE_STORAGE
     CLEANUP_DELETED = False
     AUTO_GENERATE_SIZES = (DEFAULT_SIZE,)
-    FACEBOOK_BACKUP = False
     FACEBOOK_GET_ID = None
     CACHE_ENABLED = True
     RANDOMIZE_HASHES = False
     ADD_TEMPLATE = ''
     CHANGE_TEMPLATE = ''
     DELETE_TEMPLATE = ''
+    PROVIDERS = (
+        'avatar.providers.PrimaryAvatarProvider',
+        'avatar.providers.GravatarAvatarProvider',
+        'avatar.providers.DefaultAvatarProvider',
+    )
 
     def configure_auto_generate_avatar_sizes(self, value):
         return value or getattr(settings, 'AVATAR_AUTO_GENERATE_SIZES',
