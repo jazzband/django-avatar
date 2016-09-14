@@ -7,10 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-17 00:31+0400\n"
+"POT-Creation-Date: 2016-09-14 16:37+0200\n"
 "PO-Revision-Date: 2012-03-17 00:31+0400\n"
 "Last-Translator: frost-nzcr4 <frost.nzcr4@jagmort.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,50 +20,74 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: forms.py:33
-#, python-format
-msgid "%(ext)s is an invalid file extension. Authorized extensions are : %(valid_exts_list)s"
-msgstr "%(ext)s запрещённое расширение. Разрешённые расширения: %(valid_exts_list)s"
+#: admin.py:26
+#, fuzzy
+#| msgid "Avatar for %s"
+msgid "Avatar"
+msgstr "Аватар для %s"
+
+#: forms.py:24 models.py:84 models.py:97
+#, fuzzy
+#| msgid "Default Avatar"
+msgid "avatar"
+msgstr "Аватар по умолчанию"
 
 #: forms.py:37
 #, python-format
-msgid "Your file is too big (%(size)s), the maximum allowed size is %(max_valid_size)s"
-msgstr "Файл слишком большой (%(size)s), максимальный допустимый размер %(max_valid_size)s"
+msgid ""
+"%(ext)s is an invalid file extension. Authorized extensions are : "
+"%(valid_exts_list)s"
+msgstr ""
+"%(ext)s запрещённое расширение. Разрешённые расширения: %(valid_exts_list)s"
 
-#: forms.py:43
+#: forms.py:44
 #, python-format
-msgid "You already have %(nb_avatars)d avatars, and the maximum allowed is %(nb_max_avatars)d."
-msgstr "У вас уже %(nb_avatars)d аватаров, максимально допустимо %(nb_max_avatars)d."
+msgid ""
+"Your file is too big (%(size)s), the maximum allowed size is "
+"%(max_valid_size)s"
+msgstr ""
+"Файл слишком большой (%(size)s), максимальный допустимый размер "
+"%(max_valid_size)s"
 
-#: models.py:72
+#: forms.py:54
 #, python-format
-msgid "Avatar for %s"
+msgid ""
+"You already have %(nb_avatars)d avatars, and the maximum allowed is "
+"%(nb_max_avatars)d."
+msgstr ""
+"У вас уже %(nb_avatars)d аватаров, максимально допустимо %(nb_max_avatars)d."
+
+#: forms.py:71 forms.py:84
+msgid "Choices"
+msgstr ""
+
+#: models.py:77
+msgid "user"
+msgstr ""
+
+#: models.py:80
+msgid "primary"
+msgstr ""
+
+#: models.py:91
+msgid "uploaded at"
+msgstr ""
+
+#: models.py:98
+#, fuzzy
+#| msgid "Avatar for %s"
+msgid "avatars"
 msgstr "Аватар для %s"
 
-#: views.py:90
-msgid "Successfully uploaded a new avatar."
-msgstr "Новый аватар загружен."
-
-#: views.py:128
-msgid "Successfully updated your avatar."
-msgstr "Аватар обновлён."
-
-#: views.py:166
-msgid "Successfully deleted the requested avatars."
-msgstr "Выбранные аватары удалены."
-
-#: templates/avatar/add.html:5
-#: templates/avatar/change.html:5
+#: templates/avatar/add.html:5 templates/avatar/change.html:5
 msgid "Your current avatar: "
 msgstr "Ваш аватар:"
 
-#: templates/avatar/add.html:8
-#: templates/avatar/change.html:8
+#: templates/avatar/add.html:8 templates/avatar/change.html:8
 msgid "You haven't uploaded an avatar yet. Please upload one now."
 msgstr "Вы ещё не загружали аватар. Пожалуйста, загрузите его."
 
-#: templates/avatar/add.html:12
-#: templates/avatar/change.html:19
+#: templates/avatar/add.html:12 templates/avatar/change.html:19
 msgid "Upload New Image"
 msgstr "Загрузить новое изображение"
 
@@ -76,24 +101,63 @@ msgstr "Выберите аватары, которые собираетесь �
 
 #: templates/avatar/confirm_delete.html:8
 #, python-format
-msgid "You have no avatars to delete. Please <a href=\"%(avatar_change_url)s\">upload one</a> now."
-msgstr "У вас нет аватаров. <a href=\"%(avatar_change_url)s\">Загрузите</a> его."
+msgid ""
+"You have no avatars to delete. Please <a href=\"%(avatar_change_url)s"
+"\">upload one</a> now."
+msgstr ""
+"У вас нет аватаров. <a href=\"%(avatar_change_url)s\">Загрузите</a> его."
 
 #: templates/avatar/confirm_delete.html:14
 msgid "Delete These"
 msgstr "Удалить эти"
 
+#: templates/notification/avatar_friend_updated/full.txt:1
+#, fuzzy, python-format
+#| msgid ""
+#| "<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated their avatar "
+#| "<a href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgid ""
+"%(avatar_creator)s has updated their avatar %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> обновил свои аватары <a href="
+"\"%(avatar_url)s\">%(avatar)s</a>."
+
 #: templates/notification/avatar_friend_updated/notice.html:2
 #, python-format
-msgid "<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated their avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
-msgstr "<a href=\"%(user_url)s\">%(avatar_creator)s</a> обновил свои аватары <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgid ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated their avatar <a "
+"href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> обновил свои аватары <a href="
+"\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templates/notification/avatar_updated/full.txt:1
+#, python-format
+msgid ""
+"Your avatar has been updated.  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
 
 #: templates/notification/avatar_updated/notice.html:2
 #, python-format
 msgid "You have updated your avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
 msgstr "Вы обновили аватар <a href=\"%(avatar_url)s\">%(avatar)s</a>."
 
-#: templatetags/avatar_tags.py:40
+#: templatetags/avatar_tags.py:69
 msgid "Default Avatar"
 msgstr "Аватар по умолчанию"
 
+#: views.py:73
+msgid "Successfully uploaded a new avatar."
+msgstr "Новый аватар загружен."
+
+#: views.py:111
+msgid "Successfully updated your avatar."
+msgstr "Аватар обновлён."
+
+#: views.py:150
+msgid "Successfully deleted the requested avatars."
+msgstr "Выбранные аватары удалены."

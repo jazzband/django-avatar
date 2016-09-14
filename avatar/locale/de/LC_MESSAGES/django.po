@@ -7,18 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-28 10:59+0200\n"
-"PO-Revision-Date: 2016-09-14 13:07+0200\n"
+"POT-Creation-Date: 2016-09-14 16:37+0200\n"
+"PO-Revision-Date: 2016-09-14 14:34+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: de\n"
 "X-Generator: Poedit 1.8.9\n"
 
-#: forms.py:34
+#: admin.py:26
+msgid "Avatar"
+msgstr "Avatar"
+
+#: forms.py:24 models.py:84 models.py:97
+msgid "avatar"
+msgstr "avatar"
+
+#: forms.py:37
 #, python-format
 msgid ""
 "%(ext)s is an invalid file extension. Authorized extensions are : "
@@ -27,7 +35,7 @@ msgstr ""
 "%(ext)s ist ein ungültiges Dateiformat. Erlaubte Formate sind: "
 "%(valid_exts_list)s"
 
-#: forms.py:38
+#: forms.py:44
 #, python-format
 msgid ""
 "Your file is too big (%(size)s), the maximum allowed size is "
@@ -35,7 +43,7 @@ msgid ""
 msgstr ""
 "Die Datei ist zu groß (%(size)s), die Maximalgröße ist %(max_valid_size)s"
 
-#: forms.py:44
+#: forms.py:54
 #, python-format
 msgid ""
 "You already have %(nb_avatars)d avatars, and the maximum allowed is "
@@ -44,26 +52,25 @@ msgstr ""
 "Sie haben bereits %(nb_avatars)d Avatarbilder hochgeladen. Die maximale "
 "Anzahl ist %(nb_max_avatars)d."
 
-#: forms.py:56 forms.py:67
+#: forms.py:71 forms.py:84
 msgid "Choices"
 msgstr "Auswahl"
 
-#: models.py:75
-#, python-format
-msgid "Avatar for %s"
-msgstr "Avatar für %s"
+#: models.py:77
+msgid "user"
+msgstr "Benutzer"
 
-#: views.py:73 views.py:95
-msgid "Successfully uploaded a new avatar."
-msgstr "Ein neuer Avatar wurde erfolgreich hochgeladen."
+#: models.py:80
+msgid "primary"
+msgstr "primär"
 
-#: views.py:132
-msgid "Successfully updated your avatar."
-msgstr "Ihr Avatar wurde erfolgreich aktualisiert."
+#: models.py:91
+msgid "uploaded at"
+msgstr "hochgeladen am"
 
-#: views.py:166
-msgid "Successfully deleted the requested avatars."
-msgstr "Ihr Avatar wurde erfolgreich gelöscht."
+#: models.py:98
+msgid "avatars"
+msgstr "Avatare"
 
 #: templates/avatar/add.html:5 templates/avatar/change.html:5
 msgid "Your current avatar: "
@@ -137,9 +144,21 @@ msgstr ""
 "Sie haben Ihren Avatar aktualisiert <a href=\"%(avatar_url)s\">%(avatar)s</"
 "a>."
 
-#: templatetags/avatar_tags.py:45
+#: templatetags/avatar_tags.py:69
 msgid "Default Avatar"
 msgstr "Standard-Avatar"
+
+#: views.py:73
+msgid "Successfully uploaded a new avatar."
+msgstr "Ein neuer Avatar wurde erfolgreich hochgeladen."
+
+#: views.py:111
+msgid "Successfully updated your avatar."
+msgstr "Ihr Avatar wurde erfolgreich aktualisiert."
+
+#: views.py:150
+msgid "Successfully deleted the requested avatars."
+msgstr "Ihr Avatar wurde erfolgreich gelöscht."
 
 #~ msgid "Avatar Updated"
 #~ msgstr "Avatar aktualisiert"

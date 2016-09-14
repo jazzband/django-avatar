@@ -7,21 +7,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-11 12:32+0100\n"
+"POT-Creation-Date: 2016-09-14 16:37+0200\n"
 "PO-Revision-Date: 2013-11-11 12:49+0100\n"
 "Last-Translator: Ivor <ivorbosloper@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.5.5\n"
 
-#: admin.py:19
+#: admin.py:26
 msgid "Avatar"
 msgstr "Profielfoto"
 
-#: forms.py:24
+#: forms.py:24 models.py:84 models.py:97
 msgid "avatar"
 msgstr "profielfoto"
 
@@ -55,39 +56,45 @@ msgstr ""
 msgid "Choices"
 msgstr "Keuzes"
 
-#: views.py:74
-msgid "Successfully uploaded a new avatar."
-msgstr "De profielfoto is ververst."
+#: models.py:77
+msgid "user"
+msgstr ""
 
-#: views.py:110
-msgid "Successfully updated your avatar."
-msgstr "Profielfoto vernieuwd."
+#: models.py:80
+msgid "primary"
+msgstr ""
 
-#: views.py:148
-msgid "Successfully deleted the requested avatars."
-msgstr "Profielfoto verwijderd."
+#: models.py:91
+msgid "uploaded at"
+msgstr ""
 
-#: templates/avatar/add.html:6 templates/avatar/change.html:6
+#: models.py:98
+#, fuzzy
+#| msgid "avatar"
+msgid "avatars"
+msgstr "profielfoto"
+
+#: templates/avatar/add.html:5 templates/avatar/change.html:5
 msgid "Your current avatar: "
 msgstr "De huidige profielfoto:"
 
-#: templates/avatar/add.html:9 templates/avatar/change.html:9
+#: templates/avatar/add.html:8 templates/avatar/change.html:8
 msgid "You haven't uploaded an avatar yet. Please upload one now."
 msgstr "Er is nog geen profielfoto. Upload een nieuwe."
 
-#: templates/avatar/add.html:13 templates/avatar/change.html:20
+#: templates/avatar/add.html:12 templates/avatar/change.html:19
 msgid "Upload New Image"
 msgstr "Upload nieuw plaatje"
 
-#: templates/avatar/change.html:15
+#: templates/avatar/change.html:14
 msgid "Choose new Default"
 msgstr "Kies nieuwe standaard"
 
-#: templates/avatar/confirm_delete.html:6
+#: templates/avatar/confirm_delete.html:5
 msgid "Please select the avatars that you would like to delete."
 msgstr "Selecteer de te verwijderen de profielfoto's."
 
-#: templates/avatar/confirm_delete.html:9
+#: templates/avatar/confirm_delete.html:8
 #, python-format
 msgid ""
 "You have no avatars to delete. Please <a href=\"%(avatar_change_url)s"
@@ -96,7 +103,7 @@ msgstr ""
 "Er zijn geen profielfoto's om te verwijderen. <a href=\"%(avatar_change_url)s"
 "\">Upload</a> een nieuwe."
 
-#: templates/avatar/confirm_delete.html:15
+#: templates/avatar/confirm_delete.html:14
 msgid "Delete These"
 msgstr "Verwijder deze"
 
@@ -136,6 +143,18 @@ msgstr ""
 msgid "You have updated your avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
 msgstr "De profielfoto is vernieuwd <a href=\"%(avatar_url)s\">%(avatar)s</a>."
 
-#: templatetags/avatar_tags.py:51
+#: templatetags/avatar_tags.py:69
 msgid "Default Avatar"
 msgstr "Standaard profielfoto"
+
+#: views.py:73
+msgid "Successfully uploaded a new avatar."
+msgstr "De profielfoto is ververst."
+
+#: views.py:111
+msgid "Successfully updated your avatar."
+msgstr "Profielfoto vernieuwd."
+
+#: views.py:150
+msgid "Successfully deleted the requested avatars."
+msgstr "Profielfoto verwijderd."

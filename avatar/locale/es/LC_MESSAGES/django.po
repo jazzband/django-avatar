@@ -7,26 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.0a10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-26 23:53-0500\n"
+"POT-Creation-Date: 2016-09-14 16:37+0200\n"
 "PO-Revision-Date: 2013-08-27 00:21-0600\n"
 "Last-Translator: David Loaiza M. <david@zooluciones.com>\n"
 "Language-Team: es <david.loaiza@gmail.com>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.5.7\n"
-"Language: es\n"
 
-#: admin.py:19
+#: admin.py:26
 msgid "Avatar"
 msgstr "Avatar"
 
-#: forms.py:23
+#: forms.py:24 models.py:84 models.py:97
 msgid "avatar"
 msgstr "avatar"
 
-#: forms.py:35
+#: forms.py:37
 #, python-format
 msgid ""
 "%(ext)s is an invalid file extension. Authorized extensions are : "
@@ -35,7 +35,7 @@ msgstr ""
 "%(ext)s es una extensión de archivo inválida. Las extensiones de archivo "
 "autorizadas son: %(valid_exts_list)s"
 
-#: forms.py:39
+#: forms.py:44
 #, python-format
 msgid ""
 "Your file is too big (%(size)s), the maximum allowed size is "
@@ -44,7 +44,7 @@ msgstr ""
 "Su archivo es muy grande (%(size)s), el tamaño máximo permitido es "
 "%(max_valid_size)s"
 
-#: forms.py:49
+#: forms.py:54
 #, python-format
 msgid ""
 "You already have %(nb_avatars)d avatars, and the maximum allowed is "
@@ -53,43 +53,49 @@ msgstr ""
 "Usted ya tiene %(nb_avatars)d avatares, y el máximo permitido es "
 "%(nb_max_avatars)d."
 
-#: forms.py:65 forms.py:77
+#: forms.py:71 forms.py:84
 msgid "Choices"
 msgstr "Opciones"
 
-#: views.py:71
-msgid "Successfully uploaded a new avatar."
-msgstr "Se ha subido correctamente un nuevo avatar"
+#: models.py:77
+msgid "user"
+msgstr ""
 
-#: views.py:106
-msgid "Successfully updated your avatar."
-msgstr "Se ha actualizado correctamente su avatar."
+#: models.py:80
+msgid "primary"
+msgstr ""
 
-#: views.py:141
-msgid "Successfully deleted the requested avatars."
-msgstr "Se han eliminado correctamente los avatares solicitados."
+#: models.py:91
+msgid "uploaded at"
+msgstr ""
 
-#: templates/avatar/add.html:6 templates/avatar/change.html:6
+#: models.py:98
+#, fuzzy
+#| msgid "avatar"
+msgid "avatars"
+msgstr "avatar"
+
+#: templates/avatar/add.html:5 templates/avatar/change.html:5
 msgid "Your current avatar: "
 msgstr "Su avatar actual:"
 
-#: templates/avatar/add.html:9 templates/avatar/change.html:9
+#: templates/avatar/add.html:8 templates/avatar/change.html:8
 msgid "You haven't uploaded an avatar yet. Please upload one now."
 msgstr "No ha subido un avatar aún. Por favor, suba uno ahora."
 
-#: templates/avatar/add.html:13 templates/avatar/change.html:20
+#: templates/avatar/add.html:12 templates/avatar/change.html:19
 msgid "Upload New Image"
 msgstr "Subir Nueva Imagen"
 
-#: templates/avatar/change.html:15
+#: templates/avatar/change.html:14
 msgid "Choose new Default"
 msgstr "Elige nuevo predeterminado"
 
-#: templates/avatar/confirm_delete.html:6
+#: templates/avatar/confirm_delete.html:5
 msgid "Please select the avatars that you would like to delete."
 msgstr "Por favor seleccione los avatares que le gustaría eliminar."
 
-#: templates/avatar/confirm_delete.html:9
+#: templates/avatar/confirm_delete.html:8
 #, python-format
 msgid ""
 "You have no avatars to delete. Please <a href=\"%(avatar_change_url)s"
@@ -98,7 +104,7 @@ msgstr ""
 "No tiene avatares para borrar. Por favor <a href=\"%(avatar_change_url)s"
 "\">suba uno</a> ahora."
 
-#: templates/avatar/confirm_delete.html:15
+#: templates/avatar/confirm_delete.html:14
 msgid "Delete These"
 msgstr "Eliminar Estos"
 
@@ -138,6 +144,18 @@ msgstr ""
 msgid "You have updated your avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
 msgstr "Ha actualizado su avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
 
-#: templatetags/avatar_tags.py:57
+#: templatetags/avatar_tags.py:69
 msgid "Default Avatar"
 msgstr "Avatar Predeterminado"
+
+#: views.py:73
+msgid "Successfully uploaded a new avatar."
+msgstr "Se ha subido correctamente un nuevo avatar"
+
+#: views.py:111
+msgid "Successfully updated your avatar."
+msgstr "Se ha actualizado correctamente su avatar."
+
+#: views.py:150
+msgid "Successfully deleted the requested avatars."
+msgstr "Se han eliminado correctamente los avatares solicitados."
