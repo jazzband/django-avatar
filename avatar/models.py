@@ -72,16 +72,30 @@ def find_extension(format):
 
 
 class Avatar(models.Model):
-    user = models.ForeignKey(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'))
-    primary = models.BooleanField(default=False)
-    avatar = models.ImageField(max_length=1024,
-                               upload_to=avatar_file_path,
-                               storage=avatar_storage,
-                               blank=True)
-    date_uploaded = models.DateTimeField(default=now)
+    user = models.ForeignKey(
+        getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
+        verbose_name=_("user"),
+    )
+    primary = models.BooleanField(
+        verbose_name=_("primary"),
+        default=False,
+    )
+    avatar = models.ImageField(
+        verbose_name=_("avatar"),
+        max_length=1024,
+        upload_to=avatar_file_path,
+        storage=avatar_storage,
+        blank=True,
+    )
+    date_uploaded = models.DateTimeField(
+        verbose_name=_("uploaded at"),
+        default=now,
+    )
 
     class Meta:
         app_label = 'avatar'
+        verbose_name = _('avatar')
+        verbose_name_plural = _('avatars')
 
     def __unicode__(self):
         return _(six.u('Avatar for %s')) % self.user
