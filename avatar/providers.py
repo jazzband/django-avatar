@@ -82,3 +82,26 @@ class FacebookAvatarProvider(object):
                 fb_id=fb_id,
                 size=size
             )
+
+
+class InitialsAvatarProvider:
+    """
+    Returns a tuple with template_name and context for rendering the given user's avatar as their
+    initials in white against a background with random hue based on their primary key.
+    """
+
+    def get_avatar_url(user, size):
+        initials = user.first_name[:1] + user.last_name[:1]
+        if not initials:
+            initials = user.username[:1]
+        initials = initials.upper()
+        context = {
+            'fontsize': (size*1.1)/2,
+            'initials': initials,
+            'hue': user.pk % 360,
+            'saturation': '65%',
+            'lightness': '60%',
+        }
+        return ('avatar/initials.html', context)
+
+
