@@ -42,10 +42,11 @@ def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
     else:
         alt = six.text_type(user)
         url = avatar_url(user, size)
+    kwargs.update({'alt': alt})
+
     context = {
         'user': user,
         'url': url,
-        'alt': alt,
         'size': size,
         'kwargs': kwargs,
     }
