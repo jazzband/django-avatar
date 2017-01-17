@@ -190,7 +190,7 @@ class AvatarTests(TestCase):
         result = avatar_tags.avatar(self.user.username)
 
         self.assertIn('<img src="{}"'.format(avatar.avatar_url(80)), result)
-        self.assertIn('alt="test" width="80" height="80" />', result)
+        self.assertIn('width="80" height="80" alt="test" />', result)
 
     def test_avatar_tag_works_with_user(self):
         upload_helper(self, "test.png")
@@ -199,7 +199,7 @@ class AvatarTests(TestCase):
         result = avatar_tags.avatar(self.user)
 
         self.assertIn('<img src="{}"'.format(avatar.avatar_url(80)), result)
-        self.assertIn('alt="test" width="80" height="80" />', result)
+        self.assertIn('width="80" height="80" alt="test" />', result)
 
     def test_avatar_tag_works_with_custom_size(self):
         upload_helper(self, "test.png")
@@ -208,7 +208,7 @@ class AvatarTests(TestCase):
         result = avatar_tags.avatar(self.user, 100)
 
         self.assertIn('<img src="{}"'.format(avatar.avatar_url(100)), result)
-        self.assertIn('alt="test" width="100" height="100" />', result)
+        self.assertIn('width="100" height="100" alt="test" />', result)
 
     def test_avatar_tag_works_with_kwargs(self):
         upload_helper(self, "test.png")
