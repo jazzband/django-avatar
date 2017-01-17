@@ -210,6 +210,15 @@ class AvatarTests(TestCase):
         self.assertIn('<img src="{}"'.format(avatar.avatar_url(100)), result)
         self.assertIn('alt="test" width="100" height="100" />', result)
 
+    def test_avatar_tag_works_with_kwargs(self):
+        upload_helper(self, "test.png")
+        avatar = get_primary_avatar(self.user)
+
+        result = avatar_tags.avatar(self.user, title="Avatar")
+
+        self.assertIn('<img src="{}"'.format(avatar.avatar_url(80)), result)
+        self.assertIn('width="80" height="80" alt="test" title="Avatar" />', result)
+
     def test_default_add_template(self):
         response = self.client.get('/avatar/add/')
         self.assertContains(response, 'Upload New Image')
