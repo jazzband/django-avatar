@@ -215,9 +215,8 @@ class AvatarTests(TestCase):
         avatar = get_primary_avatar(self.user)
 
         result = avatar_tags.avatar(self.user, title="Avatar")
-
-        self.assertIn('<img src="{}"'.format(avatar.avatar_url(80)), result)
-        self.assertIn('width="80" height="80" alt="test" title="Avatar" />', result)
+        html = '<img src="{}" width="80" height="80" alt="test" title="Avatar" />'.format(avatar.avatar_url(80))
+        self.assertInHTML(html, result)
 
     def test_default_add_template(self):
         response = self.client.get('/avatar/add/')
@@ -251,7 +250,7 @@ class AvatarTests(TestCase):
         response = self.client.get('/avatar/delete/')
         self.assertNotContains(response, 'like to delete.')
         self.assertContains(response, 'ALTERNATE DELETE TEMPLATE')
-    
+
     # def testAvatarOrder
     # def testReplaceAvatarWhenMaxIsOne
     # def testHashFileName
