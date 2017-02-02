@@ -59,6 +59,7 @@ def avatar_path_handler(instance=None, filename=None, size=None, ext=None):
     tmppath.append(os.path.basename(filename))
     return os.path.join(*tmppath)
 
+
 avatar_file_path = import_string(settings.AVATAR_PATH_HANDLER)
 
 
