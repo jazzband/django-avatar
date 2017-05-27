@@ -1,6 +1,12 @@
 Changelog
 =========
 
+* 4.0.0 (May 27, 2017)
+    * **Backwards incompatible:** Added ``AVATAR_PROVIDERS`` setting. Avatar providers are classes that return an avatar URL for a given user.
+    * Added ``verbose_name`` to ``Avatar`` model fields.
+    * Improved German translations.
+    * Fixed bug where ``rebuild_avatars`` would fail on Django 1.10+.
+
 * 3.1.0 (September 10, 2016)
     * Added the ability to override templates using ``AVATAR_ADD_TEMPLATE``, ``AVATAR_CHANGE_TEMPLATE``, and ``AVATAR_DELETE_TEMPLATE``.
     * Added the ability to pass additional HTML attributes using the ``{% avatar %}`` template tag.

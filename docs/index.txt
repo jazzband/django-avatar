@@ -164,8 +164,8 @@ appear on the site. Listed below are those settings:
 
 .. py:data:: AVATAR_PROVIDERS
 
-    Tuple of classes that are tried in the given order for returning avatar 
-    URLs. 
+    Tuple of classes that are tried in the given order for returning avatar
+    URLs.
     Defaults to::
 
         (
@@ -175,9 +175,9 @@ appear on the site. Listed below are those settings:
         )
 
     If you want to implement your own provider, it must provide a class method
-    ``get_avatar_url(user, size)``. 
+    ``get_avatar_url(user, size)``.
 
-    .. py:class:: avatar.providers.GravatarAvatarProvider
+    .. py:class:: avatar.providers.PrimaryAvatarProvider
 
         Returns the primary avatar stored for the given user.
 
