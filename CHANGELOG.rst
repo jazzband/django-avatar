@@ -6,6 +6,10 @@ Changelog
     * Added ``verbose_name`` to ``Avatar`` model fields.
     * Improved German translations.
     * Fixed bug where ``rebuild_avatars`` would fail on Django 1.10+.
+    * Added Django 1.11 support.
+    * Added Python 3.6 support.
+    * Removed Django 1.7 and 1.8 support.
+    * Removed Python 3.3 support.
 
 * 3.1.0 (September 10, 2016)
     * Added the ability to override templates using ``AVATAR_ADD_TEMPLATE``, ``AVATAR_CHANGE_TEMPLATE``, and ``AVATAR_DELETE_TEMPLATE``.
