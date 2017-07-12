@@ -117,8 +117,9 @@ msgid ""
 "\n"
 "http://%(current_site)s%(avatar_url)s\n"
 msgstr ""
-"<a href=\"%(user_url)s\">%(avatar_creator)s</a> a mis à jour son avatar <a "
-"href=\"%(avatar_url)s\">%(avatar)s</a>."
+"%(avatar_creator)s a mis à jour son avatar %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
 
 #: templates/notification/avatar_friend_updated/notice.html:2
 #, python-format
