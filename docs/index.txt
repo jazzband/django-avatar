@@ -48,7 +48,7 @@ that are required. A minimal integration can work like this:
 
         urlpatterns = [
             # ...
-            (r'^avatar/', include('avatar.urls')),
+            url(r'^avatar/', include('avatar.urls')),
         ]
 
 4.  Somewhere in your template navigation scheme, link to the change avatar
