@@ -156,6 +156,11 @@ appear on the site. Listed below are those settings:
 .. py:data:: AVATAR_MAX_SIZE
 
     File size limit for avatar upload. Default is ``1024 * 1024`` (1 MB).
+    gravatar in ``user.gravatar``. Defaults to ``email``.
+
+.. py:data:: AVATAR_MAX_AVATARS_PER_USER
+
+    The maximum number of avatars each user can have. Default is ``42``.
 
 .. py:data:: AVATAR_PATH_HANDLER
 
