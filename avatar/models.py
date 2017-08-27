@@ -72,6 +72,21 @@ def find_extension(format):
     return format
 
 
+class AvatarField(models.ImageField):
+
+    def __init__(self, *args, **kwargs):
+        super(AvatarField, self).__init__(*args, **kwargs)
+
+        self.max_length = 1024
+        self.upload_to = avatar_file_path
+        self.storage = avatar_storage
+        self.blank = True
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(models.ImageField, self).deconstruct()
+        return name, path, (), {}
+
+
 class Avatar(models.Model):
     user = models.ForeignKey(
         getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
@@ -81,12 +96,8 @@ class Avatar(models.Model):
         verbose_name=_("primary"),
         default=False,
     )
-    avatar = models.ImageField(
-        verbose_name=_("avatar"),
-        max_length=1024,
-        upload_to=avatar_file_path,
-        storage=avatar_storage,
-        blank=True,
+    avatar = AvatarField(
+        verbose_name=_("avatar")
     )
     date_uploaded = models.DateTimeField(
         verbose_name=_("uploaded at"),
