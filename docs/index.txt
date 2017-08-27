@@ -212,6 +212,12 @@ appear on the site. Listed below are those settings:
     The directory under ``MEDIA_ROOT`` to store the images. If using a
     non-filesystem storage device, this will simply be appended to the beginning
     of the file name.  Defaults to ``avatars``.
+    PIL. Defaults to ``Image.ANTIALIAS``.
+
+.. py:data:: AVATAR_CLEANUP_DELETED
+
+    ``True`` if the avatar image files should be deleted when an avatar is
+    deleted from the database.  Defaults to ``False``.
 
 .. py:data:: AVATAR_ADD_TEMPLATE
 
