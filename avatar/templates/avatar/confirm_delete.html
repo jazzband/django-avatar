@@ -2,11 +2,11 @@
 {% load i18n %}
 
 {% block content %}
-    <p>{% trans "Please select the avatars that you would like to delete." %}</p>
     {% if not avatars %}
         {% url 'avatar_change' as avatar_change_url %}
         <p>{% blocktrans %}You have no avatars to delete. Please <a href="{{ avatar_change_url }}">upload one</a> now.{% endblocktrans %}</p>
     {% else %}
+        <p>{% trans "Please select the avatars that you would like to delete." %}</p>
         <form method="POST" action="{% url 'avatar_delete' %}">
             <ul>
                 {{ delete_avatar_form.as_ul }}
