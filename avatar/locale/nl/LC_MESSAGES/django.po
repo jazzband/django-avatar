@@ -1,0 +1,160 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-14 16:37+0200\n"
+"PO-Revision-Date: 2013-11-11 12:49+0100\n"
+"Last-Translator: Ivor <ivorbosloper@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.5\n"
+
+#: admin.py:26
+msgid "Avatar"
+msgstr "Profielfoto"
+
+#: forms.py:24 models.py:84 models.py:97
+msgid "avatar"
+msgstr "profielfoto"
+
+#: forms.py:37
+#, python-format
+msgid ""
+"%(ext)s is an invalid file extension. Authorized extensions are : "
+"%(valid_exts_list)s"
+msgstr ""
+"%(ext)s is een ongeldig bestandsformaat. Toegestane formaten zijn : "
+"%(valid_exts_list)s"
+
+#: forms.py:44
+#, python-format
+msgid ""
+"Your file is too big (%(size)s), the maximum allowed size is "
+"%(max_valid_size)s"
+msgstr ""
+"Het bestand is te groot (%(size)s), de maximale groote is %(max_valid_size)s"
+
+#: forms.py:54
+#, python-format
+msgid ""
+"You already have %(nb_avatars)d avatars, and the maximum allowed is "
+"%(nb_max_avatars)d."
+msgstr ""
+"Er zijn al %(nb_avatars)d profielfoto's, het maximale aantal is "
+"%(nb_max_avatars)d."
+
+#: forms.py:71 forms.py:84
+msgid "Choices"
+msgstr "Keuzes"
+
+#: models.py:77
+msgid "user"
+msgstr ""
+
+#: models.py:80
+msgid "primary"
+msgstr ""
+
+#: models.py:91
+msgid "uploaded at"
+msgstr ""
+
+#: models.py:98
+#, fuzzy
+#| msgid "avatar"
+msgid "avatars"
+msgstr "profielfoto"
+
+#: templates/avatar/add.html:5 templates/avatar/change.html:5
+msgid "Your current avatar: "
+msgstr "De huidige profielfoto:"
+
+#: templates/avatar/add.html:8 templates/avatar/change.html:8
+msgid "You haven't uploaded an avatar yet. Please upload one now."
+msgstr "Er is nog geen profielfoto. Upload een nieuwe."
+
+#: templates/avatar/add.html:12 templates/avatar/change.html:19
+msgid "Upload New Image"
+msgstr "Upload nieuw plaatje"
+
+#: templates/avatar/change.html:14
+msgid "Choose new Default"
+msgstr "Kies nieuwe standaard"
+
+#: templates/avatar/confirm_delete.html:5
+msgid "Please select the avatars that you would like to delete."
+msgstr "Selecteer de te verwijderen de profielfoto's."
+
+#: templates/avatar/confirm_delete.html:8
+#, python-format
+msgid ""
+"You have no avatars to delete. Please <a href=\"%(avatar_change_url)s"
+"\">upload one</a> now."
+msgstr ""
+"Er zijn geen profielfoto's om te verwijderen. <a href=\"%(avatar_change_url)s"
+"\">Upload</a> een nieuwe."
+
+#: templates/avatar/confirm_delete.html:14
+msgid "Delete These"
+msgstr "Verwijder deze"
+
+#: templates/notification/avatar_friend_updated/full.txt:1
+#, python-format
+msgid ""
+"%(avatar_creator)s has updated their avatar %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"%(avatar_creator)s heeft zijn profielfoto vernieuwd %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+
+#: templates/notification/avatar_friend_updated/notice.html:2
+#, python-format
+msgid ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated their avatar <a "
+"href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> heeft zijn profielfoto "
+"vernieuwd <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templates/notification/avatar_updated/full.txt:1
+#, python-format
+msgid ""
+"Your avatar has been updated.  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"Je profielfoto is vernieuwd.  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+
+#: templates/notification/avatar_updated/notice.html:2
+#, python-format
+msgid "You have updated your avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr "De profielfoto is vernieuwd <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templatetags/avatar_tags.py:69
+msgid "Default Avatar"
+msgstr "Standaard profielfoto"
+
+#: views.py:73
+msgid "Successfully uploaded a new avatar."
+msgstr "De profielfoto is ververst."
+
+#: views.py:111
+msgid "Successfully updated your avatar."
+msgstr "Profielfoto vernieuwd."
+
+#: views.py:150
+msgid "Successfully deleted the requested avatars."
+msgstr "Profielfoto verwijderd."

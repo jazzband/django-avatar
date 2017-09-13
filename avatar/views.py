@@ -1,4 +1,3 @@
-from django.http import Http404
 from django.shortcuts import render, redirect
 from django.utils import six
 from django.utils.translation import ugettext as _
@@ -10,8 +9,8 @@ from avatar.conf import settings
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
 from avatar.signals import avatar_updated
-from avatar.util import (get_primary_avatar, get_default_avatar_url,
-                         get_user_model, get_user)
+from avatar.utils import (get_primary_avatar, get_default_avatar_url,
+                          invalidate_cache)
 
 
 def _get_next(request):
@@ -81,7 +80,8 @@ def add(request, extra_context=None, next_override=None,
         'next': next_override or _get_next(request),
     }
     context.update(extra_context)
-    return render(request, 'avatar/add.html', context)
+    template_name = settings.AVATAR_ADD_TEMPLATE or 'avatar/add.html'
+    return render(request, template_name, context)
 
 
 @login_required
@@ -107,6 +107,7 @@ def change(request, extra_context=None, next_override=None,
             avatar.primary = True
             avatar.save()
             updated = True
+            invalidate_cache(request.user)
             messages.success(request, _("Successfully updated your avatar."))
         if updated:
             avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
@@ -120,7 +121,8 @@ def change(request, extra_context=None, next_override=None,
         'next': next_override or _get_next(request)
     }
     context.update(extra_context)
-    return render(request, 'avatar/change.html', context)
+    template_name = settings.AVATAR_CHANGE_TEMPLATE or 'avatar/change.html'
+    return render(request, template_name, context)
 
 
 @login_required
@@ -155,67 +157,8 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
         'next': next_override or _get_next(request),
     }
     context.update(extra_context)
-
-    return render(request, 'avatar/confirm_delete.html', context)
-
-
-def avatar_gallery(request, username, template_name="avatar/gallery.html"):
-    try:
-        user = get_user(username)
-    except get_user_model().DoesNotExist:
-        raise Http404
-
-    context = {
-        "other_user": user,
-        "avatars": user.avatar_set.all(),
-    }
-
+    template_name = settings.AVATAR_DELETE_TEMPLATE or 'avatar/confirm_delete.html'
     return render(request, template_name, context)
-
-
-def avatar(request, username, id, template_name="avatar/avatar.html"):
-    try:
-        user = get_user(username)
-    except get_user_model().DoesNotExist:
-        raise Http404
-    avatars = user.avatar_set.order_by("-date_uploaded")
-    index = None
-    avatar = None
-    if avatars:
-        avatar = avatars.get(pk=id)
-        if not avatar:
-            return Http404
-
-        index = avatars.filter(date_uploaded__gt=avatar.date_uploaded).count()
-        count = avatars.count()
-
-        if index == 0:
-            prev = avatars.reverse()[0]
-            if count <= 1:
-                next = avatars[0]
-            else:
-                next = avatars[1]
-        else:
-            prev = avatars[index - 1]
-
-        if (index + 1) >= count:
-            next = avatars[0]
-            prev_index = index - 1
-            if prev_index < 0:
-                prev_index = 0
-            prev = avatars[prev_index]
-        else:
-            next = avatars[index + 1]
-
-    return render(request, template_name, {
-        "other_user": user,
-        "avatar": avatar,
-        "index": index + 1,
-        "avatars": avatars,
-        "next": next,
-        "prev": prev,
-        "count": count,
-    })
 
 
 def render_primary(request, user=None, size=settings.AVATAR_DEFAULT_SIZE):

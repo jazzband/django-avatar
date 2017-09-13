@@ -1,0 +1,164 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-avatar 0.0.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-14 16:37+0200\n"
+"PO-Revision-Date: 2015-07-19 15:46+0100\n"
+"Last-Translator: Adam Dobrawy <naczelnik@jawnosc.tk>\n"
+"Language-Team: Adam Dobrawy <naczelnik@jawnosc.tk>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: admin.py:26
+msgid "Avatar"
+msgstr "Avatar"
+
+#: forms.py:24 models.py:84 models.py:97
+msgid "avatar"
+msgstr "avatar"
+
+#: forms.py:37
+#, python-format
+msgid ""
+"%(ext)s is an invalid file extension. Authorized extensions are : "
+"%(valid_exts_list)s"
+msgstr ""
+"%(ext)s jest nieprawidłowym rozszerzeniem. Dozwolone rozszerzenia to: "
+"%(valid_exts_list)s"
+
+#: forms.py:44
+#, python-format
+msgid ""
+"Your file is too big (%(size)s), the maximum allowed size is "
+"%(max_valid_size)s"
+msgstr ""
+"Twój plik jest zbyt duży (%(size)s), maksymalny dopuszcalny rozmiar wynosi "
+"%(max_valid_size)s"
+
+#: forms.py:54
+#, python-format
+msgid ""
+"You already have %(nb_avatars)d avatars, and the maximum allowed is "
+"%(nb_max_avatars)d."
+msgstr ""
+"Aktualnie masz %(nb_avatars)d avatarów, podczas gdy maksymalna dopuszczalna "
+"liczba wynosi %(nb_max_avatars)d."
+
+#: forms.py:71 forms.py:84
+msgid "Choices"
+msgstr "Opcje wyboru"
+
+#: models.py:77
+msgid "user"
+msgstr ""
+
+#: models.py:80
+msgid "primary"
+msgstr ""
+
+#: models.py:91
+msgid "uploaded at"
+msgstr ""
+
+#: models.py:98
+#, fuzzy
+#| msgid "avatar"
+msgid "avatars"
+msgstr "avatar"
+
+#: templates/avatar/add.html:5 templates/avatar/change.html:5
+msgid "Your current avatar: "
+msgstr "Twój aktualny avatar"
+
+#: templates/avatar/add.html:8 templates/avatar/change.html:8
+msgid "You haven't uploaded an avatar yet. Please upload one now."
+msgstr "Nie masz aktualnie żadnych avatarów. Prosimy wyślij teraz. "
+
+#: templates/avatar/add.html:12 templates/avatar/change.html:19
+msgid "Upload New Image"
+msgstr "Wyślij nowy obraz"
+
+#: templates/avatar/change.html:14
+msgid "Choose new Default"
+msgstr "Wybierz nowy domyślny"
+
+#: templates/avatar/confirm_delete.html:5
+msgid "Please select the avatars that you would like to delete."
+msgstr "Wybierz avatar, który chcesz usunąć."
+
+#: templates/avatar/confirm_delete.html:8
+#, python-format
+msgid ""
+"You have no avatars to delete. Please <a href=\"%(avatar_change_url)s"
+"\">upload one</a> now."
+msgstr ""
+"Nie masz avatarów do usunięcia. Prosimy <a href=\"%(avatar_change_url)s"
+"\">dodaj nowy</a>."
+
+#: templates/avatar/confirm_delete.html:14
+msgid "Delete These"
+msgstr "Usuń wybrane"
+
+#: templates/notification/avatar_friend_updated/full.txt:1
+#, python-format
+msgid ""
+"%(avatar_creator)s has updated their avatar %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"%(avatar_creator)s zaktualizował / zaktualizowała avatar %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+
+#: templates/notification/avatar_friend_updated/notice.html:2
+#, python-format
+msgid ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated their avatar <a "
+"href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> zaktualizował / "
+"zaktualizowała <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templates/notification/avatar_updated/full.txt:1
+#, python-format
+msgid ""
+"Your avatar has been updated.  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"Twój avatar został zaktualizowany  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+
+#: templates/notification/avatar_updated/notice.html:2
+#, python-format
+msgid "You have updated your avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr ""
+"Zaktualizowałeś / zaktualizowałaś swój avatar <a href=\"%(avatar_url)s\">"
+"%(avatar)s</a>."
+
+#: templatetags/avatar_tags.py:69
+msgid "Default Avatar"
+msgstr "Domyślny avatar"
+
+#: views.py:73
+msgid "Successfully uploaded a new avatar."
+msgstr "Pomyślnie wysłano nowy avatar."
+
+#: views.py:111
+msgid "Successfully updated your avatar."
+msgstr "Pomyślnie zaktualizowano Twój avatar."
+
+#: views.py:150
+msgid "Successfully deleted the requested avatars."
+msgstr "Pomyślnie usunięto wskazany avatar."

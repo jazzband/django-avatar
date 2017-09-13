@@ -1,0 +1,162 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-14 16:37+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: admin.py:26
+msgid "Avatar"
+msgstr "プロフィール画像"
+
+#: forms.py:24 models.py:84 models.py:97
+msgid "avatar"
+msgstr "プロフィール画像"
+
+#: forms.py:37
+#, python-format
+msgid ""
+"%(ext)s is an invalid file extension. Authorized extensions are : "
+"%(valid_exts_list)s"
+msgstr ""
+"%(ext)s は利用できない拡張子です。 使用可能な拡張子 : %(valid_exts_list)s"
+
+#: forms.py:44
+#, python-format
+msgid ""
+"Your file is too big (%(size)s), the maximum allowed size is "
+"%(max_valid_size)s"
+msgstr ""
+"ファイルが大きすぎます(%(size)s)。アップロード可能な最大サイズは "
+"%(max_valid_size)s です。"
+
+#: forms.py:54
+#, python-format
+msgid ""
+"You already have %(nb_avatars)d avatars, and the maximum allowed is "
+"%(nb_max_avatars)d."
+msgstr ""
+"登録可能なプロフィール画像は %(nb_max_avatars)d 個までです。すでに "
+"%(nb_avatars)d 個登録されています。"
+
+#: forms.py:71 forms.py:84
+msgid "Choices"
+msgstr "選択"
+
+#: models.py:77
+msgid "user"
+msgstr ""
+
+#: models.py:80
+msgid "primary"
+msgstr ""
+
+#: models.py:91
+msgid "uploaded at"
+msgstr ""
+
+#: models.py:98
+#, fuzzy
+#| msgid "avatar"
+msgid "avatars"
+msgstr "プロフィール画像"
+
+#: templates/avatar/add.html:5 templates/avatar/change.html:5
+msgid "Your current avatar: "
+msgstr "現在のプロフィール画像："
+
+#: templates/avatar/add.html:8 templates/avatar/change.html:8
+msgid "You haven't uploaded an avatar yet. Please upload one now."
+msgstr "登録されているプロフィール画像はありません。アップロードしてください。"
+
+#: templates/avatar/add.html:12 templates/avatar/change.html:19
+msgid "Upload New Image"
+msgstr "新しい画像のアップロード"
+
+#: templates/avatar/change.html:14
+msgid "Choose new Default"
+msgstr "デフォルトの画像を選択"
+
+#: templates/avatar/confirm_delete.html:5
+msgid "Please select the avatars that you would like to delete."
+msgstr "削除したいプロフィール画像を選択してください。"
+
+#: templates/avatar/confirm_delete.html:8
+#, python-format
+msgid ""
+"You have no avatars to delete. Please <a href=\"%(avatar_change_url)s"
+"\">upload one</a> now."
+msgstr ""
+"削除できるプロフィール画像はありません。<a href=\"%(avatar_change_url)s\">新"
+"規画像のアップロード</a>."
+
+#: templates/avatar/confirm_delete.html:14
+msgid "Delete These"
+msgstr "削除"
+
+#: templates/notification/avatar_friend_updated/full.txt:1
+#, python-format
+msgid ""
+"%(avatar_creator)s has updated their avatar %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"%(avatar_creator)s さんがプロフィール画像 %(avatar)s をアップロードしまし"
+"た。\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+
+#: templates/notification/avatar_friend_updated/notice.html:2
+#, python-format
+msgid ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated their avatar <a "
+"href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> さんがプロフィール画像 <a "
+"href=\"%(avatar_url)s\">%(avatar)s</a> をアップロードしました。"
+
+#: templates/notification/avatar_updated/full.txt:1
+#, python-format
+msgid ""
+"Your avatar has been updated.  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"プロフィール画像を更新しました。 %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+
+#: templates/notification/avatar_updated/notice.html:2
+#, python-format
+msgid "You have updated your avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr ""
+"プロフィール画像を更新しました。 <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templatetags/avatar_tags.py:69
+msgid "Default Avatar"
+msgstr "デフォルトのプロフィール画像"
+
+#: views.py:73
+msgid "Successfully uploaded a new avatar."
+msgstr "新しいプロフィール画像をアップロードしました。"
+
+#: views.py:111
+msgid "Successfully updated your avatar."
+msgstr "プロフィール画像を更新しました。"
+
+#: views.py:150
+msgid "Successfully deleted the requested avatars."
+msgstr "指定されたプロフィール画像を削除しました。"

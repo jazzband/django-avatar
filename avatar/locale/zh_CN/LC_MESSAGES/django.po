@@ -1,0 +1,154 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-avatar\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-14 16:37+0200\n"
+"PO-Revision-Date: 2014-03-26 17:08+0800\n"
+"Last-Translator: Bruce Yang <ayang23@gmail.com>\n"
+"Language-Team: Bruce Yang <ayang23@gmail.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: admin.py:26
+msgid "Avatar"
+msgstr "头像"
+
+#: forms.py:24 models.py:84 models.py:97
+msgid "avatar"
+msgstr "头像"
+
+#: forms.py:37
+#, python-format
+msgid ""
+"%(ext)s is an invalid file extension. Authorized extensions are : "
+"%(valid_exts_list)s"
+msgstr "%(ext)s 是不正确的文件扩展名。 正确的扩展名为 : %(valid_exts_list)s"
+
+#: forms.py:44
+#, python-format
+msgid ""
+"Your file is too big (%(size)s), the maximum allowed size is "
+"%(max_valid_size)s"
+msgstr "上传文件太大 (%(size)s)， 允许的最大文件为 %(max_valid_size)s"
+
+#: forms.py:54
+#, python-format
+msgid ""
+"You already have %(nb_avatars)d avatars, and the maximum allowed is "
+"%(nb_max_avatars)d."
+msgstr "您目前有 %(nb_avatars)d 个头像, 最多可以有 %(nb_max_avatars)d 个。"
+
+#: forms.py:71 forms.py:84
+msgid "Choices"
+msgstr "选项"
+
+#: models.py:77
+msgid "user"
+msgstr ""
+
+#: models.py:80
+msgid "primary"
+msgstr ""
+
+#: models.py:91
+msgid "uploaded at"
+msgstr ""
+
+#: models.py:98
+#, fuzzy
+#| msgid "avatar"
+msgid "avatars"
+msgstr "头像"
+
+#: templates/avatar/add.html:5 templates/avatar/change.html:5
+msgid "Your current avatar: "
+msgstr "您当前的头像："
+
+#: templates/avatar/add.html:8 templates/avatar/change.html:8
+msgid "You haven't uploaded an avatar yet. Please upload one now."
+msgstr "您还没有上传任何头像，请现在上传一个吧。"
+
+#: templates/avatar/add.html:12 templates/avatar/change.html:19
+msgid "Upload New Image"
+msgstr "上传新照片"
+
+#: templates/avatar/change.html:14
+msgid "Choose new Default"
+msgstr "选择默认"
+
+#: templates/avatar/confirm_delete.html:5
+msgid "Please select the avatars that you would like to delete."
+msgstr "选择要删除的头像。"
+
+#: templates/avatar/confirm_delete.html:8
+#, python-format
+msgid ""
+"You have no avatars to delete. Please <a href=\"%(avatar_change_url)s"
+"\">upload one</a> now."
+msgstr ""
+"没有头像可以删除. 请 <a href=\"%(avatar_change_url)s\">上传一个新头像</a>。"
+
+#: templates/avatar/confirm_delete.html:14
+msgid "Delete These"
+msgstr "删除"
+
+#: templates/notification/avatar_friend_updated/full.txt:1
+#, python-format
+msgid ""
+"%(avatar_creator)s has updated their avatar %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"%(avatar_creator)s 更新了头像 %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+
+#: templates/notification/avatar_friend_updated/notice.html:2
+#, python-format
+msgid ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated their avatar <a "
+"href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> 更新了头像 <a href="
+"\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templates/notification/avatar_updated/full.txt:1
+#, python-format
+msgid ""
+"Your avatar has been updated.  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"您的头像已经更新。  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+
+#: templates/notification/avatar_updated/notice.html:2
+#, python-format
+msgid "You have updated your avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr "您已经更新了头像 <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templatetags/avatar_tags.py:69
+msgid "Default Avatar"
+msgstr "默认头像"
+
+#: views.py:73
+msgid "Successfully uploaded a new avatar."
+msgstr "成功上传头像。"
+
+#: views.py:111
+msgid "Successfully updated your avatar."
+msgstr "更新头像成功。"
+
+#: views.py:150
+msgid "Successfully deleted the requested avatars."
+msgstr "成功删除头像。"

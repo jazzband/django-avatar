@@ -1,4 +1,8 @@
+import os
 import django
+
+VERSION = django.VERSION
+SETTINGS_DIR = os.path.dirname(__file__)
 
 DATABASE_ENGINE = 'sqlite3'
 
@@ -14,9 +18,31 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sites',
-    'django.contrib.comments',
     'avatar',
 ]
+
+MIDDLEWARE_CLASSES = (
+    "django.middleware.common.CommonMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+)
+
+if VERSION[0] == 1 and VERSION[1] < 8:
+    TEMPLATE_DIRS = (
+        os.path.join(SETTINGS_DIR, 'templates'),
+    )
+else:
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'APP_DIRS': True,
+            'DIRS': [
+                os.path.join(SETTINGS_DIR, 'templates')
+            ]
+        }
+    ]
 
 ROOT_URLCONF = 'tests.urls'
 

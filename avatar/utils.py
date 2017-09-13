@@ -9,17 +9,7 @@ try:
 except ImportError:
     force_bytes = str
 
-try:
-    from django.contrib.auth import get_user_model
-except ImportError:
-    from django.contrib.auth.models import User
-
-    def get_user_model():
-        return User
-
-    custom_user_model = False
-else:
-    custom_user_model = True
+from django.contrib.auth import get_user_model
 
 from avatar.conf import settings
 
@@ -37,10 +27,7 @@ def get_username(user):
 
 def get_user(username):
     """ Return user from a username/ish identifier """
-    if custom_user_model:
-        return get_user_model().objects.get_by_natural_key(username)
-    else:
-        return get_user_model().objects.get(username=username)
+    return get_user_model().objects.get_by_natural_key(username)
 
 
 def get_cache_key(user_or_username, size, prefix):
@@ -64,14 +51,19 @@ def cache_result(default_size=settings.AVATAR_DEFAULT_SIZE):
     Decorator to cache the result of functions that take a ``user`` and a
     ``size`` value.
     """
+    if not settings.AVATAR_CACHE_ENABLED:
+        def decorator(func):
+            return func
+        return decorator
+
     def decorator(func):
-        def cached_func(user, size=None):
+        def cached_func(user, size=None, **kwargs):
             prefix = func.__name__
             cached_funcs.add(prefix)
             key = get_cache_key(user, size or default_size, prefix=prefix)
             result = cache.get(key)
             if result is None:
-                result = func(user, size or default_size)
+                result = func(user, size or default_size, **kwargs)
                 cache_set(key, result)
             return result
         return cached_func
