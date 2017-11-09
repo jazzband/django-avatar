@@ -10,7 +10,9 @@ from avatar.conf import settings
 from avatar.utils import get_primary_avatar, get_user_model
 from avatar.models import Avatar
 from avatar.templatetags import avatar_tags
+from avatar.signals import avatar_deleted
 from PIL import Image
+from unittest.mock import Mock
 
 
 def upload_helper(o, filename):
@@ -106,6 +108,8 @@ class AvatarTests(TestCase):
         self.test_normal_image_upload()
         avatar = Avatar.objects.filter(user=self.user)
         self.assertEqual(len(avatar), 1)
+        receiver = Mock()
+        avatar_deleted.connect(receiver)
         response = self.client.post(reverse('avatar_delete'), {
             'choices': [avatar[0].id],
         }, follow=True)
@@ -113,6 +117,7 @@ class AvatarTests(TestCase):
         self.assertEqual(len(response.redirect_chain), 1)
         count = Avatar.objects.filter(user=self.user).count()
         self.assertEqual(count, 0)
+        self.assertEqual(receiver.call_count, 1)
 
     def test_delete_primary_avatar_and_new_primary(self):
         self.test_there_can_be_only_one_primary_avatar()
