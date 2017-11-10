@@ -12,7 +12,22 @@ from avatar.models import Avatar
 from avatar.templatetags import avatar_tags
 from avatar.signals import avatar_deleted
 from PIL import Image
-from unittest.mock import Mock
+
+
+class AssertSignal:
+    def __init__(self):
+        self.signal_sent_count = 0
+        self.avatar = None
+        self.user = None
+        self.sender = None
+        self.signal = None
+
+    def __call__(self, user, avatar, sender, signal):
+        self.user = user
+        self.avatar = avatar
+        self.sender = sender
+        self.signal = signal
+        self.signal_sent_count += 1
 
 
 def upload_helper(o, filename):
@@ -108,7 +123,7 @@ class AvatarTests(TestCase):
         self.test_normal_image_upload()
         avatar = Avatar.objects.filter(user=self.user)
         self.assertEqual(len(avatar), 1)
-        receiver = Mock()
+        receiver = AssertSignal()
         avatar_deleted.connect(receiver)
         response = self.client.post(reverse('avatar_delete'), {
             'choices': [avatar[0].id],
@@ -117,7 +132,10 @@ class AvatarTests(TestCase):
         self.assertEqual(len(response.redirect_chain), 1)
         count = Avatar.objects.filter(user=self.user).count()
         self.assertEqual(count, 0)
-        self.assertEqual(receiver.call_count, 1)
+        self.assertEqual(receiver.user, self.user)
+        self.assertEqual(receiver.avatar, avatar[0])
+        self.assertEqual(receiver.sender, Avatar)
+        self.assertEqual(receiver.signal_sent_count, 1)
 
     def test_delete_primary_avatar_and_new_primary(self):
         self.test_there_can_be_only_one_primary_avatar()
