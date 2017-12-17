@@ -90,7 +90,7 @@ class AvatarField(models.ImageField):
 class Avatar(models.Model):
     user = models.ForeignKey(
         getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
-        verbose_name=_("user"),
+        verbose_name=_("user"), on_delete=models.CASCADE,
     )
     primary = models.BooleanField(
         verbose_name=_("primary"),
