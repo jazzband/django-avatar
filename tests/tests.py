@@ -1,5 +1,6 @@
 import os.path
 
+import math
 from django.contrib.admin.sites import AdminSite
 from django.test import TestCase
 try:
@@ -15,7 +16,7 @@ from avatar.utils import get_primary_avatar, get_user_model
 from avatar.models import Avatar
 from avatar.templatetags import avatar_tags
 from avatar.signals import avatar_deleted
-from PIL import Image
+from PIL import Image, ImageChops
 
 
 class AssertSignal:
@@ -43,8 +44,17 @@ def upload_helper(o, filename):
     return response
 
 
-class AvatarTests(TestCase):
+def root_mean_square_difference(image1, image2):
+    "Calculate the root-mean-square difference between two images"
+    diff = ImageChops.difference(image1, image2).convert('L')
+    h = diff.histogram()
+    sq = (value * (idx ** 2) for idx, value in enumerate(h))
+    sum_of_squares = sum(sq)
+    rms = math.sqrt(sum_of_squares / float(image1.size[0] * image1.size[1]))
+    return rms
 
+
+class AvatarTests(TestCase):
     def setUp(self):
         self.testdatapath = os.path.join(os.path.dirname(__file__), "data")
         self.user = get_user_model().objects.create_user('test', 'lennon@thebeatles.com', 'testpassword')
@@ -198,6 +208,17 @@ class AvatarTests(TestCase):
         avatar = get_primary_avatar(self.user)
         image = Image.open(avatar.avatar.storage.open(avatar.avatar_name(settings.AVATAR_DEFAULT_SIZE), 'rb'))
         self.assertEqual(image.mode, 'RGB')
+
+    def test_thumbnail_transpose_based_on_exif(self):
+        upload_helper(self, "image_no_exif.jpg")
+        avatar = get_primary_avatar(self.user)
+        image_no_exif = Image.open(avatar.avatar.storage.open(avatar.avatar_name(settings.AVATAR_DEFAULT_SIZE), 'rb'))
+
+        upload_helper(self, "image_exif_orientation.jpg")
+        avatar = get_primary_avatar(self.user)
+        image_with_exif = Image.open(avatar.avatar.storage.open(avatar.avatar_name(settings.AVATAR_DEFAULT_SIZE), 'rb'))
+
+        self.assertLess(root_mean_square_difference(image_with_exif, image_no_exif), 1)
 
     def test_has_avatar_False_if_no_avatar(self):
         self.assertFalse(avatar_tags.has_avatar(self.user))
