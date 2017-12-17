@@ -4,7 +4,7 @@ export PYTHONPATH=.
 .PHONY: test
 
 test:
-	flake8 avatar --ignore=E124,E501,E127,E128
+	flake8 avatar --ignore=E124,E501,E127,E128,E722
 	coverage run --source=avatar `which django-admin.py` test tests
 	coverage report
 
