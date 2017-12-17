@@ -1,3 +1,2 @@
 flake8
 coverage==4.2
-django-discover-runner
