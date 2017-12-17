@@ -1,6 +1,11 @@
 Changelog
 =========
 
+* 4.1.0 (Not released)
+    * Added Django 2.0 support.
+    * Added `avatar_deleted` signal.
+    * Ensure thumbnails are the correct orientation.
+
 * 4.0.0 (May 27, 2017)
     * **Backwards incompatible:** Added ``AVATAR_PROVIDERS`` setting. Avatar providers are classes that return an avatar URL for a given user.
     * Added ``verbose_name`` to ``Avatar`` model fields.
