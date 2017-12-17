@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from avatar.conf import settings
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
-from avatar.signals import avatar_updated
+from avatar.signals import avatar_updated, avatar_deleted
 from avatar.utils import (get_primary_avatar, get_default_avatar_url,
                           invalidate_cache)
 
@@ -136,6 +136,10 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
     if request.method == 'POST':
         if delete_avatar_form.is_valid():
             ids = delete_avatar_form.cleaned_data['choices']
+            for a in avatars:
+                if six.text_type(a.id) in ids:
+                    avatar_deleted.send(sender=Avatar, user=request.user,
+                                        avatar=a)
             if six.text_type(avatar.id) in ids and avatars.count() > len(ids):
                 # Find the next best avatar, and set it as the new primary
                 for a in avatars:
