@@ -1,5 +1,9 @@
 from django import template
-from django.urls import reverse
+try:
+    from django.urls import reverse
+except ImportError:
+    # For Django < 1.10
+    from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils import six
 from django.utils.translation import ugettext as _
