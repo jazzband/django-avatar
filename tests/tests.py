@@ -2,7 +2,11 @@ import os.path
 
 from django.contrib.admin.sites import AdminSite
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+try:
+    from django.urls import reverse
+except ImportError:
+    # For Django < 1.10
+    from django.core.urlresolvers import reverse
 from django.test.utils import override_settings
 
 from avatar.admin import AvatarAdmin
