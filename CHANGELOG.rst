@@ -1,7 +1,7 @@
 Changelog
 =========
 
-* 4.1.0 (Not released)
+* 4.1.0 (December 20, 2017)
     * Added Django 2.0 support.
     * Added ``avatar_deleted`` signal.
     * Ensure thumbnails are the correct orientation.
