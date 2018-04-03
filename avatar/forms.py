@@ -21,7 +21,7 @@ def avatar_img(avatar, size):
 
 class UploadAvatarForm(forms.Form):
 
-    avatar = forms.ImageField(label=_("avatar"))
+    avatar = forms.ImageField(widget=forms.ClearableFileInput(attrs={'accept': "image/*"}), label=_("avatar"))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
