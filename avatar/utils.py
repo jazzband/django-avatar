@@ -65,6 +65,11 @@ def cache_result(default_size=settings.AVATAR_DEFAULT_SIZE):
             if result is None:
                 result = func(user, size or default_size, **kwargs)
                 cache_set(key, result)
+                # add image size to set of cached sizes so we can invalidate them later
+                sizes_key = get_cache_key(user, '', prefix='cached_sizes')
+                sizes = cache.get(sizes_key, set())
+                sizes.add(size)
+                cache_set(sizes_key, sizes)
             return result
         return cached_func
     return decorator
@@ -74,7 +79,8 @@ def invalidate_cache(user, size=None):
     """
     Function to be called when saving or changing an user's avatars.
     """
-    sizes = set(settings.AVATAR_AUTO_GENERATE_SIZES)
+    sizes_key = get_cache_key(user, '', prefix='cached_sizes')
+    sizes = cache.get(sizes_key, set())
     if size is not None:
         sizes.add(size)
     for prefix in cached_funcs:
