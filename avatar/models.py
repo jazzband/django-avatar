@@ -132,8 +132,8 @@ class Avatar(models.Model):
         # iterate through resized avatars directories and delete resized avatars
         resized_path = os.path.join(path, 'resized')
         resized_avatar_dirs, _ = self.avatar.storage.listdir(resized_path)
-        for dir in resized_avatar_dirs:
-            resized_filepath = os.path.join(resized_path, dir, filename)
+        for resized_avatar_dir in resized_avatar_dirs:
+            resized_filepath = os.path.join(resized_path, resized_avatar_dir, filename)
             # FileSystemStorage.delete() will not raise an exception if file does not exist.
             self.avatar.storage.delete(resized_filepath)
         super(Avatar, self).delete(*args, **kwargs)
