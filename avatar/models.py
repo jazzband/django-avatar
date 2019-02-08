@@ -124,20 +124,6 @@ class Avatar(models.Model):
             avatars.delete()
         super(Avatar, self).save(*args, **kwargs)
 
-    def delete(self, *args, **kwargs):
-        base_filepath = avatar_path_handler(instance=self)
-        # delete base file
-        self.avatar.storage.delete(base_filepath)
-        path, filename = os.path.split(base_filepath)
-        # iterate through resized avatars directories and delete resized avatars
-        resized_path = os.path.join(path, 'resized')
-        resized_avatar_dirs, _ = self.avatar.storage.listdir(resized_path)
-        for resized_avatar_dir in resized_avatar_dirs:
-            resized_filepath = os.path.join(resized_path, resized_avatar_dir, filename)
-            # FileSystemStorage.delete() will not raise an exception if file does not exist.
-            self.avatar.storage.delete(resized_filepath)
-        super(Avatar, self).delete(*args, **kwargs)
-
     def thumbnail_exists(self, size):
         return self.avatar.storage.exists(self.avatar_name(size))
 
@@ -221,7 +207,11 @@ def create_default_thumbnails(sender, instance, created=False, **kwargs):
 
 
 def remove_avatar_images(instance=None, **kwargs):
-    for size in settings.AVATAR_AUTO_GENERATE_SIZES:
+    base_filepath = instance.avatar.name
+    path, filename = os.path.split(base_filepath)
+    # iterate through resized avatars directories and delete resized avatars
+    resized_sizes, _ = instance.avatar.storage.listdir(os.path.join(path, 'resized'))
+    for size in resized_sizes:
         if instance.thumbnail_exists(size):
             instance.avatar.storage.delete(instance.avatar_name(size))
     instance.avatar.storage.delete(instance.avatar.name)
