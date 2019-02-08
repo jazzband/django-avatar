@@ -49,8 +49,7 @@ class UploadAvatarForm(forms.Form):
             })
 
         count = Avatar.objects.filter(user=self.user).count()
-        if (settings.AVATAR_MAX_AVATARS_PER_USER > 1 and
-                count >= settings.AVATAR_MAX_AVATARS_PER_USER):
+        if 1 < settings.AVATAR_MAX_AVATARS_PER_USER <= count:
             error = _("You already have %(nb_avatars)d avatars, "
                       "and the maximum allowed is %(nb_max_avatars)d.")
             raise forms.ValidationError(error % {
