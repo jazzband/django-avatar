@@ -149,8 +149,7 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
                         avatar_updated.send(sender=Avatar, user=request.user,
                                             avatar=avatar)
                         break
-            for avatar in Avatar.objects.filter(id__in=ids).all():
-                avatar.delete()
+            Avatar.objects.filter(id__in=ids).delete()
             messages.success(request,
                              _("Successfully deleted the requested avatars."))
             return redirect(next_override or _get_next(request))
