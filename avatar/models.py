@@ -124,6 +124,22 @@ class Avatar(models.Model):
             avatars.delete()
         super(Avatar, self).save(*args, **kwargs)
 
+
+    def delete(self, *args, **kwargs):
+        base_filepath = avatar_path_handler(instance=self)
+        # delete base file
+        self.avatar.storage.delete(base_filepath)
+        path, filename = os.path.split(base_filepath)
+        # iterate through resized avatars directories and delete resized avatars
+        resized_path = os.path.join(path, 'resized')
+        resized_avatar_dirs, _ = self.avatar.storage.listdir(resized_path)
+        for dir in resized_avatar_dirs:
+            resized_filepath = os.path.join(resized_path, dir, filename)
+            # FileSystemStorage.delete() will not raise an exception if file does not exist.
+            self.avatar.storage.delete(resized_filepath)
+        super(Avatar, self).delete(*args, **kwargs)
+
+
     def thumbnail_exists(self, size):
         return self.avatar.storage.exists(self.avatar_name(size))
 
