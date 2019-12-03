@@ -3,6 +3,7 @@ import os
 from django import forms
 from django.forms import widgets
 from django.utils.safestring import mark_safe
+
 # Issue 182: six no longer included with Django 3.0
 try:
     from django.utils import six
@@ -24,7 +25,6 @@ def avatar_img(avatar, size):
 
 
 class UploadAvatarForm(forms.Form):
-
     avatar = forms.ImageField(label=_("avatar"))
 
     def __init__(self, *args, **kwargs):
@@ -40,17 +40,16 @@ class UploadAvatarForm(forms.Form):
                 valid_exts = ", ".join(settings.AVATAR_ALLOWED_FILE_EXTS)
                 error = _("%(ext)s is an invalid file extension. "
                           "Authorized extensions are : %(valid_exts_list)s")
-                raise forms.ValidationError(error %
-                                            {'ext': ext,
+                raise forms.ValidationError(error
+                                            % {'ext': ext,
                                              'valid_exts_list': valid_exts})
 
         if data.size > settings.AVATAR_MAX_SIZE:
             error = _("Your file is too big (%(size)s), "
                       "the maximum allowed size is %(max_valid_size)s")
-            raise forms.ValidationError(error % {
-                'size': filesizeformat(data.size),
-                'max_valid_size': filesizeformat(settings.AVATAR_MAX_SIZE)
-            })
+            raise forms.ValidationError(error
+                                        % {'size': filesizeformat(data.size),
+                                         'max_valid_size': filesizeformat(settings.AVATAR_MAX_SIZE)})
 
         count = Avatar.objects.filter(user=self.user).count()
         if (settings.AVATAR_MAX_AVATARS_PER_USER > 1 and
