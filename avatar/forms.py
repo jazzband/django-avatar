@@ -2,8 +2,12 @@ import os
 
 from django import forms
 from django.forms import widgets
-from django.utils import six
 from django.utils.safestring import mark_safe
+# Issue 182: six no longer included with Django 3.0
+try:
+    from django.utils import six
+except ImportError:
+    import six
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 
