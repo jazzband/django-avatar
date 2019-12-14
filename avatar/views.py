@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
-from django.utils import six
 from django.utils.translation import ugettext as _
-
+# Issue 182: six no longer included with Django 3.0
+try:
+    from django.utils import six
+except ImportError:
+    import six
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 

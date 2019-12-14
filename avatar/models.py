@@ -11,7 +11,6 @@ from django.core.files.storage import get_storage_class
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import force_text
-from django.utils import six
 from django.db.models import signals
 
 from avatar.conf import settings
@@ -21,6 +20,12 @@ try:
     from django.utils.timezone import now
 except ImportError:
     now = datetime.datetime.now
+
+# Issue 182: six no longer included with Django 3.0
+try:
+    from django.utils import six
+except ImportError:
+    import six
 
 
 avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
