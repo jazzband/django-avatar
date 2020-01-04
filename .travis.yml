@@ -4,6 +4,8 @@ python:
   - 3.4
   - 3.5
   - 3.6
+  - 3.7
+  - 3.8
 before_install:
   - pip install coveralls
 install:
@@ -12,17 +14,32 @@ install:
   - pip install Django==${DJANGO}
 script: make test
 env:
-  - DJANGO=1.9.13
-  - DJANGO=1.10.7
-  - DJANGO=1.11.8
-  - DJANGO=2.0
+  - DJANGO=1.11.27
+  - DJANGO=2.0.13
+  - DJANGO=2.1.15
+  - DJANGO=2.2.9
+  - DJANGO=3.0.2
 matrix:
   exclude:
-    - python: 3.6
-      env: DJANGO=1.9.13
-    - python: 3.6
-      env: DJANGO=1.10.7
     - python: 2.7
-      env: DJANGO=2.0
+      env: DJANGO=2.0.13
+    - python: 3.8
+      env: DJANGO=2.0.13
+    - python: 2.7
+      env: DJANGO=2.1.15
+    - python: 3.4
+      env: DJANGO=2.1.15
+    - python: 3.8
+      env: DJANGO=2.1.15
+    - python: 2.7
+      env: DJANGO=2.2.9
+    - python: 3.4
+      env: DJANGO=2.2.9
+    - python: 2.7
+      env: DJANGO=3.0.2
+    - python: 3.4
+      env: DJANGO=3.0.2
+    - python: 3.5
+      env: DJANGO=3.0.2
 after_success:
   - coveralls
