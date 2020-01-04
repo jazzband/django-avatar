@@ -13,6 +13,7 @@ DATABASES = {
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,7 +38,8 @@ TEMPLATES = [
         ],
         'OPTIONS': {
             'context_processors': [
-                'django.contrib.auth.context_processors.auth'
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages'
             ]
         }
     }
