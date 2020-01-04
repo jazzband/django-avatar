@@ -12,6 +12,7 @@ DATABASES = {
 }
 
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.sessions',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -19,16 +20,6 @@ INSTALLED_APPS = [
     'avatar',
 ]
 
-# Django 1.9
-MIDDLEWARE_CLASSES = (
-    "django.middleware.common.CommonMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-)
-
-# Django 1.10+
 MIDDLEWARE = (
     "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -43,7 +34,12 @@ TEMPLATES = [
         'APP_DIRS': True,
         'DIRS': [
             os.path.join(SETTINGS_DIR, 'templates')
-        ]
+        ],
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth'
+            ]
+        }
     }
 ]
 
