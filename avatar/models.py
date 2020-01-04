@@ -215,7 +215,8 @@ def remove_avatar_images(instance=None, **kwargs):
     for size in settings.AVATAR_AUTO_GENERATE_SIZES:
         if instance.thumbnail_exists(size):
             instance.avatar.storage.delete(instance.avatar_name(size))
-    instance.avatar.storage.delete(instance.avatar.name)
+    if instance.avatar.storage.exists(instance.avatar.name):
+        instance.avatar.storage.delete(instance.avatar.name)
 
 
 signals.post_save.connect(create_default_thumbnails, sender=Avatar)
