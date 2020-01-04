@@ -1,6 +1,11 @@
 Changelog
 =========
 
+* 5.0.0 (Unreleased)
+    * Added Django 2.1, 2.2, and 3.0 support.
+    * Added Python 3.7 and 3.8 support.
+    * Removed Python 1.9 and 1.10 support.
+
 * 4.1.0 (December 20, 2017)
     * Added Django 2.0 support.
     * Added ``avatar_deleted`` signal.
