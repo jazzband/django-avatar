@@ -42,13 +42,19 @@ def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
     if not isinstance(user, get_user_model()):
         try:
             user = get_user(user)
-            alt = six.text_type(user)
+            if settings.AVATAR_EXPOSE_USERNAMES:
+                alt = six.text_type(user)
+            else:
+                alt = _("User Avatar")
             url = avatar_url(user, size)
         except get_user_model().DoesNotExist:
             url = get_default_avatar_url()
             alt = _("Default Avatar")
     else:
-        alt = six.text_type(user)
+        if settings.AVATAR_EXPOSE_USERNAMES:
+            alt = six.text_type(user)
+        else:
+            alt = _("User Avatar")
         url = avatar_url(user, size)
     kwargs.update({'alt': alt})
 
