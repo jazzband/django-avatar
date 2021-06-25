@@ -162,6 +162,9 @@ class Avatar(models.Model):
         invalidate_cache(self.user, size)
         try:
             orig = self.avatar.storage.open(self.avatar.name, 'rb')
+        except IOError:
+            return # What should we do here?  Render a "sorry, didn't work" img?
+        try:
             image = Image.open(orig)
             image = self.transpose_image(image)
             quality = quality or settings.AVATAR_THUMB_QUALITY
@@ -183,7 +186,8 @@ class Avatar(models.Model):
                 thumb_file = File(orig)
             thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
         except IOError:
-            return  # What should we do here?  Render a "sorry, didn't work" img?
+            thumb_file = File(orig)
+            thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
 
     def avatar_url(self, size):
         return self.avatar.storage.url(self.avatar_name(size))
