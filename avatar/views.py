@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 # Issue 182: six no longer included with Django 3.0
 try:
     from django.utils import six
