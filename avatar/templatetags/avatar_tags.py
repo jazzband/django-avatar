@@ -10,7 +10,7 @@ try:
     from django.utils import six
 except ImportError:
     import six
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.module_loading import import_string
 
 from avatar.conf import settings
