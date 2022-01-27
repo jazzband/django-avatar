@@ -9,7 +9,7 @@ try:
     from django.utils import six
 except ImportError:
     import six
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 
 from avatar.conf import settings
