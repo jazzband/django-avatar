@@ -11,7 +11,6 @@ from django.core.files.storage import get_storage_class
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 from django.utils.encoding import force_str
-
 from django.db.models import signals
 
 from avatar.conf import settings
