@@ -9,8 +9,9 @@ from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 from django.utils.module_loading import import_string
-from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import force_text
+from django.utils.translation import gettext_lazy as _
+from django.utils.encoding import force_str
+
 from django.db.models import signals
 
 from avatar.conf import settings
@@ -39,7 +40,7 @@ def avatar_path_handler(instance=None, filename=None, size=None, ext=None):
     if settings.AVATAR_EXPOSE_USERNAMES:
         tmppath.append(get_username(instance.user))
     else:
-        tmppath.append(force_text(instance.user.pk))
+        tmppath.append(force_str(instance.user.pk))
     if not filename:
         # Filename already stored in database
         filename = instance.avatar.name
