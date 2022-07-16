@@ -41,4 +41,5 @@ jobs:
         env:
           DJANGO: '${{ matrix.DJANGO }}'
       - run: make test
+        env: GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: coveralls
