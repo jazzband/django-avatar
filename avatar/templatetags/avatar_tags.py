@@ -44,15 +44,15 @@ def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
     else:
         alt = six.text_type(user)
         url = avatar_url(user, size)
-    kwargs.update({'alt': alt})
+    kwargs.update({"alt": alt})
 
     context = {
-        'user': user,
-        'url': url,
-        'size': size,
-        'kwargs': kwargs,
+        "user": user,
+        "url": url,
+        "size": size,
+        "kwargs": kwargs,
     }
-    return render_to_string('avatar/avatar_tag.html', context)
+    return render_to_string("avatar/avatar_tag.html", context)
 
 
 @register.filter
@@ -72,9 +72,13 @@ def primary_avatar(user, size=settings.AVATAR_DEFAULT_SIZE):
     we will avoid many db calls.
     """
     alt = six.text_type(user)
-    url = reverse('avatar_render_primary', kwargs={'user': user, 'size': size})
-    return ("""<img src="%s" alt="%s" width="%s" height="%s" />""" %
-            (url, alt, size, size))
+    url = reverse("avatar_render_primary", kwargs={"user": user, "size": size})
+    return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
+        url,
+        alt,
+        size,
+        size,
+    )
 
 
 @cache_result()
@@ -83,7 +87,11 @@ def render_avatar(avatar, size=settings.AVATAR_DEFAULT_SIZE):
     if not avatar.thumbnail_exists(size):
         avatar.create_thumbnail(size)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
-        avatar.avatar_url(size), six.text_type(avatar), size, size)
+        avatar.avatar_url(size),
+        six.text_type(avatar),
+        size,
+        size,
+    )
 
 
 @register.tag
@@ -91,8 +99,7 @@ def primary_avatar_object(parser, token):
     split = token.split_contents()
     if len(split) == 4:
         return UsersAvatarObjectNode(split[1], split[3])
-    raise template.TemplateSyntaxError('%r tag takes three arguments.' %
-                                       split[0])
+    raise template.TemplateSyntaxError("%r tag takes three arguments." % split[0])
 
 
 class UsersAvatarObjectNode(template.Node):

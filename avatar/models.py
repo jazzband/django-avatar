@@ -46,12 +46,12 @@ def avatar_path_handler(instance=None, filename=None, size=None, ext=None):
         if settings.AVATAR_HASH_FILENAMES:
             (root, ext) = os.path.splitext(filename)
             if settings.AVATAR_RANDOMIZE_HASHES:
-                filename = binascii.hexlify(os.urandom(16)).decode('ascii')
+                filename = binascii.hexlify(os.urandom(16)).decode("ascii")
             else:
                 filename = hashlib.md5(force_bytes(filename)).hexdigest()
             filename = filename + ext
     if size:
-        tmppath.extend(['resized', str(size)])
+        tmppath.extend(["resized", str(size)])
     tmppath.append(os.path.basename(filename))
     return os.path.join(*tmppath)
 
@@ -62,14 +62,13 @@ avatar_file_path = import_string(settings.AVATAR_PATH_HANDLER)
 def find_extension(format):
     format = format.lower()
 
-    if format == 'jpeg':
-        format = 'jpg'
+    if format == "jpeg":
+        format = "jpg"
 
     return format
 
 
 class AvatarField(models.ImageField):
-
     def __init__(self, *args, **kwargs):
         super(AvatarField, self).__init__(*args, **kwargs)
 
@@ -85,28 +84,27 @@ class AvatarField(models.ImageField):
 
 class Avatar(models.Model):
     user = models.ForeignKey(
-        getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
-        verbose_name=_("user"), on_delete=models.CASCADE,
+        getattr(settings, "AUTH_USER_MODEL", "auth.User"),
+        verbose_name=_("user"),
+        on_delete=models.CASCADE,
     )
     primary = models.BooleanField(
         verbose_name=_("primary"),
         default=False,
     )
-    avatar = AvatarField(
-        verbose_name=_("avatar")
-    )
+    avatar = AvatarField(verbose_name=_("avatar"))
     date_uploaded = models.DateTimeField(
         verbose_name=_("uploaded at"),
         default=now,
     )
 
     class Meta:
-        app_label = 'avatar'
-        verbose_name = _('avatar')
-        verbose_name_plural = _('avatars')
+        app_label = "avatar"
+        verbose_name = _("avatar")
+        verbose_name_plural = _("avatars")
 
     def __unicode__(self):
-        return _(six.u('Avatar for %s')) % self.user
+        return _(six.u("Avatar for %s")) % self.user
 
     def save(self, *args, **kwargs):
         avatars = Avatar.objects.filter(user=self.user)
@@ -125,19 +123,19 @@ class Avatar(models.Model):
 
     def transpose_image(self, image):
         """
-            Transpose based on EXIF information.
-            Borrowed from django-imagekit:
-            imagekit.processors.Transpose
+        Transpose based on EXIF information.
+        Borrowed from django-imagekit:
+        imagekit.processors.Transpose
         """
         EXIF_ORIENTATION_STEPS = {
             1: [],
-            2: ['FLIP_LEFT_RIGHT'],
-            3: ['ROTATE_180'],
-            4: ['FLIP_TOP_BOTTOM'],
-            5: ['ROTATE_270', 'FLIP_LEFT_RIGHT'],
-            6: ['ROTATE_270'],
-            7: ['ROTATE_90', 'FLIP_LEFT_RIGHT'],
-            8: ['ROTATE_90'],
+            2: ["FLIP_LEFT_RIGHT"],
+            3: ["ROTATE_180"],
+            4: ["FLIP_TOP_BOTTOM"],
+            5: ["ROTATE_270", "FLIP_LEFT_RIGHT"],
+            6: ["ROTATE_270"],
+            7: ["ROTATE_90", "FLIP_LEFT_RIGHT"],
+            8: ["ROTATE_90"],
         }
         try:
             orientation = image._getexif()[0x0112]
@@ -152,9 +150,9 @@ class Avatar(models.Model):
         # invalidate the cache of the thumbnail with the given size first
         invalidate_cache(self.user, size)
         try:
-            orig = self.avatar.storage.open(self.avatar.name, 'rb')
+            orig = self.avatar.storage.open(self.avatar.name, "rb")
         except IOError:
-            return # What should we do here?  Render a "sorry, didn't work" img?
+            return  # What should we do here?  Render a "sorry, didn't work" img?
         try:
             image = Image.open(orig)
             image = self.transpose_image(image)
@@ -188,11 +186,7 @@ class Avatar(models.Model):
 
     def avatar_name(self, size):
         ext = find_extension(settings.AVATAR_THUMB_FORMAT)
-        return avatar_file_path(
-            instance=self,
-            size=size,
-            ext=ext
-        )
+        return avatar_file_path(instance=self, size=size, ext=ext)
 
 
 def invalidate_avatar_cache(sender, instance, **kwargs):

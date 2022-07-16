@@ -2,5 +2,5 @@ from django.conf.urls import include, url
 
 
 urlpatterns = [
-    url(r'^avatar/', include('avatar.urls')),
+    url(r"^avatar/", include("avatar.urls")),
 ]
