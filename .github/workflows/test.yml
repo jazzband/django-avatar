@@ -1,0 +1,44 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.6
+            DJANGO: 3.2.14
+          - python-version: 3.7
+            DJANGO: 3.2.14
+          - python-version: 3.8
+            DJANGO: 3.2.14
+          - python-version: 3.9
+            DJANGO: 3.2.14
+          - python-version: '3.10'
+            DJANGO: 3.2.14
+          - python-version: 3.8
+            DJANGO: 4.0.6
+          - python-version: 3.9
+            DJANGO: 4.0.6
+          - python-version: '3.10'
+            DJANGO: 4.0.6
+    steps:
+      - name: 'Set up Python ${{ matrix.python-version }}'
+        uses: actions/setup-python@v2
+        with:
+          python-version: '${{ matrix.python-version }}'
+      - uses: actions/checkout@v2
+      - run: pip install coveralls
+      - run: pip install -e .
+      - run: pip install -r tests/requirements.txt
+      - run: 'pip install Django==${DJANGO}'
+        env:
+          DJANGO: '${{ matrix.DJANGO }}'
+      - run: make test
+      - run: coveralls

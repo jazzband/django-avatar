@@ -1,5 +1,4 @@
 import binascii
-import datetime
 import os
 import hashlib
 import six
