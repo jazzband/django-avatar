@@ -53,7 +53,7 @@ def root_mean_square_difference(image1, image2):
     "Calculate the root-mean-square difference between two images"
     diff = ImageChops.difference(image1, image2).convert("L")
     h = diff.histogram()
-    sq = (value * (idx ** 2) for idx, value in enumerate(h))
+    sq = (value * (idx**2) for idx, value in enumerate(h))
     sum_of_squares = sum(sq)
     rms = math.sqrt(sum_of_squares / float(image1.size[0] * image1.size[1]))
     return rms

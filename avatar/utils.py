@@ -13,7 +13,7 @@ cached_funcs = set()
 
 
 def get_username(user):
-    """ Return username of a User instance """
+    """Return username of a User instance"""
     if hasattr(user, "get_username"):
         return user.get_username()
     else:
@@ -21,7 +21,7 @@ def get_username(user):
 
 
 def get_user(username):
-    """ Return user from a username/ish identifier """
+    """Return user from a username/ish identifier"""
     return get_user_model().objects.get_by_natural_key(username)
 
 

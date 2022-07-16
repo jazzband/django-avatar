@@ -40,8 +40,8 @@ source_suffix = ".txt"
 master_doc = "index"
 
 # General information about the project.
-project = u"django-avatar"
-copyright = u"2013, django-avatar developers"
+project = "django-avatar"
+copyright = "2013, django-avatar developers"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -187,8 +187,8 @@ latex_documents = [
     (
         "index",
         "django-avatar.tex",
-        u"django-avatar Documentation",
-        u"django-avatar developers",
+        "django-avatar Documentation",
+        "django-avatar developers",
         "manual",
     ),
 ]
@@ -222,8 +222,8 @@ man_pages = [
     (
         "index",
         "django-avatar",
-        u"django-avatar Documentation",
-        [u"django-avatar developers"],
+        "django-avatar Documentation",
+        ["django-avatar developers"],
         1,
     )
 ]
@@ -241,8 +241,8 @@ texinfo_documents = [
     (
         "index",
         "django-avatar",
-        u"django-avatar Documentation",
-        u"django-avatar developers",
+        "django-avatar Documentation",
+        "django-avatar developers",
         "django-avatar",
         "One line description of project.",
         "Miscellaneous",
