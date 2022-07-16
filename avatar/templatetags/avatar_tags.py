@@ -1,15 +1,9 @@
+import six
+
 from django import template
-try:
-    from django.urls import reverse
-except ImportError:
-    # For Django < 1.10
-    from django.core.urlresolvers import reverse
+from django.urls import reverse
+
 from django.template.loader import render_to_string
-# Issue 182: six no longer included with Django 3.0
-try:
-    from django.utils import six
-except ImportError:
-    import six
 from django.utils.translation import gettext as _
 from django.utils.module_loading import import_string
 

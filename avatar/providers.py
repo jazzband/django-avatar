@@ -1,11 +1,7 @@
 import hashlib
+from urllib.parse import urljoin, urlencode
 
-try:
-    from urllib.parse import urljoin, urlencode
-except ImportError:
-    from urlparse import urljoin
-    from urllib import urlencode
-
+from django.utils.module_loading import import_string
 
 from avatar.conf import settings
 from avatar.utils import (
@@ -14,7 +10,6 @@ from avatar.utils import (
     get_primary_avatar,
 )
 
-from django.utils.module_loading import import_string
 
 # If the FacebookAvatarProvider is used, a mechanism needs to be defined on
 # how to obtain the user's Facebook UID. This is done via

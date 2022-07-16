@@ -1,5 +1,6 @@
-from django.conf import settings
 from PIL import Image
+
+from django.conf import settings
 
 from appconf import AppConf
 

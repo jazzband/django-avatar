@@ -1,9 +1,6 @@
+import six
+
 from django.contrib import admin
-# Issue 182: six no longer included with Django 3.0
-try:
-    from django.utils import six
-except ImportError:
-    import six
 from django.utils.translation import gettext_lazy as _
 from django.template.loader import render_to_string
 

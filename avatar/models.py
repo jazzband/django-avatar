@@ -2,6 +2,7 @@ import binascii
 import datetime
 import os
 import hashlib
+import six
 from PIL import Image
 
 from django.db import models
@@ -12,20 +13,10 @@ from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 from django.utils.encoding import force_str
 from django.db.models import signals
+from django.utils.timezone import now
 
 from avatar.conf import settings
 from avatar.utils import get_username, force_bytes, invalidate_cache
-
-try:
-    from django.utils.timezone import now
-except ImportError:
-    now = datetime.datetime.now
-
-# Issue 182: six no longer included with Django 3.0
-try:
-    from django.utils import six
-except ImportError:
-    import six
 
 
 avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
