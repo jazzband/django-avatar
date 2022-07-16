@@ -1,5 +1,3 @@
-import six
-
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from django.template.loader import render_to_string
@@ -22,7 +20,7 @@ class AvatarAdmin(admin.ModelAdmin):
             {
                 "user": avatar_in.user,
                 "url": avatar_in.avatar.url,
-                "alt": six.text_type(avatar_in.user),
+                "alt": str(avatar_in.user),
                 "size": 80,
             }
         )

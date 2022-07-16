@@ -1,5 +1,3 @@
-import six
-
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext as _
 from django.contrib import messages
@@ -148,12 +146,12 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
         if delete_avatar_form.is_valid():
             ids = delete_avatar_form.cleaned_data["choices"]
             for a in avatars:
-                if six.text_type(a.id) in ids:
+                if str(a.id) in ids:
                     avatar_deleted.send(sender=Avatar, user=request.user, avatar=a)
-            if six.text_type(avatar.id) in ids and avatars.count() > len(ids):
+            if str(avatar.id) in ids and avatars.count() > len(ids):
                 # Find the next best avatar, and set it as the new primary
                 for a in avatars:
-                    if six.text_type(a.id) not in ids:
+                    if str(a.id) not in ids:
                         a.primary = True
                         a.save()
                         avatar_updated.send(

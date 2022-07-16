@@ -1,5 +1,4 @@
 import hashlib
-import six
 
 from django.core.cache import cache
 from django.template.defaultfilters import slugify
@@ -31,8 +30,8 @@ def get_cache_key(user_or_username, size, prefix):
     """
     if isinstance(user_or_username, get_user_model()):
         user_or_username = get_username(user_or_username)
-    key = six.u("%s_%s_%s") % (prefix, user_or_username, size)
-    return six.u("%s_%s") % (
+    key = "%s_%s_%s" % (prefix, user_or_username, size)
+    return "%s_%s" % (
         slugify(key)[:100],
         hashlib.md5(force_bytes(key)).hexdigest(),
     )

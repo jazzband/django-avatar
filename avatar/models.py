@@ -1,7 +1,7 @@
 import binascii
 import os
 import hashlib
-import six
+from io import BytesIO
 from PIL import Image
 
 from django.db import models
@@ -102,8 +102,8 @@ class Avatar(models.Model):
         verbose_name = _("avatar")
         verbose_name_plural = _("avatars")
 
-    def __unicode__(self):
-        return _(six.u("Avatar for %s")) % self.user
+    def __str__(self):
+        return _("Avatar for %s") % self.user
 
     def save(self, *args, **kwargs):
         avatars = Avatar.objects.filter(user=self.user)
@@ -167,7 +167,7 @@ class Avatar(models.Model):
                 if image.mode not in ("RGB", "RGBA"):
                     image = image.convert("RGB")
                 image = image.resize((size, size), settings.AVATAR_RESIZE_METHOD)
-                thumb = six.BytesIO()
+                thumb = BytesIO()
                 image.save(thumb, settings.AVATAR_THUMB_FORMAT, quality=quality)
                 thumb_file = ContentFile(thumb.getvalue())
             else:

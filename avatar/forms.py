@@ -1,5 +1,4 @@
 import os
-import six
 
 from django import forms
 from django.forms import widgets
@@ -16,7 +15,7 @@ def avatar_img(avatar, size):
         avatar.create_thumbnail(size)
     return mark_safe(
         '<img src="%s" alt="%s" width="%s" height="%s" />'
-        % (avatar.avatar_url(size), six.text_type(avatar), size, size)
+        % (avatar.avatar_url(size), str(avatar), size, size)
     )
 
 
