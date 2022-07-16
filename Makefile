@@ -3,9 +3,11 @@ export PYTHONPATH=.
 
 .PHONY: test
 
-test:
+lint:
 	flake8 avatar --ignore=E124,E501,E127,E128,E722
 	black --check .
+
+test:
 	coverage run --source=avatar `which django-admin` test tests
 	coverage report
 
