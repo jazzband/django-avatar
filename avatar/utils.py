@@ -1,19 +1,9 @@
 import hashlib
+import six
 
 from django.core.cache import cache
 from django.template.defaultfilters import slugify
-
-try:
-    from django.utils.encoding import force_bytes
-except ImportError:
-    force_bytes = str
-
-# Issue 182: six no longer included with Django 3.0
-try:
-    from django.utils import six
-except ImportError:
-    import six
-
+from django.utils.encoding import force_bytes
 from django.contrib.auth import get_user_model
 
 from avatar.conf import settings
