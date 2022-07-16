@@ -1,1 +1,1 @@
-coverage==6.4.2
+coverage==6.2
