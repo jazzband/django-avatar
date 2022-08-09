@@ -46,7 +46,7 @@ setup(
     author_email="floguy@gmail.com",
     maintainer="Johannes Wilm",
     maintainer_email="johannes@fiduswriter.org",
-    url="http://github.com/johanneswilm/django-avatar/",
+    url="http://github.com/jazzband/django-avatar/",
     license="BSD",
     packages=find_packages(exclude=["tests"]),
     package_data={
