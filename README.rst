@@ -5,7 +5,7 @@ django-avatar
 .. image:: https://jazzband.co/static/img/badge.png
    :target: https://jazzband.co/
    :alt: Jazzband
-   
+
 .. image:: https://img.shields.io/pypi/pyversions/django-avatar.svg
    :target: https://pypi.org/project/django-avatar/
    :alt: Supported Python versions
