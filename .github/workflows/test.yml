@@ -48,4 +48,5 @@ jobs:
           coverage run --source=avatar `which django-admin` test tests
           coverage report
           coverage xml
-      - uses: codecov/codecov-action@v2
+      - name: Upload coverage reports to Codecov with GitHub Action
+        uses: codecov/codecov-action@v3

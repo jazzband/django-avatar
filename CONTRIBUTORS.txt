@@ -1,4 +1,4 @@
 This application was originally written by Eric Florenzano.
 It is now maintained by Grant McConnaughey and a league of awesome contributors.
 
-See the full list here: https://github.com/grantmcconnaughey/django-avatar/graphs/contributors
+See the full list here: https://github.com/jazzband/django-avatar/graphs/contributors
