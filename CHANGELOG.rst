@@ -1,6 +1,17 @@
 Changelog
 =========
 
+* 5.0.0 (January 4, 2019)
+    * Added Django 2.1, 2.2, and 3.0 support.
+    * Added Python 3.7 and 3.8 support.
+    * Removed Python 1.9 and 1.10 support.
+    * Fixed bug where avatars couldn't be deleted if file was already deleted.
+
+* 4.1.0 (December 20, 2017)
+    * Added Django 2.0 support.
+    * Added ``avatar_deleted`` signal.
+    * Ensure thumbnails are the correct orientation.
+
 * 4.0.0 (May 27, 2017)
     * **Backwards incompatible:** Added ``AVATAR_PROVIDERS`` setting. Avatar providers are classes that return an avatar URL for a given user.
     * Added ``verbose_name`` to ``Avatar`` model fields.
