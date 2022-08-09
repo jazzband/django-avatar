@@ -43,6 +43,7 @@ jobs:
       - name: Run Tests
         run: |
           echo "$(python --version) / Django $(django-admin --version)"
+          export DJANGO_SETTINGS_MODULE=tests.settings
           coverage run --source=avatar `which django-admin` test tests
           coverage report
           coverage xml
