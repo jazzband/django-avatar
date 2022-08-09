@@ -1,23 +1,18 @@
+import math
 import os.path
 
-import math
 from django.contrib.admin.sites import AdminSite
 from django.test import TestCase
-
-try:
-    from django.urls import reverse
-except ImportError:
-    # For Django < 1.10
-    from django.core.urlresolvers import reverse
 from django.test.utils import override_settings
+from django.urls import reverse
+from PIL import Image, ImageChops
 
 from avatar.admin import AvatarAdmin
 from avatar.conf import settings
-from avatar.utils import get_primary_avatar, get_user_model
 from avatar.models import Avatar
-from avatar.templatetags import avatar_tags
 from avatar.signals import avatar_deleted
-from PIL import Image, ImageChops
+from avatar.templatetags import avatar_tags
+from avatar.utils import get_primary_avatar, get_user_model
 
 
 class AssertSignal:
@@ -140,7 +135,7 @@ class AvatarTests(TestCase):
         self.assertEqual(a, None)
 
     def test_there_can_be_only_one_primary_avatar(self):
-        for i in range(1, 10):
+        for _ in range(1, 10):
             self.test_normal_image_upload()
         count = Avatar.objects.filter(user=self.user, primary=True).count()
         self.assertEqual(count, 1)
@@ -212,7 +207,7 @@ class AvatarTests(TestCase):
         )
 
     def test_too_many_avatars(self):
-        for i in range(0, settings.AVATAR_MAX_AVATARS_PER_USER):
+        for _ in range(0, settings.AVATAR_MAX_AVATARS_PER_USER):
             self.test_normal_image_upload()
         count_before = Avatar.objects.filter(user=self.user).count()
         response = upload_helper(self, "test.png")

@@ -1,13 +1,13 @@
-from django.shortcuts import render, redirect
-from django.utils.translation import gettext as _
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
+from django.utils.translation import gettext as _
 
 from avatar.conf import settings
-from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
+from avatar.forms import DeleteAvatarForm, PrimaryAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
-from avatar.signals import avatar_updated, avatar_deleted
-from avatar.utils import get_primary_avatar, get_default_avatar_url, invalidate_cache
+from avatar.signals import avatar_deleted, avatar_updated
+from avatar.utils import get_default_avatar_url, get_primary_avatar, invalidate_cache
 
 
 def _get_next(request):
@@ -60,7 +60,7 @@ def add(
     next_override=None,
     upload_form=UploadAvatarForm,
     *args,
-    **kwargs
+    **kwargs,
 ):
     if extra_context is None:
         extra_context = {}
@@ -96,7 +96,7 @@ def change(
     upload_form=UploadAvatarForm,
     primary_form=PrimaryAvatarForm,
     *args,
-    **kwargs
+    **kwargs,
 ):
     if extra_context is None:
         extra_context = {}

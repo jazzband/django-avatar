@@ -1,19 +1,12 @@
 from django import template
-from django.urls import reverse
-
 from django.template.loader import render_to_string
-from django.utils.translation import gettext as _
+from django.urls import reverse
 from django.utils.module_loading import import_string
+from django.utils.translation import gettext as _
 
 from avatar.conf import settings
 from avatar.models import Avatar
-from avatar.utils import (
-    cache_result,
-    get_default_avatar_url,
-    get_user_model,
-    get_user,
-)
-
+from avatar.utils import cache_result, get_default_avatar_url, get_user, get_user_model
 
 register = template.Library()
 

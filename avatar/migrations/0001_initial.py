@@ -1,8 +1,9 @@
-from django.db import models, migrations
-import django.utils.timezone
-import avatar.models
 import django.core.files.storage
+import django.utils.timezone
 from django.conf import settings
+from django.db import migrations, models
+
+import avatar.models
 
 
 class Migration(migrations.Migration):

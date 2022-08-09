@@ -43,6 +43,7 @@ jobs:
       - name: Run Tests
         run: |
           echo "$(python --version) / Django $(django-admin --version)"
-          make test
+          coverage run --source=avatar `which django-admin` test tests
+          coverage report
           coverage xml
       - uses: codecov/codecov-action@v2

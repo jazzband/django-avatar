@@ -1,12 +1,11 @@
 import hashlib
 
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.template.defaultfilters import slugify
 from django.utils.encoding import force_bytes
-from django.contrib.auth import get_user_model
 
 from avatar.conf import settings
-
 
 cached_funcs = set()
 

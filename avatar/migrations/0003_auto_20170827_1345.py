@@ -1,5 +1,6 @@
-import avatar.models
 from django.db import migrations
+
+import avatar.models
 
 
 class Migration(migrations.Migration):

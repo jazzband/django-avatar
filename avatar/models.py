@@ -1,22 +1,21 @@
 import binascii
-import os
 import hashlib
+import os
 from io import BytesIO
-from PIL import Image
 
-from django.db import models
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
-from django.utils.module_loading import import_string
-from django.utils.translation import gettext_lazy as _
-from django.utils.encoding import force_str
+from django.db import models
 from django.db.models import signals
+from django.utils.encoding import force_str
+from django.utils.module_loading import import_string
 from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
+from PIL import Image
 
 from avatar.conf import settings
-from avatar.utils import get_username, force_bytes, invalidate_cache
-
+from avatar.utils import force_bytes, get_username, invalidate_cache
 
 avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 
@@ -139,7 +138,7 @@ class Avatar(models.Model):
         try:
             orientation = image._getexif()[0x0112]
             ops = EXIF_ORIENTATION_STEPS[orientation]
-        except:
+        except AttributeError:
             ops = []
         for method in ops:
             image = image.transpose(getattr(Image, method))
