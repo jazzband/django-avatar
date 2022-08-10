@@ -1,19 +1,12 @@
 from django import template
-from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
-from django.utils import six
-from django.utils.translation import ugettext as _
+from django.urls import reverse
 from django.utils.module_loading import import_string
+from django.utils.translation import gettext as _
 
 from avatar.conf import settings
 from avatar.models import Avatar
-from avatar.utils import (
-    cache_result,
-    get_default_avatar_url,
-    get_user_model,
-    get_user,
-)
-
+from avatar.utils import cache_result, get_default_avatar_url, get_user, get_user_model
 
 register = template.Library()
 
@@ -34,26 +27,34 @@ def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
     if not isinstance(user, get_user_model()):
         try:
             user = get_user(user)
-            alt = six.text_type(user)
+            if settings.AVATAR_EXPOSE_USERNAMES:
+                alt = str(user)
+            else:
+                alt = _("User Avatar")
             url = avatar_url(user, size)
         except get_user_model().DoesNotExist:
             url = get_default_avatar_url()
             alt = _("Default Avatar")
     else:
-        alt = six.text_type(user)
+        if settings.AVATAR_EXPOSE_USERNAMES:
+            alt = str(user)
+        else:
+            alt = _("User Avatar")
         url = avatar_url(user, size)
+    kwargs.update({"alt": alt})
+
     context = {
-        'user': user,
-        'alt': alt,
-        'size': size,
-        'kwargs': kwargs,
+        "user": user,
+        "alt": alt,
+        "size": size,
+        "kwargs": kwargs,
     }
-    template_name = 'avatar/avatar_tag.html'
+    template_name = "avatar/avatar_tag.html"
     ext_context = None
     try:
         template_name, ext_context = url
     except ValueError:
-        context['url'] = url
+        context["url"] = url
     if ext_context:
         context = dict(context, **ext_context)
     return render_to_string(template_name, context)
@@ -75,10 +76,14 @@ def primary_avatar(user, size=settings.AVATAR_DEFAULT_SIZE):
     work for us. If that special view is then cached by a CDN for instance,
     we will avoid many db calls.
     """
-    alt = six.text_type(user)
-    url = reverse('avatar_render_primary', kwargs={'user': user, 'size': size})
-    return ("""<img src="%s" alt="%s" width="%s" height="%s" />""" %
-            (url, alt, size, size))
+    alt = str(user)
+    url = reverse("avatar_render_primary", kwargs={"user": user, "size": size})
+    return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
+        url,
+        alt,
+        size,
+        size,
+    )
 
 
 @cache_result()
@@ -87,7 +92,11 @@ def render_avatar(avatar, size=settings.AVATAR_DEFAULT_SIZE):
     if not avatar.thumbnail_exists(size):
         avatar.create_thumbnail(size)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
-        avatar.avatar_url(size), six.text_type(avatar), size, size)
+        avatar.avatar_url(size),
+        str(avatar),
+        size,
+        size,
+    )
 
 
 @register.tag
@@ -95,8 +104,7 @@ def primary_avatar_object(parser, token):
     split = token.split_contents()
     if len(split) == 4:
         return UsersAvatarObjectNode(split[1], split[3])
-    raise template.TemplateSyntaxError('%r tag takes three arguments.' %
-                                       split[0])
+    raise template.TemplateSyntaxError("%r tag takes three arguments." % split[0])
 
 
 class UsersAvatarObjectNode(template.Node):
@@ -112,4 +120,4 @@ class UsersAvatarObjectNode(template.Node):
             context[key] = avatar[0]
         else:
             context[key] = None
-        return six.text_type()
+        return str()

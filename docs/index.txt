@@ -48,7 +48,7 @@ that are required. A minimal integration can work like this:
 
         urlpatterns = [
             # ...
-            (r'^avatar/', include('avatar.urls')),
+            path('avatar/', include('avatar.urls')),
         ]
 
 4.  Somewhere in your template navigation scheme, link to the change avatar
@@ -124,7 +124,7 @@ appear on the site. Listed below are those settings:
 
     Puts the User's username field in the URL path when ``True``. Set to
     ``False`` to use the User's primary key instead, preventing their email
-    from being searchable on the web. Defaults to ``True``.
+    from being searchable on the web. Defaults to ``False``.
 
 .. py:data:: AVATAR_FACEBOOK_GET_ID
 
@@ -156,6 +156,11 @@ appear on the site. Listed below are those settings:
 .. py:data:: AVATAR_MAX_SIZE
 
     File size limit for avatar upload. Default is ``1024 * 1024`` (1 MB).
+    gravatar in ``user.gravatar``.
+
+.. py:data:: AVATAR_MAX_AVATARS_PER_USER
+
+    The maximum number of avatars each user can have. Default is ``42``.
 
 .. py:data:: AVATAR_PATH_HANDLER
 
@@ -164,8 +169,8 @@ appear on the site. Listed below are those settings:
 
 .. py:data:: AVATAR_PROVIDERS
 
-    Tuple of classes that are tried in the given order for returning avatar 
-    URLs. 
+    Tuple of classes that are tried in the given order for returning avatar
+    URLs.
     Defaults to::
 
         (
@@ -175,9 +180,9 @@ appear on the site. Listed below are those settings:
         )
 
     If you want to implement your own provider, it must provide a class method
-    ``get_avatar_url(user, size)``. 
+    ``get_avatar_url(user, size)``.
 
-    .. py:class:: avatar.providers.GravatarAvatarProvider
+    .. py:class:: avatar.providers.PrimaryAvatarProvider
 
         Returns the primary avatar stored for the given user.
 
@@ -207,6 +212,12 @@ appear on the site. Listed below are those settings:
     The directory under ``MEDIA_ROOT`` to store the images. If using a
     non-filesystem storage device, this will simply be appended to the beginning
     of the file name.  Defaults to ``avatars``.
+    PIL. Defaults to ``Image.ANTIALIAS``.
+
+.. py:data:: AVATAR_CLEANUP_DELETED
+
+    ``True`` if the avatar image files should be deleted when an avatar is
+    deleted from the database.  Defaults to ``False``.
 
 .. py:data:: AVATAR_ADD_TEMPLATE
 
