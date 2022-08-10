@@ -1,6 +1,15 @@
 Changelog
 =========
 
+* Unreleased
+    * Added Django 3.2, 4.0 and 4.1 support.
+    * Removed Django 1.7, 1.8, 1.9, 1.10, 1.11, 2.0, 2.1, 2.2 and 3.0 support.
+    * Added Python 3.9 and 3.10 support.
+    * Removed Python 2.x, 3.4 and 3.5 support.
+    * Made `"PNG"` the default value for ``AVATAR_THUMB_FORMAT`` (Set to `'JPEG'` to obtain previous behavior).
+    * Made `False` the default value for ``AVATAR_EXPOSE_USERNAMES`` (Set to `True` to obtain previous behavior).
+    * Don't leak usernames through image alt-tags when ``AVATAR_EXPOSE_USERNAMES`` is `False`.
+
 * 5.0.0 (January 4, 2019)
     * Added Django 2.1, 2.2, and 3.0 support.
     * Added Python 3.7 and 3.8 support.
