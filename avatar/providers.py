@@ -88,10 +88,10 @@ class InitialsAvatarProvider(object):
             initials = user.username[:1]
         initials = initials.upper()
         context = {
-            'fontsize': (size * 1.1) / 2,
-            'initials': initials,
-            'hue': user.pk % 360,
-            'saturation': '65%',
-            'lightness': '60%',
+            "fontsize": (size * 1.1) / 2,
+            "initials": initials,
+            "hue": user.pk % 360,
+            "saturation": "65%",
+            "lightness": "60%",
         }
-        return ('avatar/initials.html', context)
+        return ("avatar/initials.html", context)
