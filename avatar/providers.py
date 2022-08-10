@@ -24,7 +24,7 @@ class DefaultAvatarProvider(object):
     """
 
     @classmethod
-    def get_avatar_url(self, user, size):
+    def get_avatar_url(cls, user, size):
         return get_default_avatar_url()
 
 
@@ -34,7 +34,7 @@ class PrimaryAvatarProvider(object):
     """
 
     @classmethod
-    def get_avatar_url(self, user, size):
+    def get_avatar_url(cls, user, size):
         avatar = get_primary_avatar(user, size)
         if avatar:
             return avatar.avatar_url(size)
@@ -46,7 +46,7 @@ class GravatarAvatarProvider(object):
     """
 
     @classmethod
-    def get_avatar_url(self, user, size):
+    def get_avatar_url(cls, user, size):
         params = {"s": str(size)}
         if settings.AVATAR_GRAVATAR_DEFAULT:
             params["d"] = settings.AVATAR_GRAVATAR_DEFAULT
@@ -68,8 +68,30 @@ class FacebookAvatarProvider(object):
     """
 
     @classmethod
-    def get_avatar_url(self, user, size):
+    def get_avatar_url(cls, user, size):
         fb_id = get_facebook_id(user)
         if fb_id:
             url = "https://graph.facebook.com/{fb_id}/picture?type=square&width={size}&height={size}"
             return url.format(fb_id=fb_id, size=size)
+
+
+class InitialsAvatarProvider(object):
+    """
+    Returns a tuple with template_name and context for rendering the given user's avatar as their
+    initials in white against a background with random hue based on their primary key.
+    """
+
+    @classmethod
+    def get_avatar_url(cls, user, size):
+        initials = user.first_name[:1] + user.last_name[:1]
+        if not initials:
+            initials = user.username[:1]
+        initials = initials.upper()
+        context = {
+            "fontsize": (size * 1.1) / 2,
+            "initials": initials,
+            "hue": user.pk % 360,
+            "saturation": "65%",
+            "lightness": "60%",
+        }
+        return ("avatar/initials.html", context)

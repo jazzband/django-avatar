@@ -1,0 +1,11 @@
+<span style='background-color: hsla({{ hue }}, {{ saturation }}, {{ lightness }}, 1);
+             width: {{ size }}px;
+             height: {{ size }}px;
+             font-size: {{ fontsize }}px;
+             text-align: center;
+             color: white;
+             display: inline-block;
+             line-height: {{ size }}px;
+             {{ kwargs.style }}'
+      {% for key, value in kwargs.items %}{% if key != 'style' %}{{ key }}="{{ value }}" {% endif %}{% endfor %}>
+  {{ initials }}</span>
