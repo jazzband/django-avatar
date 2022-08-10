@@ -330,6 +330,7 @@ class AvatarTests(TestCase):
         self.assertContains(response, "ALTERNATE CHANGE TEMPLATE")
 
     def test_default_delete_template(self):
+        upload_helper(self, "test.png")
         response = self.client.get("/avatar/delete/")
         self.assertContains(response, "like to delete.")
         self.assertNotContains(response, "ALTERNATE DELETE TEMPLATE")
