@@ -9,8 +9,8 @@ Changelog
     * Made ``"PNG"`` the default value for ``AVATAR_THUMB_FORMAT`` (Set to ``"JPEG"`` to obtain previous behavior).
     * Made ``False`` the default value for ``AVATAR_EXPOSE_USERNAMES`` (Set to ``True`` to obtain previous behavior).
     * Don't leak usernames through image alt-tags when ``AVATAR_EXPOSE_USERNAMES`` is `False`.
-    * New setting ``AVATAR_THUMB_MODES``. Default is `['RGB', 'RGBA']`.
-    * Use original file as thumbnail if thumbnail creation failed.
+    * New setting ``AVATAR_THUMB_MODES``. Default is ``['RGB', 'RGBA']``.
+    * Use original image as thumbnail if thumbnail creation failed but image saving succeeds.
     * Add farsi translation.
     * Introduce black and flake8 linting
 
