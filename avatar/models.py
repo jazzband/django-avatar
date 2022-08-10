@@ -188,7 +188,8 @@ class Avatar(models.Model):
 
 
 def invalidate_avatar_cache(sender, instance, **kwargs):
-    invalidate_cache(instance.user)
+    if hasattr(instance, "user"):
+        invalidate_cache(instance.user)
 
 
 def create_default_thumbnails(sender, instance, created=False, **kwargs):
@@ -199,9 +200,10 @@ def create_default_thumbnails(sender, instance, created=False, **kwargs):
 
 
 def remove_avatar_images(instance=None, **kwargs):
-    for size in settings.AVATAR_AUTO_GENERATE_SIZES:
-        if instance.thumbnail_exists(size):
-            instance.avatar.storage.delete(instance.avatar_name(size))
+    if hasattr(instance, "user"):
+        for size in settings.AVATAR_AUTO_GENERATE_SIZES:
+            if instance.thumbnail_exists(size):
+                instance.avatar.storage.delete(instance.avatar_name(size))
     if instance.avatar.storage.exists(instance.avatar.name):
         instance.avatar.storage.delete(instance.avatar.name)
 
