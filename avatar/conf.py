@@ -19,7 +19,7 @@ class AvatarConf(AppConf):
     THUMB_QUALITY = 85
     HASH_FILENAMES = False
     HASH_USERDIRNAMES = False
-    EXPOSE_USERNAMES = True
+    EXPOSE_USERNAMES = False
     ALLOWED_FILE_EXTS = None
     CACHE_TIMEOUT = 60 * 60
     STORAGE = settings.DEFAULT_FILE_STORAGE

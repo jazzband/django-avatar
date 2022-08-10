@@ -124,7 +124,7 @@ appear on the site. Listed below are those settings:
 
     Puts the User's username field in the URL path when ``True``. Set to
     ``False`` to use the User's primary key instead, preventing their email
-    from being searchable on the web. Defaults to ``True``.
+    from being searchable on the web. Defaults to ``False``.
 
 .. py:data:: AVATAR_FACEBOOK_GET_ID
 
