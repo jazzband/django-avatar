@@ -58,7 +58,7 @@ setup(
         ],
     },
     install_requires=[
-        "Pillow>=9.2.0",
+        "Pillow>=8.4.0",
         "django-appconf>=1.0.5",
     ],
     zip_safe=False,
