@@ -217,7 +217,6 @@ class AvatarTests(TestCase):
         self.assertNotEqual(response.context["upload_avatar_form"].errors, {})
         self.assertEqual(count_before, count_after)
 
-    @override_settings(AVATAR_THUMB_FORMAT="png")
     def test_automatic_thumbnail_creation_RGBA(self):
         upload_helper(self, "django.png")
         avatar = get_primary_avatar(self.user)
@@ -228,6 +227,7 @@ class AvatarTests(TestCase):
         )
         self.assertEqual(image.mode, "RGBA")
 
+    @override_settings(AVATAR_THUMB_FORMAT="JPEG")
     def test_automatic_thumbnail_creation_CMYK(self):
         upload_helper(self, "django_pony_cmyk.jpg")
         avatar = get_primary_avatar(self.user)

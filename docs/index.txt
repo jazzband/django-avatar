@@ -205,14 +205,22 @@ appear on the site. Listed below are those settings:
 .. py:data:: AVATAR_RESIZE_METHOD
 
     The method to use when resizing images, based on the options available in
-    PIL. Defaults to ``Image.ANTIALIAS``.
+    Pillow. Defaults to ``Image.ANTIALIAS``.
 
 .. py:data:: AVATAR_STORAGE_DIR
 
     The directory under ``MEDIA_ROOT`` to store the images. If using a
     non-filesystem storage device, this will simply be appended to the beginning
     of the file name.  Defaults to ``avatars``.
-    PIL. Defaults to ``Image.ANTIALIAS``.
+    Pillow. Defaults to ``Image.ANTIALIAS``.
+
+.. py:data:: AVATAR_THUMB_FORMAT
+    The file format of thumbnails, based on the options available in
+    Pillow. Defaults to `PNG`.
+
+.. py:data:: AVATAR_THUMB_QUALITY
+    The quality of thumbnails, between 0 (worst) to 95 (best) or the string
+    "keep" (only JPEG) as provided by Pillow. Defaults to `85`.
 
 .. py:data:: AVATAR_CLEANUP_DELETED
 

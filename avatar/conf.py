@@ -15,7 +15,7 @@ class AvatarConf(AppConf):
     DEFAULT_URL = "avatar/img/default.jpg"
     MAX_AVATARS_PER_USER = 42
     MAX_SIZE = 1024 * 1024
-    THUMB_FORMAT = "JPEG"
+    THUMB_FORMAT = "PNG"
     THUMB_QUALITY = 85
     HASH_FILENAMES = False
     HASH_USERDIRNAMES = False
