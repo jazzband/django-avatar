@@ -215,14 +215,17 @@ appear on the site. Listed below are those settings:
     Pillow. Defaults to ``Image.ANTIALIAS``.
 
 .. py:data:: AVATAR_THUMB_FORMAT
+
     The file format of thumbnails, based on the options available in
     Pillow. Defaults to `PNG`.
 
 .. py:data:: AVATAR_THUMB_QUALITY
+
     The quality of thumbnails, between 0 (worst) to 95 (best) or the string
     "keep" (only JPEG) as provided by Pillow. Defaults to `85`.
 
 .. py:data:: AVATAR_THUMB_MODES
+
     A sequence of acceptable modes for thumbnails as provided by Pillow. If the mode
     of the image is not in the list, the thumbnail will be converted to the
     first mode in the list. Defaults to `('RGB', 'RGBA')`.
