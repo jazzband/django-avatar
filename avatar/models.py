@@ -163,7 +163,9 @@ class Avatar(models.Model):
                 else:
                     diff = int((h - w) / 2)
                     image = image.crop((0, diff, w, h - diff))
-                if image.mode not in (settings.AVATAR_THUMB_MODES):
+                if settings.AVATAR_THUMB_FORMAT == "JPEG" and image.mode == "RGBA":
+                    image = image.convert("RGB")
+                elif image.mode not in (settings.AVATAR_THUMB_MODES):
                     image = image.convert(settings.AVATAR_THUMB_MODES[0])
                 image = image.resize((size, size), settings.AVATAR_RESIZE_METHOD)
                 thumb = BytesIO()

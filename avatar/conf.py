@@ -17,7 +17,7 @@ class AvatarConf(AppConf):
     MAX_SIZE = 1024 * 1024
     THUMB_FORMAT = "PNG"
     THUMB_QUALITY = 85
-    THUMB_MODES = ["RGB", "RGBA"]
+    THUMB_MODES = ("RGB", "RGBA")
     HASH_FILENAMES = False
     HASH_USERDIRNAMES = False
     EXPOSE_USERNAMES = False
