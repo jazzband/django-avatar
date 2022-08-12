@@ -1,6 +1,9 @@
 Changelog
 =========
 
+* 6.0.1 (August 12, 2022)
+    * Exclude tests folder from distribution.
+
 * 6.0.0 (August 12, 2022)
     * Added Django 3.2, 4.0 and 4.1 support.
     * Removed Django 1.9, 1.10, 1.11, 2.0, 2.1, 2.2 and 3.0 support.
