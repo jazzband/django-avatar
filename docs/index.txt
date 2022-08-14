@@ -69,6 +69,10 @@ that are required. A minimal integration can work like this:
 
         {% avatar user 65 %}
 
+    Or specify a width and height (in pixels) explicitly::
+
+        {% avatar user 65 50 %}
+
     Example for customize the attribute of the HTML ``img`` tag::
 
         {% avatar user 65 class="img-circle img-responsive" id="user_avatar" %}
@@ -106,9 +110,10 @@ appear on the site. Listed below are those settings:
 
 .. py:data:: AVATAR_AUTO_GENERATE_SIZES
 
-    An iterable of integers representing the sizes of avatars to generate on
-    upload. This can save rendering time later on if you pre-generate the
-    resized versions. Defaults to ``(80,)``
+    An iterable of integers and/or sequences in the format ``(width, height)``
+    representing the sizes of avatars to generate on upload. This can save
+    rendering time later on if you pre-generate the resized versions. Defaults
+    to ``(80,)``.
 
 .. py:data:: AVATAR_CACHE_ENABLED
 
@@ -180,7 +185,7 @@ appear on the site. Listed below are those settings:
         )
 
     If you want to implement your own provider, it must provide a class method
-    ``get_avatar_url(user, size)``.
+    ``get_avatar_url(user, width, height)``.
 
     .. py:class:: avatar.providers.PrimaryAvatarProvider
 

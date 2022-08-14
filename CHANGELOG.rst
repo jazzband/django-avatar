@@ -2,6 +2,7 @@ Changelog
 =========
 
 * Unreleased
+    * Allowed for rectangular avatars. The avatar tag template now requires the specification of a width and height independently.
     * Made ``True`` the default value of ``AVATAR_CLEANUP_DELETED``. (Set to ``False`` to obtain previous behavior).
 
 * 6.0.1 (August 12, 2022)
