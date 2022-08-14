@@ -205,7 +205,7 @@ def remove_avatar_images(instance=None, **kwargs):
     base_filepath = instance.avatar.name
     path, filename = os.path.split(base_filepath)
     # iterate through resized avatars directories and delete resized avatars
-    resized_sizes, _ = instance.avatar.storage.listdir(os.path.join(path, 'resized'))
+    resized_sizes, _ = instance.avatar.storage.listdir(os.path.join(path, "resized"))
     for size in resized_sizes:
         if instance.thumbnail_exists(size):
             instance.avatar.storage.delete(instance.avatar_name(size))
