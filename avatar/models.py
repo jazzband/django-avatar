@@ -20,7 +20,9 @@ from avatar.utils import force_bytes, get_username, invalidate_cache
 avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 
 
-def avatar_path_handler(instance=None, filename=None, size=None, ext=None):
+def avatar_path_handler(
+    instance=None, filename=None, width=None, height=None, ext=None
+):
     tmppath = [settings.AVATAR_STORAGE_DIR]
     if settings.AVATAR_HASH_USERDIRNAMES:
         tmp = hashlib.md5(force_bytes(get_username(instance.user))).hexdigest()
@@ -38,7 +40,7 @@ def avatar_path_handler(instance=None, filename=None, size=None, ext=None):
             # only enabled if AVATAR_HASH_FILENAMES is true, we can trust
             # it won't conflict with another filename
             (root, oldext) = os.path.splitext(filename)
-            filename = root + "." + ext
+            filename = root + "." + ext.lower()
     else:
         # File doesn't exist yet
         if settings.AVATAR_HASH_FILENAMES:
@@ -48,8 +50,8 @@ def avatar_path_handler(instance=None, filename=None, size=None, ext=None):
             else:
                 filename = hashlib.md5(force_bytes(filename)).hexdigest()
             filename = filename + ext
-    if size:
-        tmppath.extend(["resized", str(size)])
+    if width or height:
+        tmppath.extend(["resized", str(width), str(height)])
     tmppath.append(os.path.basename(filename))
     return os.path.join(*tmppath)
 
@@ -116,8 +118,8 @@ class Avatar(models.Model):
             avatars.delete()
         super(Avatar, self).save(*args, **kwargs)
 
-    def thumbnail_exists(self, size):
-        return self.avatar.storage.exists(self.avatar_name(size))
+    def thumbnail_exists(self, width, height):
+        return self.avatar.storage.exists(self.avatar_name(width, height))
 
     def transpose_image(self, image):
         """
@@ -144,9 +146,9 @@ class Avatar(models.Model):
             image = image.transpose(getattr(Image, method))
         return image
 
-    def create_thumbnail(self, size, quality=None):
+    def create_thumbnail(self, width, height, quality=None):
         # invalidate the cache of the thumbnail with the given size first
-        invalidate_cache(self.user, size)
+        invalidate_cache(self.user, width, height)
         try:
             orig = self.avatar.storage.open(self.avatar.name, "rb")
         except IOError:
@@ -156,37 +158,43 @@ class Avatar(models.Model):
             image = self.transpose_image(image)
             quality = quality or settings.AVATAR_THUMB_QUALITY
             w, h = image.size
-            if w != size or h != size:
-                if w > h:
-                    diff = int((w - h) / 2)
+            if w != width or h != height:
+                ratioReal = 1.0 * w / h
+                ratioWant = 1.0 * width / height
+                if ratioReal > ratioWant:
+                    diff = int((w - (h * ratioWant)) / 2)
                     image = image.crop((diff, 0, w - diff, h))
-                else:
-                    diff = int((h - w) / 2)
+                elif ratioReal < ratioWant:
+                    diff = int((h - (w / ratioWant)) / 2)
                     image = image.crop((0, diff, w, h - diff))
                 if settings.AVATAR_THUMB_FORMAT == "JPEG" and image.mode == "RGBA":
                     image = image.convert("RGB")
                 elif image.mode not in (settings.AVATAR_THUMB_MODES):
                     image = image.convert(settings.AVATAR_THUMB_MODES[0])
-                image = image.resize((size, size), settings.AVATAR_RESIZE_METHOD)
+                image = image.resize((width, height), settings.AVATAR_RESIZE_METHOD)
                 thumb = BytesIO()
                 image.save(thumb, settings.AVATAR_THUMB_FORMAT, quality=quality)
                 thumb_file = ContentFile(thumb.getvalue())
             else:
                 thumb_file = File(orig)
-            thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
+            thumb = self.avatar.storage.save(
+                self.avatar_name(width, height), thumb_file
+            )
         except IOError:
             thumb_file = File(orig)
-            thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
+            thumb = self.avatar.storage.save(
+                self.avatar_name(width, height), thumb_file
+            )
 
-    def avatar_url(self, size):
-        return self.avatar.storage.url(self.avatar_name(size))
+    def avatar_url(self, width, height):
+        return self.avatar.storage.url(self.avatar_name(width, height))
 
     def get_absolute_url(self):
         return self.avatar_url(settings.AVATAR_DEFAULT_SIZE)
 
-    def avatar_name(self, size):
+    def avatar_name(self, width, height):
         ext = find_extension(settings.AVATAR_THUMB_FORMAT)
-        return avatar_file_path(instance=self, size=size, ext=ext)
+        return avatar_file_path(instance=self, width=width, height=height, ext=ext)
 
 
 def invalidate_avatar_cache(sender, instance, **kwargs):
@@ -197,8 +205,12 @@ def invalidate_avatar_cache(sender, instance, **kwargs):
 def create_default_thumbnails(sender, instance, created=False, **kwargs):
     invalidate_avatar_cache(sender, instance)
     if created:
-        for size in settings.AVATAR_AUTO_GENERATE_SIZES:
-            instance.create_thumbnail(size)
+        for size in settings.AUTO_GENERATE_AVATAR_SIZES:
+            if isinstance(size, int):
+                instance.create_thumbnail(size, size)
+            else:
+                # Size is specified with height and width.
+                instance.create_thumbnail(size[0], size[1])
 
 
 def remove_avatar_images(instance=None, **kwargs):
