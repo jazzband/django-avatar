@@ -17,5 +17,8 @@ class Command(BaseCommand):
                     self.stdout.write(
                         "Rebuilding Avatar id=%s at size %s." % (avatar.id, size)
                     )
-
-                avatar.create_thumbnail(size)
+                if isinstance(size, int):
+                    avatar.create_thumbnail(size, size)
+                else:
+                    # Size is specified with height and width.
+                    avatar.create_thumbnail(size[0], size[1])

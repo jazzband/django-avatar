@@ -118,7 +118,7 @@ class Avatar(models.Model):
             avatars.delete()
         super(Avatar, self).save(*args, **kwargs)
 
-    def thumbnail_exists(self, width, height):
+    def thumbnail_exists(self, width, height=None):
         return self.avatar.storage.exists(self.avatar_name(width, height))
 
     def transpose_image(self, image):
@@ -146,7 +146,9 @@ class Avatar(models.Model):
             image = image.transpose(getattr(Image, method))
         return image
 
-    def create_thumbnail(self, width, height, quality=None):
+    def create_thumbnail(self, width, height=None, quality=None):
+        if height is None:
+            height = width
         # invalidate the cache of the thumbnail with the given size first
         invalidate_cache(self.user, width, height)
         try:
@@ -186,13 +188,15 @@ class Avatar(models.Model):
                 self.avatar_name(width, height), thumb_file
             )
 
-    def avatar_url(self, width, height):
+    def avatar_url(self, width, height=None):
         return self.avatar.storage.url(self.avatar_name(width, height))
 
     def get_absolute_url(self):
         return self.avatar_url(settings.AVATAR_DEFAULT_SIZE)
 
-    def avatar_name(self, width, height):
+    def avatar_name(self, width, height=None):
+        if height is None:
+            height = width
         ext = find_extension(settings.AVATAR_THUMB_FORMAT)
         return avatar_file_path(instance=self, width=width, height=height, ext=ext)
 
@@ -205,7 +209,7 @@ def invalidate_avatar_cache(sender, instance, **kwargs):
 def create_default_thumbnails(sender, instance, created=False, **kwargs):
     invalidate_avatar_cache(sender, instance)
     if created:
-        for size in settings.AUTO_GENERATE_AVATAR_SIZES:
+        for size in settings.AVATAR_AUTO_GENERATE_SIZES:
             if isinstance(size, int):
                 instance.create_thumbnail(size, size)
             else:

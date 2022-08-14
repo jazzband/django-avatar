@@ -13,8 +13,8 @@ register = template.Library()
 
 @cache_result()
 @register.simple_tag
-def avatar_url(user, width=settings.AVATAR_DEFAULT_SIZE, height=False):
-    if height is False:
+def avatar_url(user, width=settings.AVATAR_DEFAULT_SIZE, height=None):
+    if height is None:
         height = width
     for provider_path in settings.AVATAR_PROVIDERS:
         provider = import_string(provider_path)
@@ -25,8 +25,8 @@ def avatar_url(user, width=settings.AVATAR_DEFAULT_SIZE, height=False):
 
 @cache_result()
 @register.simple_tag
-def avatar(user, width=settings.AVATAR_DEFAULT_SIZE, height=False, **kwargs):
-    if height is False:
+def avatar(user, width=settings.AVATAR_DEFAULT_SIZE, height=None, **kwargs):
+    if height is None:
         height = width
     if not isinstance(user, get_user_model()):
         try:
@@ -74,14 +74,14 @@ def has_avatar(user):
 
 @cache_result()
 @register.simple_tag
-def primary_avatar(user, width=settings.AVATAR_DEFAULT_SIZE, height=False):
+def primary_avatar(user, width=settings.AVATAR_DEFAULT_SIZE, height=None):
     """
     This tag tries to get the default avatar for a user without doing any db
     requests. It achieve this by linking to a special view that will do all the
     work for us. If that special view is then cached by a CDN for instance,
     we will avoid many db calls.
     """
-    if height is False:
+    if height is None:
         height = width
     alt = str(user)
     url = reverse(
@@ -97,8 +97,8 @@ def primary_avatar(user, width=settings.AVATAR_DEFAULT_SIZE, height=False):
 
 @cache_result()
 @register.simple_tag
-def render_avatar(avatar, width=settings.AVATAR_DEFAULT_SIZE, height=False):
-    if height is False:
+def render_avatar(avatar, width=settings.AVATAR_DEFAULT_SIZE, height=None):
+    if height is None:
         height = width
     if not avatar.thumbnail_exists(width, height):
         avatar.create_thumbnail(width, height)

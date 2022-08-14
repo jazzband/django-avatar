@@ -173,10 +173,8 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
     return render(request, template_name, context)
 
 
-def render_primary(
-    request, user=None, width=settings.AVATAR_DEFAULT_SIZE, height=False
-):
-    if height is False:
+def render_primary(request, user=None, width=settings.AVATAR_DEFAULT_SIZE, height=None):
+    if height is None:
         height = width
     width = int(width)
     height = int(height)

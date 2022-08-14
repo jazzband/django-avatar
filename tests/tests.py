@@ -119,7 +119,7 @@ class AvatarTests(TestCase):
                 "avatar_render_primary",
                 kwargs={
                     "user": self.user.username,
-                    "size": 80,
+                    "width": 80,
                 },
             )
         )
