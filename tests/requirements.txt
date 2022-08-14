@@ -1,2 +1,2 @@
-flake8
-coverage==4.2
+coverage==6.2
+django

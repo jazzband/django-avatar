@@ -1,0 +1,52 @@
+name: Test
+on: [push, pull_request]
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.6
+            django-version: 3.2
+          - python-version: 3.7
+            django-version: 3.2
+          - python-version: 3.8
+            django-version: 3.2
+          - python-version: 3.9
+            django-version: 3.2
+          - python-version: '3.10'
+            django-version: 3.2
+          - python-version: 3.8
+            django-version: 4.0
+          - python-version: 3.9
+            django-version: 4.0
+          - python-version: '3.10'
+            django-version: 4.0
+          - python-version: 3.8
+            django-version: 4.1
+          - python-version: 3.9
+            django-version: 4.1
+          - python-version: '3.10'
+            django-version: 4.1
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Set up Python ${{ matrix.python-version }}'
+        uses: actions/setup-python@v3
+        with:
+          python-version: '${{ matrix.python-version }}'
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+          pip install -e .
+          pip install -r tests/requirements.txt
+          pip install "Django~=${{ matrix.django-version }}.0" .
+      - name: Run Tests
+        run: |
+          echo "$(python --version) / Django $(django-admin --version)"
+          export DJANGO_SETTINGS_MODULE=tests.settings
+          export PYTHONPATH=.
+          coverage run --source=avatar `which django-admin` test tests
+          coverage report
+          coverage xml
+      - name: Upload coverage reports to Codecov with GitHub Action
+        uses: codecov/codecov-action@v3

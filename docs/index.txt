@@ -48,7 +48,7 @@ that are required. A minimal integration can work like this:
 
         urlpatterns = [
             # ...
-            url('avatar/', include('avatar.urls')),
+            path('avatar/', include('avatar.urls')),
         ]
 
 4.  Somewhere in your template navigation scheme, link to the change avatar
@@ -124,7 +124,7 @@ appear on the site. Listed below are those settings:
 
     Puts the User's username field in the URL path when ``True``. Set to
     ``False`` to use the User's primary key instead, preventing their email
-    from being searchable on the web. Defaults to ``True``.
+    from being searchable on the web. Defaults to ``False``.
 
 .. py:data:: AVATAR_FACEBOOK_GET_ID
 
@@ -156,7 +156,7 @@ appear on the site. Listed below are those settings:
 .. py:data:: AVATAR_MAX_SIZE
 
     File size limit for avatar upload. Default is ``1024 * 1024`` (1 MB).
-    gravatar in ``user.gravatar``. Defaults to ``email``.
+    gravatar in ``user.gravatar``.
 
 .. py:data:: AVATAR_MAX_AVATARS_PER_USER
 
@@ -205,14 +205,30 @@ appear on the site. Listed below are those settings:
 .. py:data:: AVATAR_RESIZE_METHOD
 
     The method to use when resizing images, based on the options available in
-    PIL. Defaults to ``Image.ANTIALIAS``.
+    Pillow. Defaults to ``Image.ANTIALIAS``.
 
 .. py:data:: AVATAR_STORAGE_DIR
 
     The directory under ``MEDIA_ROOT`` to store the images. If using a
     non-filesystem storage device, this will simply be appended to the beginning
     of the file name.  Defaults to ``avatars``.
-    PIL. Defaults to ``Image.ANTIALIAS``.
+    Pillow. Defaults to ``Image.ANTIALIAS``.
+
+.. py:data:: AVATAR_THUMB_FORMAT
+
+    The file format of thumbnails, based on the options available in
+    Pillow. Defaults to `PNG`.
+
+.. py:data:: AVATAR_THUMB_QUALITY
+
+    The quality of thumbnails, between 0 (worst) to 95 (best) or the string
+    "keep" (only JPEG) as provided by Pillow. Defaults to `85`.
+
+.. py:data:: AVATAR_THUMB_MODES
+
+    A sequence of acceptable modes for thumbnails as provided by Pillow. If the mode
+    of the image is not in the list, the thumbnail will be converted to the
+    first mode in the list. Defaults to `('RGB', 'RGBA')`.
 
 .. py:data:: AVATAR_CLEANUP_DELETED
 
