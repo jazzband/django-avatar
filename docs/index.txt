@@ -233,7 +233,7 @@ appear on the site. Listed below are those settings:
 .. py:data:: AVATAR_CLEANUP_DELETED
 
     ``True`` if the avatar image files should be deleted when an avatar is
-    deleted from the database.  Defaults to ``False``.
+    deleted from the database.  Defaults to ``True``.
 
 .. py:data:: AVATAR_ADD_TEMPLATE
 
