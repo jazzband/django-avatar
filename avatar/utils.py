@@ -18,9 +18,14 @@ def get_username(user):
         return user.username
 
 
-def get_user(username):
-    """Return user from a username/ish identifier"""
-    return get_user_model().objects.get_by_natural_key(username)
+def get_user(userdescriptor):
+    """Return user from a username/ID/ish identifier"""
+    User = get_user_model()
+    if userdescriptor.isdigit():
+        user = User.objects.filter(id=int(userdescriptor)).first()
+        if user:
+            return user
+    return User.objects.get_by_natural_key(userdescriptor)
 
 
 def get_cache_key(user_or_username, width, height, prefix):

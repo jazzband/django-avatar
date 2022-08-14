@@ -14,6 +14,6 @@ urlpatterns = [
     re_path(
         r"^render_primary/(?P<user>[\w\d\@\.\-_]+)/(?P<width>[\d]+)/(?P<height>[\d]+)/$",
         views.render_primary,
-        name="avatar_render_primary_rectangular",
+        name="avatar_render_primary",
     ),
 ]

@@ -81,17 +81,24 @@ def primary_avatar(user, width=settings.AVATAR_DEFAULT_SIZE, height=None):
     work for us. If that special view is then cached by a CDN for instance,
     we will avoid many db calls.
     """
+    kwargs = {"width": width}
+    if settings.AVATAR_EXPOSE_USERNAMES:
+        alt = str(user)
+        kwargs["user"] = user
+    else:
+        alt = _("User Avatar")
+        kwargs["user"] = user.id
     if height is None:
         height = width
-    alt = str(user)
-    url = reverse(
-        "avatar_render_primary", kwargs={"user": user, "width": width, "height": height}
-    )
-    return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
+    else:
+        kwargs["height"] = height
+
+    url = reverse("avatar_render_primary", kwargs=kwargs)
+    return """<img src="%s" width="%s" height="%s" alt="%s" />""" % (
         url,
-        alt,
         width,
         height,
+        alt,
     )
 
 
@@ -108,27 +115,3 @@ def render_avatar(avatar, width=settings.AVATAR_DEFAULT_SIZE, height=None):
         width,
         height,
     )
-
-
-@register.tag
-def primary_avatar_object(parser, token):
-    split = token.split_contents()
-    if len(split) == 4:
-        return UsersAvatarObjectNode(split[1], split[3])
-    raise template.TemplateSyntaxError("%r tag takes three arguments." % split[0])
-
-
-class UsersAvatarObjectNode(template.Node):
-    def __init__(self, user, key):
-        self.user = template.Variable(user)
-        self.key = key
-
-    def render(self, context):
-        user = self.user.resolve(context)
-        key = self.key
-        avatar = Avatar.objects.filter(user=user, primary=True)
-        if avatar:
-            context[key] = avatar[0]
-        else:
-            context[key] = None
-        return str()

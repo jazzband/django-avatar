@@ -13,3 +13,4 @@ htmlcov/
 *.sqlite3
 test_proj/media
 .python-version
+/test-media/

@@ -1,5 +1,7 @@
 import math
 import os.path
+from pathlib import Path
+from shutil import rmtree
 
 from django.contrib.admin.sites import AdminSite
 from django.test import TestCase
@@ -55,8 +57,14 @@ def root_mean_square_difference(image1, image2):
 
 
 class AvatarTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.path = os.path.dirname(__file__)
+        cls.testdatapath = os.path.join(cls.path, "data")
+        cls.testmediapath = os.path.join(cls.path, "../test-media/")
+        return super().setUpClass()
+
     def setUp(self):
-        self.testdatapath = os.path.join(os.path.dirname(__file__), "data")
         self.user = get_user_model().objects.create_user(
             "test", "lennon@thebeatles.com", "testpassword"
         )
@@ -64,6 +72,16 @@ class AvatarTests(TestCase):
         self.client.login(username="test", password="testpassword")
         self.site = AdminSite()
         Image.init()
+
+    @classmethod
+    def tearDownClass(cls):
+        rmtree(cls.testmediapath)
+        return super().tearDownClass()
+
+    def assertMediaFileExists(self, path):
+        full_path = os.path.join(self.testmediapath, f".{path}")
+        if not Path(full_path).resolve().is_file():
+            raise AssertionError(f"File does not exist: {full_path}")
 
     def test_admin_get_avatar_returns_different_image_tags(self):
         self.test_normal_image_upload()
@@ -323,6 +341,59 @@ class AvatarTests(TestCase):
             avatar.avatar_url(80)
         )
         self.assertInHTML(html, result)
+
+    def test_primary_avatar_tag_works(self):
+        upload_helper(self, "test.png")
+
+        result = avatar_tags.primary_avatar(self.user)
+
+        self.assertIn(f'<img src="/avatar/render_primary/{self.user.id}/80/"', result)
+        self.assertIn('width="80" height="80" alt="User Avatar" />', result)
+
+        response = self.client.get(f"/avatar/render_primary/{self.user.id}/80/")
+        self.assertEqual(response.status_code, 302)
+        self.assertMediaFileExists(response.url)
+
+    def test_primary_avatar_tag_works_with_custom_size(self):
+        upload_helper(self, "test.png")
+
+        result = avatar_tags.primary_avatar(self.user, 90)
+
+        self.assertIn(f'<img src="/avatar/render_primary/{self.user.id}/90/"', result)
+        self.assertIn('width="90" height="90" alt="User Avatar" />', result)
+
+        response = self.client.get(f"/avatar/render_primary/{self.user.id}/90/")
+        self.assertEqual(response.status_code, 302)
+        self.assertMediaFileExists(response.url)
+
+    def test_primary_avatar_tag_works_with_rectangle(self):
+        upload_helper(self, "test.png")
+
+        result = avatar_tags.primary_avatar(self.user, 60, 110)
+
+        self.assertIn(
+            f'<img src="/avatar/render_primary/{self.user.id}/60/110/"', result
+        )
+        self.assertIn('width="60" height="110" alt="User Avatar" />', result)
+
+        response = self.client.get(f"/avatar/render_primary/{self.user.id}/60/110/")
+        self.assertEqual(response.status_code, 302)
+        self.assertMediaFileExists(response.url)
+
+    @override_settings(AVATAR_EXPOSE_USERNAMES=True)
+    def test_primary_avatar_tag_works_with_exposed_user(self):
+        upload_helper(self, "test.png")
+
+        result = avatar_tags.primary_avatar(self.user)
+
+        self.assertIn(
+            f'<img src="/avatar/render_primary/{self.user.username}/80/"', result
+        )
+        self.assertIn('width="80" height="80" alt="test" />', result)
+
+        response = self.client.get(f"/avatar/render_primary/{self.user.username}/80/")
+        self.assertEqual(response.status_code, 302)
+        self.assertMediaFileExists(response.url)
 
     def test_default_add_template(self):
         response = self.client.get("/avatar/add/")
