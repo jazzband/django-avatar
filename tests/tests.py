@@ -275,6 +275,16 @@ class AvatarTests(TestCase):
         result = avatar_tags.avatar(self.user.username)
 
         self.assertIn('<img src="{}"'.format(avatar.avatar_url(80)), result)
+        self.assertIn('width="80" height="80" alt="User Avatar" />', result)
+
+    @override_settings(AVATAR_EXPOSE_USERNAMES=True)
+    def test_avatar_tag_works_with_exposed_username(self):
+        upload_helper(self, "test.png")
+        avatar = get_primary_avatar(self.user)
+
+        result = avatar_tags.avatar(self.user.username)
+
+        self.assertIn('<img src="{}"'.format(avatar.avatar_url(80)), result)
         self.assertIn('width="80" height="80" alt="test" />', result)
 
     def test_avatar_tag_works_with_user(self):
@@ -284,7 +294,7 @@ class AvatarTests(TestCase):
         result = avatar_tags.avatar(self.user)
 
         self.assertIn('<img src="{}"'.format(avatar.avatar_url(80)), result)
-        self.assertIn('width="80" height="80" alt="test" />', result)
+        self.assertIn('width="80" height="80" alt="User Avatar" />', result)
 
     def test_avatar_tag_works_with_custom_size(self):
         upload_helper(self, "test.png")
@@ -293,7 +303,7 @@ class AvatarTests(TestCase):
         result = avatar_tags.avatar(self.user, 100)
 
         self.assertIn('<img src="{}"'.format(avatar.avatar_url(100)), result)
-        self.assertIn('width="100" height="100" alt="test" />', result)
+        self.assertIn('width="100" height="100" alt="User Avatar" />', result)
 
     def test_avatar_tag_works_with_rectangle(self):
         upload_helper(self, "test.png")
@@ -302,17 +312,15 @@ class AvatarTests(TestCase):
         result = avatar_tags.avatar(self.user, 100, 150)
 
         self.assertIn('<img src="{}"'.format(avatar.avatar_url(100, 150)), result)
-        self.assertIn('width="100" height="150" alt="test" />', result)
+        self.assertIn('width="100" height="150" alt="User Avatar" />', result)
 
     def test_avatar_tag_works_with_kwargs(self):
         upload_helper(self, "test.png")
         avatar = get_primary_avatar(self.user)
 
         result = avatar_tags.avatar(self.user, title="Avatar")
-        html = (
-            '<img src="{}" width="80" height="80" alt="test" title="Avatar" />'.format(
-                avatar.avatar_url(80)
-            )
+        html = '<img src="{}" width="80" height="80" alt="User Avatar" title="Avatar" />'.format(
+            avatar.avatar_url(80)
         )
         self.assertInHTML(html, result)
 
