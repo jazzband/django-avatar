@@ -1,2 +1,3 @@
 coverage==6.2
 django
+python-magic

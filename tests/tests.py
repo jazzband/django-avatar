@@ -117,15 +117,27 @@ class AvatarTests(TestCase):
         self.assertEqual(avatar.user, self.user)
         self.assertTrue(avatar.primary)
 
+    # We allow the .tiff file extension but not the mime type
+    @override_settings(AVATAR_ALLOWED_FILE_EXTS=(".png", ".gif", ".jpg", ".tiff"))
+    @override_settings(
+        AVATAR_ALLOWED_MIMETYPES=("image/png", "image/gif", "image/jpeg")
+    )
+    def test_unsupported_image_format_upload(self):
+        """Check with python-magic that we detect corrupted / unapprovd image files correctly"""
+        response = upload_helper(self, "test.tiff")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.redirect_chain), 0)  # Redirect only if it worked
+        self.assertNotEqual(response.context["upload_avatar_form"].errors, {})
+
+    @override_settings(AVATAR_ALLOWED_FILE_EXTS=(".jpg", ".png"))
     def test_image_without_wrong_extension(self):
-        # use with AVATAR_ALLOWED_FILE_EXTS = ('.jpg', '.png')
         response = upload_helper(self, "imagefilewithoutext")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.redirect_chain), 0)  # Redirect only if it worked
         self.assertNotEqual(response.context["upload_avatar_form"].errors, {})
 
+    @override_settings(AVATAR_ALLOWED_FILE_EXTS=(".jpg", ".png"))
     def test_image_with_wrong_extension(self):
-        # use with AVATAR_ALLOWED_FILE_EXTS = ('.jpg', '.png')
         response = upload_helper(self, "imagefilewithwrongext.ogg")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.redirect_chain), 0)  # Redirect only if it worked
