@@ -28,7 +28,7 @@ def get_user(userdescriptor):
     return User.objects.get_by_natural_key(userdescriptor)
 
 
-def get_cache_key(user_or_username, prefix, width=False, height=False):
+def get_cache_key(user_or_username, prefix, width=None, height=None):
     """
     Returns a cache key consisten of a username and image size.
     """
@@ -74,7 +74,7 @@ def cache_result(default_size=settings.AVATAR_DEFAULT_SIZE):
                 # add image size to set of cached sizes so we can invalidate them later
                 sizes_key = get_cache_key(user, "cached_sizes")
                 sizes = cache.get(sizes_key, set())
-                sizes.add((width or default_size, height or width))
+                sizes.add((width or default_size, height or width or default_size))
                 cache_set(sizes_key, sizes)
             return result
 
@@ -98,6 +98,7 @@ def invalidate_cache(user, width=None, height=None):
             else:
                 # Size is specified with height and width.
                 cache.delete(get_cache_key(user, prefix, size[0], size[1]))
+    cache.set(sizes_key, set())
 
 
 def get_default_avatar_url():

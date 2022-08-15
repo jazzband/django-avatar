@@ -5,6 +5,7 @@ from shutil import rmtree
 
 from django.contrib.admin.sites import AdminSite
 from django.core import management
+from django.core.cache import cache
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -15,7 +16,12 @@ from avatar.conf import settings
 from avatar.models import Avatar
 from avatar.signals import avatar_deleted
 from avatar.templatetags import avatar_tags
-from avatar.utils import get_primary_avatar, get_user_model
+from avatar.utils import (
+    get_cache_key,
+    get_primary_avatar,
+    get_user_model,
+    invalidate_cache,
+)
 
 
 class AssertSignal:
@@ -465,10 +471,23 @@ class AvatarTests(TestCase):
         self.assertMediaFileExists(avatar_80_url)
         self.assertNotEqual(avatar_80_mtime, self.get_media_file_mtime(avatar_80_url))
 
-    # def testAvatarOrder
-    # def testReplaceAvatarWhenMaxIsOne
-    # def testHashFileName
-    # def testHashUserName
-    # def testChangePrimaryAvatar
-    # def testDeleteThumbnailAndRecreation
-    # def testAutomaticThumbnailCreation
+    def test_invalidate_cache(self):
+        upload_helper(self, "test.png")
+        sizes_key = get_cache_key(self.user, "cached_sizes")
+        sizes = cache.get(sizes_key, set())
+        # Only default 80x80 thumbnail is cached
+        self.assertEqual(len(sizes), 1)
+        # Invalidate cache
+        invalidate_cache(self.user)
+        sizes = cache.get(sizes_key, set())
+        # No thumbnail is cached.
+        self.assertEqual(len(sizes), 0)
+        # Create a custom 25x25 thumbnail and check that it is cached
+        avatar_tags.avatar(self.user, 25)
+        sizes = cache.get(sizes_key, set())
+        self.assertEqual(len(sizes), 1)
+        # Invalidate cache again.
+        invalidate_cache(self.user)
+        sizes = cache.get(sizes_key, set())
+        # It should now be empty again
+        self.assertEqual(len(sizes), 0)

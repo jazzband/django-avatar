@@ -188,6 +188,7 @@ class Avatar(models.Model):
             thumb = self.avatar.storage.save(
                 self.avatar_name(width, height), thumb_file
             )
+        invalidate_cache(self.user, width, height)
 
     def avatar_url(self, width, height=None):
         return self.avatar.storage.url(self.avatar_name(width, height))
