@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from avatar.conf import settings
-from avatar.models import Avatar
+from avatar.models import Avatar, remove_avatar_images
 
 
 class Command(BaseCommand):
@@ -12,6 +12,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for avatar in Avatar.objects.all():
+            if settings.AVATAR_CLEANUP_DELETED:
+                remove_avatar_images(avatar, delete_main_avatar=False)
             for size in settings.AVATAR_AUTO_GENERATE_SIZES:
                 if options["verbosity"] != 0:
                     self.stdout.write(

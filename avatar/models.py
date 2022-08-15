@@ -217,16 +217,21 @@ def create_default_thumbnails(sender, instance, created=False, **kwargs):
                 instance.create_thumbnail(size[0], size[1])
 
 
-def remove_avatar_images(instance=None, **kwargs):
+def remove_avatar_images(instance=None, delete_main_avatar=True, **kwargs):
     base_filepath = instance.avatar.name
     path, filename = os.path.split(base_filepath)
     # iterate through resized avatars directories and delete resized avatars
-    resized_sizes, _ = instance.avatar.storage.listdir(os.path.join(path, "resized"))
-    for size in resized_sizes:
-        if instance.thumbnail_exists(size):
-            instance.avatar.storage.delete(instance.avatar_name(size))
-    if instance.avatar.storage.exists(instance.avatar.name):
-        instance.avatar.storage.delete(instance.avatar.name)
+    resized_path = os.path.join(path, "resized")
+    resized_widths, _ = instance.avatar.storage.listdir(resized_path)
+    for width in resized_widths:
+        resized_width_path = os.path.join(resized_path, width)
+        resized_heights, _ = instance.avatar.storage.listdir(resized_width_path)
+        for height in resized_heights:
+            if instance.thumbnail_exists(width, height):
+                instance.avatar.storage.delete(instance.avatar_name(width, height))
+    if delete_main_avatar:
+        if instance.avatar.storage.exists(instance.avatar.name):
+            instance.avatar.storage.delete(instance.avatar.name)
 
 
 signals.post_save.connect(create_default_thumbnails, sender=Avatar)

@@ -4,6 +4,7 @@ from pathlib import Path
 from shutil import rmtree
 
 from django.contrib.admin.sites import AdminSite
+from django.core import management
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -73,10 +74,9 @@ class AvatarTests(TestCase):
         self.site = AdminSite()
         Image.init()
 
-    @classmethod
-    def tearDownClass(cls):
-        rmtree(cls.testmediapath)
-        return super().tearDownClass()
+    def tearDown(self):
+        rmtree(self.testmediapath)
+        return super().tearDown()
 
     def assertMediaFileExists(self, path):
         full_path = os.path.join(self.testmediapath, f".{path}")
@@ -428,6 +428,41 @@ class AvatarTests(TestCase):
         response = self.client.get("/avatar/delete/")
         self.assertNotContains(response, "like to delete.")
         self.assertContains(response, "ALTERNATE DELETE TEMPLATE")
+
+    def get_media_file_mtime(self, path):
+        full_path = os.path.join(self.testmediapath, f".{path}")
+        return os.path.getmtime(full_path)
+
+    def test_rebuild_avatars(self):
+        upload_helper(self, "test.png")
+        avatar_51_url = get_primary_avatar(self.user).avatar_url(51)
+        self.assertMediaFileExists(avatar_51_url)
+        avatar_51_mtime = self.get_media_file_mtime(avatar_51_url)
+
+        avatar_62_url = get_primary_avatar(self.user).avatar_url(62)
+        self.assertMediaFileExists(avatar_62_url)
+        avatar_62_mtime = self.get_media_file_mtime(avatar_62_url)
+
+        avatar_33_22_url = get_primary_avatar(self.user).avatar_url(33, 22)
+        self.assertMediaFileExists(avatar_33_22_url)
+        avatar_33_22_mtime = self.get_media_file_mtime(avatar_33_22_url)
+
+        avatar_80_url = get_primary_avatar(self.user).avatar_url(80)
+        self.assertMediaFileExists(avatar_80_url)
+        avatar_80_mtime = self.get_media_file_mtime(avatar_80_url)
+        # Rebuild all avatars
+        management.call_command("rebuild_avatars", verbosity=0)
+        # Make sure the media files all exist, but that their modification times differ
+        self.assertMediaFileExists(avatar_51_url)
+        self.assertNotEqual(avatar_51_mtime, self.get_media_file_mtime(avatar_51_url))
+        self.assertMediaFileExists(avatar_62_url)
+        self.assertNotEqual(avatar_62_mtime, self.get_media_file_mtime(avatar_62_url))
+        self.assertMediaFileExists(avatar_33_22_url)
+        self.assertNotEqual(
+            avatar_33_22_mtime, self.get_media_file_mtime(avatar_33_22_url)
+        )
+        self.assertMediaFileExists(avatar_80_url)
+        self.assertNotEqual(avatar_80_mtime, self.get_media_file_mtime(avatar_80_url))
 
     # def testAvatarOrder
     # def testReplaceAvatarWhenMaxIsOne
