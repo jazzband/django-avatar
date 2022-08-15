@@ -179,9 +179,10 @@ class Avatar(models.Model):
                 thumb_file = ContentFile(thumb.getvalue())
             else:
                 thumb_file = File(orig)
-            thumb = self.avatar.storage.save(
-                self.avatar_name(width, height), thumb_file
-            )
+            thumb_name = self.avatar_name(width, height)
+            if self.avatar.storage.exists(thumb_name):
+                self.avatar.storage.delete(thumb_name)
+            thumb = self.avatar.storage.save(thumb_name, thumb_file)
         except IOError:
             thumb_file = File(orig)
             thumb = self.avatar.storage.save(
