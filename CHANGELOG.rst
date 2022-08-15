@@ -4,6 +4,7 @@ Changelog
 * Unreleased
     * Allowed for rectangular avatars. Custom avatar tag templates now require the specification of both a ``width`` and ``height`` attribute instead of ``size``.
     * Made ``True`` the default value of ``AVATAR_CLEANUP_DELETED``. (Set to ``False`` to obtain previous behavior).
+    * Fix invalidate_cache for on-the-fly created thumbnails
 
 * 6.0.1 (August 12, 2022)
     * Exclude tests folder from distribution.
