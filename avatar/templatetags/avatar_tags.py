@@ -13,17 +13,21 @@ register = template.Library()
 
 @cache_result()
 @register.simple_tag
-def avatar_url(user, size=settings.AVATAR_DEFAULT_SIZE):
+def avatar_url(user, width=settings.AVATAR_DEFAULT_SIZE, height=None):
+    if height is None:
+        height = width
     for provider_path in settings.AVATAR_PROVIDERS:
         provider = import_string(provider_path)
-        avatar_url = provider.get_avatar_url(user, size)
+        avatar_url = provider.get_avatar_url(user, width, height)
         if avatar_url:
             return avatar_url
 
 
 @cache_result()
 @register.simple_tag
-def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
+def avatar(user, width=settings.AVATAR_DEFAULT_SIZE, height=None, **kwargs):
+    if height is None:
+        height = width
     if not isinstance(user, get_user_model()):
         try:
             user = get_user(user)
@@ -31,7 +35,7 @@ def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
                 alt = str(user)
             else:
                 alt = _("User Avatar")
-            url = avatar_url(user, size)
+            url = avatar_url(user, width, height)
         except get_user_model().DoesNotExist:
             url = get_default_avatar_url()
             alt = _("Default Avatar")
@@ -40,13 +44,14 @@ def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
             alt = str(user)
         else:
             alt = _("User Avatar")
-        url = avatar_url(user, size)
+        url = avatar_url(user, width, height)
     kwargs.update({"alt": alt})
 
     context = {
         "user": user,
         "alt": alt,
-        "size": size,
+        "width": width,
+        "height": height,
         "kwargs": kwargs,
     }
     template_name = "avatar/avatar_tag.html"
@@ -69,55 +74,44 @@ def has_avatar(user):
 
 @cache_result()
 @register.simple_tag
-def primary_avatar(user, size=settings.AVATAR_DEFAULT_SIZE):
+def primary_avatar(user, width=settings.AVATAR_DEFAULT_SIZE, height=None):
     """
     This tag tries to get the default avatar for a user without doing any db
     requests. It achieve this by linking to a special view that will do all the
     work for us. If that special view is then cached by a CDN for instance,
     we will avoid many db calls.
     """
-    alt = str(user)
-    url = reverse("avatar_render_primary", kwargs={"user": user, "size": size})
-    return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
+    kwargs = {"width": width}
+    if settings.AVATAR_EXPOSE_USERNAMES:
+        alt = str(user)
+        kwargs["user"] = user
+    else:
+        alt = _("User Avatar")
+        kwargs["user"] = user.id
+    if height is None:
+        height = width
+    else:
+        kwargs["height"] = height
+
+    url = reverse("avatar_render_primary", kwargs=kwargs)
+    return """<img src="%s" width="%s" height="%s" alt="%s" />""" % (
         url,
+        width,
+        height,
         alt,
-        size,
-        size,
     )
 
 
 @cache_result()
 @register.simple_tag
-def render_avatar(avatar, size=settings.AVATAR_DEFAULT_SIZE):
-    if not avatar.thumbnail_exists(size):
-        avatar.create_thumbnail(size)
+def render_avatar(avatar, width=settings.AVATAR_DEFAULT_SIZE, height=None):
+    if height is None:
+        height = width
+    if not avatar.thumbnail_exists(width, height):
+        avatar.create_thumbnail(width, height)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
-        avatar.avatar_url(size),
+        avatar.avatar_url(width, height),
         str(avatar),
-        size,
-        size,
+        width,
+        height,
     )
-
-
-@register.tag
-def primary_avatar_object(parser, token):
-    split = token.split_contents()
-    if len(split) == 4:
-        return UsersAvatarObjectNode(split[1], split[3])
-    raise template.TemplateSyntaxError("%r tag takes three arguments." % split[0])
-
-
-class UsersAvatarObjectNode(template.Node):
-    def __init__(self, user, key):
-        self.user = template.Variable(user)
-        self.key = key
-
-    def render(self, context):
-        user = self.user.resolve(context)
-        key = self.key
-        avatar = Avatar.objects.filter(user=user, primary=True)
-        if avatar:
-            context[key] = avatar[0]
-        else:
-            context[key] = None
-        return str()

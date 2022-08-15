@@ -10,12 +10,12 @@ from avatar.conf import settings
 from avatar.models import Avatar
 
 
-def avatar_img(avatar, size):
-    if not avatar.thumbnail_exists(size):
-        avatar.create_thumbnail(size)
+def avatar_img(avatar, width, height):
+    if not avatar.thumbnail_exists(width, height):
+        avatar.create_thumbnail(width, height)
     return mark_safe(
         '<img src="%s" alt="%s" width="%s" height="%s" />'
-        % (avatar.avatar_url(size), str(avatar), size, size)
+        % (avatar.avatar_url(width, height), str(avatar), width, height)
     )
 
 
@@ -24,7 +24,7 @@ class UploadAvatarForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
-        super(UploadAvatarForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clean_avatar(self):
         data = self.cleaned_data["avatar"]
@@ -73,22 +73,25 @@ class UploadAvatarForm(forms.Form):
 class PrimaryAvatarForm(forms.Form):
     def __init__(self, *args, **kwargs):
         kwargs.pop("user")
-        size = kwargs.pop("size", settings.AVATAR_DEFAULT_SIZE)
+        width = kwargs.pop("width", settings.AVATAR_DEFAULT_SIZE)
+        height = kwargs.pop("height", settings.AVATAR_DEFAULT_SIZE)
         avatars = kwargs.pop("avatars")
-        super(PrimaryAvatarForm, self).__init__(*args, **kwargs)
-        choices = [(avatar.id, avatar_img(avatar, size)) for avatar in avatars]
+        super().__init__(*args, **kwargs)
         self.fields["choice"] = forms.ChoiceField(
-            label=_("Choices"), choices=choices, widget=widgets.RadioSelect
+            choices=[(c.id, avatar_img(c, width, height)) for c in avatars],
+            widget=widgets.RadioSelect,
         )
 
 
 class DeleteAvatarForm(forms.Form):
     def __init__(self, *args, **kwargs):
         kwargs.pop("user")
-        size = kwargs.pop("size", settings.AVATAR_DEFAULT_SIZE)
+        width = kwargs.pop("width", settings.AVATAR_DEFAULT_SIZE)
+        height = kwargs.pop("height", settings.AVATAR_DEFAULT_SIZE)
         avatars = kwargs.pop("avatars")
-        super(DeleteAvatarForm, self).__init__(*args, **kwargs)
-        choices = [(avatar.id, avatar_img(avatar, size)) for avatar in avatars]
+        super().__init__(*args, **kwargs)
         self.fields["choices"] = forms.MultipleChoiceField(
-            label=_("Choices"), choices=choices, widget=widgets.CheckboxSelectMultiple
+            label=_("Choices"),
+            choices=[(c.id, avatar_img(c, width, height)) for c in avatars],
+            widget=widgets.CheckboxSelectMultiple,
         )

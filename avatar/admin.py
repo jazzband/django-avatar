@@ -30,7 +30,7 @@ class AvatarAdmin(admin.ModelAdmin):
     get_avatar.allow_tags = True
 
     def save_model(self, request, obj, form, change):
-        super(AvatarAdmin, self).save_model(request, obj, form, change)
+        super().save_model(request, obj, form, change)
         avatar_updated.send(sender=Avatar, user=request.user, avatar=obj)
 
 
