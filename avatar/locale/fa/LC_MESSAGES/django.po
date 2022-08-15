@@ -1,0 +1,160 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Mahdi Firouzjaah<mh.firouzjah@gmai.com>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-16 20:12:00.982404\n"
+"PO-Revision-Date: 2020-12-16 20:12:00.982404\n"
+"Last-Translator: Mahdi Firouzjaah<mh.firouzjah@gmai.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: admin.py:30
+msgid "Avatar"
+msgstr "آواتار"
+
+#: forms.py:28 models.py:105 models.py:114
+msgid "avatar"
+msgstr "آواتار"
+
+#: forms.py:41
+#, python-format
+msgid ""
+"%(ext)s is an invalid file extension. Authorized extensions are : "
+"%(valid_exts_list)s"
+msgstr ""
+"%(ext)s یک فایل با پسوند نامناسب است. پسوندهای مناسب این‌ها هستند:"
+"%(valid_exts_list)s"
+
+#: forms.py:48
+#, python-format
+msgid ""
+"Your file is too big (%(size)s), the maximum allowed size is "
+"%(max_valid_size)s"
+msgstr ""
+"فایلی که فرستادید بیش از حد مجاز بزرگ است(%(size)s). حداکثر مجاز این است:"
+"%(max_valid_size)s"
+
+#: forms.py:56
+#, python-format
+msgid ""
+"You already have %(nb_avatars)d avatars, and the maximum allowed is "
+"%(nb_max_avatars)d."
+msgstr ""
+"شما هم‌اکنون %(nb_avatars)d تعداد آواتار دارید و حداکثر مجاز"
+"%(nb_max_avatars)d تا است."
+
+
+#: forms.py:73 forms.py:86
+msgid "Choices"
+msgstr "انتخاب‌ها"
+
+#: models.py:98
+msgid "user"
+msgstr "کاربر"
+
+#: models.py:101
+msgid "primary"
+msgstr "اصلی"
+
+#: models.py:108
+msgid "uploaded at"
+msgstr "بارگزاری شده در"
+
+#: models.py:115
+msgid "avatars"
+msgstr "آواتارها"
+
+#: templates/avatar/add.html:5 templates/avatar/change.html:5
+msgid "Your current avatar: "
+msgstr "آواتار فعلی شما: "
+
+#: templates/avatar/add.html:8 templates/avatar/change.html:8
+msgid "You haven't uploaded an avatar yet. Please upload one now."
+msgstr "شما تاکنون آواتاری بارگزاری نکرده‌اید، لطفا یکی بارگزاری کنید."
+
+#: templates/avatar/add.html:12 templates/avatar/change.html:19
+msgid "Upload New Image"
+msgstr "بارگزاری عکس جدید"
+
+#: templates/avatar/change.html:14
+msgid "Choose new Default"
+msgstr "انتخاب یکی به عنوان پیش‌فرض"
+
+#: templates/avatar/confirm_delete.html:5
+msgid "Please select the avatars that you would like to delete."
+msgstr "لطفا آواتاری که مایلید حذف شود، انتخاب کنید."
+
+#: templates/avatar/confirm_delete.html:8
+#, python-format
+msgid ""
+"You have no avatars to delete. Please <a href=\"%(avatar_change_url)s"
+"\">upload one</a> now."
+msgstr ""
+"شما آواتاری برای حذف کردن ندارید؛"
+"لطفا یکی <a href=\"%(avatar_change_url)s"
+"\">بارگزاری</a> کنید."
+
+#: templates/avatar/confirm_delete.html:14
+msgid "Delete These"
+msgstr "این(ها) را حذف کن"
+
+#: templates/notification/avatar_friend_updated/full.txt:1
+#, python-format
+msgid ""
+"%(avatar_creator)s has updated their avatar %(avatar)s.\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"%(avatar_creator)s آواتار خود را بروزرسانی کردند %(avatar)s.\n\n"
+"http://%(current_site)s%(avatar_url)s\n"
+
+#: templates/notification/avatar_friend_updated/notice.html:2
+#, python-format
+msgid ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> has updated their avatar <a "
+"href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr ""
+"<a href=\"%(user_url)s\">%(avatar_creator)s</a> آواتار خود را بروزرسانی کردند."
+"<a href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+
+#: templates/notification/avatar_updated/full.txt:1
+#, python-format
+msgid ""
+"Your avatar has been updated.  %(avatar)s\n"
+"\n"
+"http://%(current_site)s%(avatar_url)s\n"
+msgstr ""
+"آواتار شما بروزرسانی شد.  %(avatar)s\n\n"
+"http://%(current_site)s%(avatar_url)s\n"
+
+#: templates/notification/avatar_updated/notice.html:2
+#, python-format
+msgid "You have updated your avatar <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+msgstr "شما آواتار خود را بروزرسانی کردید. <a href=\"%(avatar_url)s\">%(avatar)s</a>."
+
+#: templatetags/avatar_tags.py:49
+msgid "Default Avatar"
+msgstr "آواتار پیش‌فرض"
+
+#: views.py:76
+msgid "Successfully uploaded a new avatar."
+msgstr "آواتار جدید با موفقیت بارگزاری شد."
+
+#: views.py:114
+msgid "Successfully updated your avatar."
+msgstr "آواتار شما با موفقیت بروزرسانی شد."
+
+#: views.py:157
+msgid "Successfully deleted the requested avatars."
+msgstr "آواتارهای مدنظر با موفقیت حذف شدند."

@@ -1,6 +1,32 @@
 Changelog
 =========
 
+* Unreleased
+    * Allowed for rectangular avatars. Custom avatar tag templates now require the specification of both a ``width`` and ``height`` attribute instead of ``size``.
+    * Made ``True`` the default value of ``AVATAR_CLEANUP_DELETED``. (Set to ``False`` to obtain previous behavior).
+
+* 6.0.1 (August 12, 2022)
+    * Exclude tests folder from distribution.
+
+* 6.0.0 (August 12, 2022)
+    * Added Django 3.2, 4.0 and 4.1 support.
+    * Removed Django 1.9, 1.10, 1.11, 2.0, 2.1, 2.2 and 3.0 support.
+    * Added Python 3.9 and 3.10 support.
+    * Removed Python 2.7, 3.4 and 3.5 support.
+    * Made ``"PNG"`` the default value for ``AVATAR_THUMB_FORMAT`` (Set to ``"JPEG"`` to obtain previous behavior).
+    * Made ``False`` the default value for ``AVATAR_EXPOSE_USERNAMES`` (Set to ``True`` to obtain previous behavior).
+    * Don't leak usernames through image alt-tags when ``AVATAR_EXPOSE_USERNAMES`` is `False`.
+    * New setting ``AVATAR_THUMB_MODES``. Default is ``['RGB', 'RGBA']``.
+    * Use original image as thumbnail if thumbnail creation failed but image saving succeeds.
+    * Add farsi translation.
+    * Introduce black and flake8 linting
+
+* 5.0.0 (January 4, 2019)
+    * Added Django 2.1, 2.2, and 3.0 support.
+    * Added Python 3.7 and 3.8 support.
+    * Removed Python 1.9 and 1.10 support.
+    * Fixed bug where avatars couldn't be deleted if file was already deleted.
+
 * 4.1.0 (December 20, 2017)
     * Added Django 2.0 support.
     * Added ``avatar_deleted`` signal.
