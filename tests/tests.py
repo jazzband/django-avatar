@@ -129,6 +129,18 @@ class AvatarTests(TestCase):
         self.assertEqual(len(response.redirect_chain), 0)  # Redirect only if it worked
         self.assertNotEqual(response.context["upload_avatar_form"].errors, {})
 
+    # We allow the .tiff file extension and the mime type
+    @override_settings(AVATAR_ALLOWED_FILE_EXTS=(".png", ".gif", ".jpg", ".tiff"))
+    @override_settings(
+        AVATAR_ALLOWED_MIMETYPES=("image/png", "image/gif", "image/jpeg", "image/tiff")
+    )
+    def test_supported_image_format_upload(self):
+        """Check with python-magic that we detect corrupted / unapprovd image files correctly"""
+        response = upload_helper(self, "test.tiff")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.redirect_chain), 1)  # Redirect only if it worked
+        self.assertEqual(response.context["upload_avatar_form"].errors, {})
+
     @override_settings(AVATAR_ALLOWED_FILE_EXTS=(".jpg", ".png"))
     def test_image_without_wrong_extension(self):
         response = upload_helper(self, "imagefilewithoutext")
