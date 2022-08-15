@@ -140,7 +140,7 @@ class Avatar(models.Model):
         try:
             orientation = image._getexif()[0x0112]
             ops = EXIF_ORIENTATION_STEPS[orientation]
-        except TypeError:
+        except (AttributeError, TypeError):
             ops = []
         for method in ops:
             image = image.transpose(getattr(Image, method))

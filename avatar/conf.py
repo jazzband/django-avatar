@@ -22,6 +22,7 @@ class AvatarConf(AppConf):
     HASH_USERDIRNAMES = False
     EXPOSE_USERNAMES = False
     ALLOWED_FILE_EXTS = None
+    ALLOWED_MIMETYPES = None
     CACHE_TIMEOUT = 60 * 60
     STORAGE = settings.DEFAULT_FILE_STORAGE
     CLEANUP_DELETED = True
