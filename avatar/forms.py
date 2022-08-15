@@ -24,7 +24,7 @@ class UploadAvatarForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
-        super(UploadAvatarForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clean_avatar(self):
         data = self.cleaned_data["avatar"]
@@ -76,7 +76,7 @@ class PrimaryAvatarForm(forms.Form):
         width = kwargs.pop("width", settings.AVATAR_DEFAULT_SIZE)
         height = kwargs.pop("height", settings.AVATAR_DEFAULT_SIZE)
         avatars = kwargs.pop("avatars")
-        super(PrimaryAvatarForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["choice"] = forms.ChoiceField(
             choices=[(c.id, avatar_img(c, width, height)) for c in avatars],
             widget=widgets.RadioSelect,
@@ -89,7 +89,7 @@ class DeleteAvatarForm(forms.Form):
         width = kwargs.pop("width", settings.AVATAR_DEFAULT_SIZE)
         height = kwargs.pop("height", settings.AVATAR_DEFAULT_SIZE)
         avatars = kwargs.pop("avatars")
-        super(DeleteAvatarForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["choices"] = forms.MultipleChoiceField(
             label=_("Choices"),
             choices=[(c.id, avatar_img(c, width, height)) for c in avatars],
