@@ -75,7 +75,8 @@ class AvatarTests(TestCase):
         Image.init()
 
     def tearDown(self):
-        rmtree(self.testmediapath)
+        if os.path.exists(self.testmediapath):
+            rmtree(self.testmediapath)
         return super().tearDown()
 
     def assertMediaFileExists(self, path):
