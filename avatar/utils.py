@@ -68,7 +68,7 @@ def cache_result(default_size=settings.AVATAR_DEFAULT_SIZE):
                 result = func(user, width or default_size, height, **kwargs)
                 cache_set(key, result)
                 # add image size to set of cached sizes so we can invalidate them later
-                sizes_key = get_cache_key(user, '', prefix='cached_sizes')
+                sizes_key = get_cache_key(user, "", prefix="cached_sizes")
                 sizes = cache.get(sizes_key, set())
                 sizes.add((width or default_size, height or width))
                 cache_set(sizes_key, sizes)
@@ -83,7 +83,7 @@ def invalidate_cache(user, width=None, height=None):
     """
     Function to be called when saving or changing a user's avatars.
     """
-    sizes_key = get_cache_key(user, '', prefix='cached_sizes')
+    sizes_key = get_cache_key(user, "", prefix="cached_sizes")
     sizes = cache.get(sizes_key, set())
     if width is not None:
         sizes.add((width, height or width))
