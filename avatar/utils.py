@@ -28,13 +28,17 @@ def get_user(userdescriptor):
     return User.objects.get_by_natural_key(userdescriptor)
 
 
-def get_cache_key(user_or_username, width, height, prefix):
+def get_cache_key(user_or_username, prefix, width=False, height=False):
     """
     Returns a cache key consisten of a username and image size.
     """
     if isinstance(user_or_username, get_user_model()):
         user_or_username = get_username(user_or_username)
-    key = "%s_%s_%s_%s" % (prefix, user_or_username, width, height or width)
+    key = f"{prefix}_{user_or_username}"
+    if width:
+        key += f"_{width}"
+    if height or width:
+        key += f"x{height or width}"
     return "%s_%s" % (
         slugify(key)[:100],
         hashlib.md5(force_bytes(key)).hexdigest(),
@@ -62,13 +66,13 @@ def cache_result(default_size=settings.AVATAR_DEFAULT_SIZE):
         def cached_func(user, width=None, height=None, **kwargs):
             prefix = func.__name__
             cached_funcs.add(prefix)
-            key = get_cache_key(user, width or default_size, height, prefix=prefix)
+            key = get_cache_key(user, prefix, width or default_size, height)
             result = cache.get(key)
             if result is None:
                 result = func(user, width or default_size, height, **kwargs)
                 cache_set(key, result)
                 # add image size to set of cached sizes so we can invalidate them later
-                sizes_key = get_cache_key(user, "", prefix="cached_sizes")
+                sizes_key = get_cache_key(user, "cached_sizes")
                 sizes = cache.get(sizes_key, set())
                 sizes.add((width or default_size, height or width))
                 cache_set(sizes_key, sizes)
@@ -83,17 +87,17 @@ def invalidate_cache(user, width=None, height=None):
     """
     Function to be called when saving or changing a user's avatars.
     """
-    sizes_key = get_cache_key(user, "", prefix="cached_sizes")
+    sizes_key = get_cache_key(user, "cached_sizes")
     sizes = cache.get(sizes_key, set())
     if width is not None:
         sizes.add((width, height or width))
     for prefix in cached_funcs:
         for size in sizes:
             if isinstance(size, int):
-                cache.delete(get_cache_key(user, size, size, prefix))
+                cache.delete(get_cache_key(user, prefix, size))
             else:
                 # Size is specified with height and width.
-                cache.delete(get_cache_key(user, size[0], size[1], prefix))
+                cache.delete(get_cache_key(user, prefix, size[0], size[1]))
 
 
 def get_default_avatar_url():
