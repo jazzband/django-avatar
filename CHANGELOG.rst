@@ -1,7 +1,7 @@
 Changelog
 =========
 
-* Unreleased
+* 7.0.0 (August 16, 2022)
     * Allowed for rectangular avatars. Custom avatar tag templates now require the specification of both a ``width`` and ``height`` attribute instead of ``size``.
     * Made ``True`` the default value of ``AVATAR_CLEANUP_DELETED``. (Set to ``False`` to obtain previous behavior).
     * Fix invalidate_cache for on-the-fly created thumbnails.
