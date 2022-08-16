@@ -312,6 +312,12 @@ class AvatarTests(TestCase):
 
         self.assertLess(root_mean_square_difference(image_with_exif, image_no_exif), 1)
 
+    def test_automatic_thumbnail_creation_nondefault_filename(self):
+        upload_helper(self, "django #3.png")
+        self.assertMediaFileExists(
+            f"/avatars/{self.user.id}/resized/80/80/django_3.png"
+        )
+
     def test_has_avatar_False_if_no_avatar(self):
         self.assertFalse(avatar_tags.has_avatar(self.user))
 

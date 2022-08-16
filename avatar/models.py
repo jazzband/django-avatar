@@ -8,14 +8,14 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 from django.db import models
 from django.db.models import signals
-from django.utils.encoding import force_str
+from django.utils.encoding import force_bytes, force_str
 from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from PIL import Image, ImageOps
 
 from avatar.conf import settings
-from avatar.utils import force_bytes, get_username, invalidate_cache
+from avatar.utils import get_username, invalidate_cache
 
 avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 
