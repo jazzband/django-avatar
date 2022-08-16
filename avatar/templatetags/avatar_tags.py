@@ -21,6 +21,7 @@ def avatar_url(user, width=settings.AVATAR_DEFAULT_SIZE, height=None):
         avatar_url = provider.get_avatar_url(user, width, height)
         if avatar_url:
             return avatar_url
+    return get_default_avatar_url()
 
 
 @cache_result()

@@ -34,22 +34,21 @@ def avatar_path_handler(
     if not filename:
         # Filename already stored in database
         filename = instance.avatar.name
-        if ext and settings.AVATAR_HASH_FILENAMES:
-            # An extension was provided, probably because the thumbnail
-            # is in a different format than the file. Use it. Because it's
-            # only enabled if AVATAR_HASH_FILENAMES is true, we can trust
-            # it won't conflict with another filename
+        if ext:
             (root, oldext) = os.path.splitext(filename)
             filename = root + "." + ext.lower()
     else:
         # File doesn't exist yet
+        (root, oldext) = os.path.splitext(filename)
         if settings.AVATAR_HASH_FILENAMES:
-            (root, ext) = os.path.splitext(filename)
             if settings.AVATAR_RANDOMIZE_HASHES:
-                filename = binascii.hexlify(os.urandom(16)).decode("ascii")
+                root = binascii.hexlify(os.urandom(16)).decode("ascii")
             else:
-                filename = hashlib.md5(force_bytes(filename)).hexdigest()
-            filename = filename + ext
+                root = hashlib.md5(force_bytes(root)).hexdigest()
+        if ext:
+            filename = root + "." + ext.lower()
+        else:
+            filename = root + oldext.lower()
     if width or height:
         tmppath.extend(["resized", str(width), str(height)])
     tmppath.append(os.path.basename(filename))
@@ -70,7 +69,7 @@ def find_extension(format):
 
 class AvatarField(models.ImageField):
     def __init__(self, *args, **kwargs):
-        super(AvatarField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.max_length = 1024
         self.upload_to = avatar_file_path
@@ -78,7 +77,7 @@ class AvatarField(models.ImageField):
         self.blank = True
 
     def deconstruct(self):
-        name, path, args, kwargs = super(models.ImageField, self).deconstruct()
+        name, path, args, kwargs = super().deconstruct()
         return name, path, (), {}
 
 
@@ -116,7 +115,7 @@ class Avatar(models.Model):
                 avatars.update(primary=False)
         else:
             avatars.delete()
-        super(Avatar, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def thumbnail_exists(self, width, height=None):
         return self.avatar.storage.exists(self.avatar_name(width, height))
@@ -162,8 +161,6 @@ class Avatar(models.Model):
             else:
                 thumb_file = File(orig)
             thumb_name = self.avatar_name(width, height)
-            if self.avatar.storage.exists(thumb_name):
-                self.avatar.storage.delete(thumb_name)
             thumb = self.avatar.storage.save(thumb_name, thumb_file)
         except IOError:
             thumb_file = File(orig)

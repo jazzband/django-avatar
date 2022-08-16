@@ -287,6 +287,12 @@ class AvatarTests(TestCase):
         )
         self.assertEqual(image.mode, "RGB")
 
+    def test_automatic_thumbnail_creation_image_type_conversion(self):
+        upload_helper(self, "django_pony_cmyk.jpg")
+        self.assertMediaFileExists(
+            f"/avatars/{self.user.id}/resized/80/80/django_pony_cmyk.png"
+        )
+
     def test_thumbnail_transpose_based_on_exif(self):
         upload_helper(self, "image_no_exif.jpg")
         avatar = get_primary_avatar(self.user)

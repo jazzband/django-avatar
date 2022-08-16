@@ -254,6 +254,15 @@ appear on the site. Listed below are those settings:
     Path to the Django template to use for confirming a delete of a user's
     avatar. Defaults to ``avatar/avatar/confirm_delete.html``.
 
+.. py:data:: AVATAR_ALLOWED_MIMETYPES
+
+    Limit allowed avatar image uploads by their actual content payload and what image codecs we wish to support.
+    This limits website user content site attack vectors against image codec buffer overflow and similar bugs.
+    `You must have python-imaging library installed <https://github.com/ahupp/python-magic>`_.
+    Suggested safe setting: ``("image/png", "image/gif", "image/jpeg")``.
+    When enabled you'll get the following error on the form upload *File content is invalid. Detected: image/tiff Allowed content types are: image/png, image/gif, image/jpg*.
+
+
 Management Commands
 -------------------
 
