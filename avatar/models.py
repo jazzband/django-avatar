@@ -12,7 +12,7 @@ from django.utils.encoding import force_str
 from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from PIL import Image
+from PIL import Image, ImageOps
 
 from avatar.conf import settings
 from avatar.utils import force_bytes, get_username, invalidate_cache
@@ -122,28 +122,10 @@ class Avatar(models.Model):
         return self.avatar.storage.exists(self.avatar_name(width, height))
 
     def transpose_image(self, image):
-        """
-        Transpose based on EXIF information.
-        Borrowed from django-imagekit:
-        imagekit.processors.Transpose
-        """
-        EXIF_ORIENTATION_STEPS = {
-            1: [],
-            2: ["FLIP_LEFT_RIGHT"],
-            3: ["ROTATE_180"],
-            4: ["FLIP_TOP_BOTTOM"],
-            5: ["ROTATE_270", "FLIP_LEFT_RIGHT"],
-            6: ["ROTATE_270"],
-            7: ["ROTATE_90", "FLIP_LEFT_RIGHT"],
-            8: ["ROTATE_90"],
-        }
-        try:
-            orientation = image._getexif()[0x0112]
-            ops = EXIF_ORIENTATION_STEPS[orientation]
-        except (AttributeError, TypeError):
-            ops = []
-        for method in ops:
-            image = image.transpose(getattr(Image, method))
+        EXIF_ORIENTATION = 0x0112
+        exif_code = image.getexif().get(EXIF_ORIENTATION, 1)
+        if exif_code and exif_code != 1:
+            image = ImageOps.exif_transpose(image)
         return image
 
     def create_thumbnail(self, width, height=None, quality=None):
