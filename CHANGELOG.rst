@@ -1,5 +1,7 @@
 Changelog
 =========
+* 7.0.1 (October 27, 2022)
+    * Remove height requirement for providers (broke 6 to 7 upgrades)
 
 * 7.0.0 (August 16, 2022)
     * Allowed for rectangular avatars. Custom avatar tag templates now require the specification of both a ``width`` and ``height`` attribute instead of ``size``.
