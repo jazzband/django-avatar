@@ -25,7 +25,7 @@ django-avatar
     :alt: PyPI badge
 
 .. image:: https://readthedocs.org/projects/django-avatar/badge/?version=latest
-    :target: http://django-avatar.readthedocs.org/en/latest/?badge=latest
+    :target: https://django-avatar.readthedocs.org/en/latest/?badge=latest
     :alt: Documentation Status
 
 Django-avatar is a reusable application for handling user avatars.  It has the
@@ -33,4 +33,4 @@ ability to default to Gravatar if no avatar is found for a certain user.
 Django-avatar automatically generates thumbnails and stores them to your default
 file storage backend for retrieval later.
 
-For more information see the documentation at http://django-avatar.readthedocs.org/
+For more information see the documentation at https://django-avatar.readthedocs.org/
