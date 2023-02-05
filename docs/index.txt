@@ -7,7 +7,7 @@ or Facebook) if no avatar is found for a certain user. Django-avatar
 automatically generates thumbnails and stores them to your default file
 storage backend for retrieval later.
 
-.. _Gravatar: http://gravatar.com
+.. _Gravatar: https://gravatar.com
 
 Installation
 ------------
@@ -272,4 +272,4 @@ the avatars for the pixel sizes specified in the
 :py:data:`AVATAR_AUTO_GENERATE_SIZES` setting.
 
 
-.. _pip: http://www.pip-installer.org/
+.. _pip: https://www.pip-installer.org/
