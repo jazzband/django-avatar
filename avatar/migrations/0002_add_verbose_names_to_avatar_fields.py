@@ -8,7 +8,6 @@ import avatar.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("avatar", "0001_initial"),
     ]
