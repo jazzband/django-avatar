@@ -10,6 +10,7 @@ from avatar.utils import get_user_model
 class AvatarAdmin(admin.ModelAdmin):
     list_display = ("get_avatar", "user", "primary", "date_uploaded")
     list_filter = ("primary",)
+    autocomplete_fields = ("user",)
     search_fields = (
         "user__%s" % getattr(get_user_model(), "USERNAME_FIELD", "username"),
     )
