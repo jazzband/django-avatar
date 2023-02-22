@@ -180,6 +180,7 @@ appear on the site. Listed below are those settings:
 
         (
             'avatar.providers.PrimaryAvatarProvider',
+            'avatar.providers.LibRAvatarProvider',
             'avatar.providers.GravatarAvatarProvider',
             'avatar.providers.DefaultAvatarProvider',
         )
