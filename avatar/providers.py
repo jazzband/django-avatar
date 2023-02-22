@@ -77,10 +77,8 @@ class LibRAvatarProvider:
         _, domain = email.split(b"@")
         try:
             answers = dns.resolver.query("_avatars._tcp." + domain, "SRV")
-            hostname = re.sub(
-                r"\.$", "", str(answers[0].target)
-            )  
-            # query returns "example.com." and while http requests are fine with this, 
+            hostname = re.sub(r"\.$", "", str(answers[0].target))
+            # query returns "example.com." and while http requests are fine with this,
             # https most certainly do not consider "example.com." and "example.com" to be the same.
             port = str(answers[0].port)
             if port == "443":
