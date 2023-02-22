@@ -1,8 +1,8 @@
 import hashlib
 import re
-import dns.resolver
 from urllib.parse import urlencode, urljoin
 
+import dns.resolver
 from django.utils.module_loading import import_string
 
 from avatar.conf import settings
