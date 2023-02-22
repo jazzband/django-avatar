@@ -20,7 +20,7 @@ jobs:
           cache: 'pip'
       - name: Install dependencies
         run: |
-          pip install -e .
+          pip install -r requirements.txt
           pip install -r tests/requirements.txt
           pip install "Django~=${{ matrix.django-version }}.0" .
       - name: Run Tests
