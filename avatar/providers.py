@@ -1,4 +1,6 @@
 import hashlib
+import re
+import dns.resolver
 from urllib.parse import urlencode, urljoin
 
 from django.utils.module_loading import import_string
@@ -62,6 +64,31 @@ class GravatarAvatarProvider(object):
         )
 
         return urljoin(settings.AVATAR_GRAVATAR_BASE_URL, path)
+
+
+class LibRAvatarProvider:
+    """
+    Returns the url of an avatar by the Ravatar service.
+    """
+
+    @classmethod
+    def get_avatar_url(cls, user, width, _height=None):
+        email = getattr(user, settings.AVATAR_GRAVATAR_FIELD).encode("utf-8")
+        _, domain = email.split(b"@")
+        try:
+            answers = dns.resolver.query("_avatars._tcp." + domain, "SRV")
+            hostname = re.sub(
+                "\.$", "", str(answers[0].target)
+            )  # query returns "example.com." and while http requests are fine with this, https most certainly do not consider "example.com." and "example.com" to be the same.
+            port = str(answers[0].port)
+            if port == "443":
+                baseurl = "https://" + hostname + "/avatar/"
+            else:
+                baseurl = "http://" + hostname + ":" + port + "/avatar/"
+        except:
+            baseurl = "https://seccdn.libravatar.org/avatar/"
+        hash = hashlib.md5(email.strip().lower()).hexdigest()
+        return baseurl + hash
 
 
 class FacebookAvatarProvider(object):

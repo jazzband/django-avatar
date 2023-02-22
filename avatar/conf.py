@@ -35,6 +35,7 @@ class AvatarConf(AppConf):
     DELETE_TEMPLATE = ""
     PROVIDERS = (
         "avatar.providers.PrimaryAvatarProvider",
+        "avatar.providers.LibRAvatarProvider",
         "avatar.providers.GravatarAvatarProvider",
         "avatar.providers.DefaultAvatarProvider",
     )
