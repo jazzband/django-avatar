@@ -78,14 +78,16 @@ class LibRAvatarProvider:
         try:
             answers = dns.resolver.query("_avatars._tcp." + domain, "SRV")
             hostname = re.sub(
-                "\.$", "", str(answers[0].target)
-            )  # query returns "example.com." and while http requests are fine with this, https most certainly do not consider "example.com." and "example.com" to be the same.
+                r"\.$", "", str(answers[0].target)
+            )  
+            # query returns "example.com." and while http requests are fine with this, 
+            # https most certainly do not consider "example.com." and "example.com" to be the same.
             port = str(answers[0].port)
             if port == "443":
                 baseurl = "https://" + hostname + "/avatar/"
             else:
                 baseurl = "http://" + hostname + ":" + port + "/avatar/"
-        except:
+        except Exception:
             baseurl = "https://seccdn.libravatar.org/avatar/"
         hash = hashlib.md5(email.strip().lower()).hexdigest()
         return baseurl + hash
