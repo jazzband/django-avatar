@@ -61,6 +61,7 @@ setup(
     install_requires=[
         "Pillow>=8.4.0",
         "django-appconf>=1.0.5",
+        "dnspython>=2.3.0",
     ],
     zip_safe=False,
 )

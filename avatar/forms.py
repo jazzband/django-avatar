@@ -5,6 +5,7 @@ from django.forms import widgets
 from django.template.defaultfilters import filesizeformat
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
+from PIL import Image, ImageOps
 
 from avatar.conf import settings
 from avatar.models import Avatar
@@ -81,6 +82,12 @@ class UploadAvatarForm(forms.Form):
                     "max_valid_size": filesizeformat(settings.AVATAR_MAX_SIZE),
                 }
             )
+
+        try:
+            image = Image.open(data)
+            ImageOps.exif_transpose(image)
+        except TypeError:
+            raise forms.ValidationError(_("Corrupted image"))
 
         count = Avatar.objects.filter(user=self.user).count()
         if 1 < settings.AVATAR_MAX_AVATARS_PER_USER <= count:
