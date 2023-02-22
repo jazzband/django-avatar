@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "django-avatar"
+version = "7.0.1"
+description = "A Django app for handling user avatars"
+authors = ["Eric Florenzano <floguy@gmail.com>"]
+maintainers = ["Johannes Wilm <johannes@fiduswriter.org>"]
+license = "BSD-4-Clause"
+readme = "README.rst"
+packages = [
+    { include = "avatar" },
+]
+exclude = [
+    { path = "tests"},
+]
+homepage = "https://github.com/jazzband/django-avatar"
+repository = "https://github.com/jazzband/django-avatar"
+documentation = "https://django-avatar.readthedocs.io"
+keywords=["avatar", "django"]
+classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Web Environment",
+        "Framework :: Django",
+        "Intended Audience :: Developers",
+        "Framework :: Django",
+        "Framework :: Django :: 3.2",
+        "Framework :: Django :: 4.0",
+        "Framework :: Django :: 4.1",
+        "License :: OSI Approved :: BSD License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+    ]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+Pillow = "^9.4.0"
+django-appconf = "^1.0.5"
+dnspython = "^2.3.0"
+
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.1.0"
+python-magic = "^0.4.27"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
