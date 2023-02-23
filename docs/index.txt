@@ -211,7 +211,7 @@ appear on the site. Listed below are those settings:
 .. py:data:: AVATAR_RESIZE_METHOD
 
     The method to use when resizing images, based on the options available in
-    Pillow. Defaults to ``Image.Resampling.LANCZOS`` if the version of Pillow 
+    Pillow. Defaults to ``Image.Resampling.LANCZOS`` if the version of Pillow
     is greater than 9.1.0 otherwise it's ``Image.ANTIALIASING``
 
 .. py:data:: AVATAR_STORAGE_DIR
