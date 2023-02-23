@@ -211,7 +211,7 @@ appear on the site. Listed below are those settings:
 .. py:data:: AVATAR_RESIZE_METHOD
 
     The method to use when resizing images, based on the options available in
-    Pillow. Defaults to ``Image.ANTIALIAS``.
+    Pillow. Defaults to ``Image.LANCZOS``.
 
 .. py:data:: AVATAR_STORAGE_DIR
 
