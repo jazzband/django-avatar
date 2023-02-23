@@ -40,6 +40,8 @@ python = "^3.7"
 Pillow = "^9.4.0"
 django-appconf = "^1.0.5"
 dnspython = "^2.3.0"
+packaging = "^23.0"
+
 
 [tool.poetry.group.dev.dependencies]
 coverage = "^7.1.0"
