@@ -1,11 +1,21 @@
 from appconf import AppConf
 from django.conf import settings
 from PIL import Image
+from PIL import __version__ as __pil_version__
+from packaging.version import parse, Version
+
+if parse(__pil_version__) > Version('9.1.0'):
+    # https://pillow.readthedocs.io/en/stable/deprecations.html#constants
+    # https://github.com/jazzband/django-avatar/issues/222
+    # Since 9.1.0, Image.ANTIALIAS is deprecated and replaced by Image.Resampling.LANCZOS and Image.LANCZOS
+    _RESIZE_METHOD = Image.Resampling.LANCZOS
+else:
+    _RESIZE_METHOD = Image.ANTIALIAS
 
 
 class AvatarConf(AppConf):
     DEFAULT_SIZE = 80
-    RESIZE_METHOD = Image.ANTIALIAS
+    RESIZE_METHOD = _RESIZE_METHOD
     STORAGE_DIR = "avatars"
     PATH_HANDLER = "avatar.models.avatar_path_handler"
     GRAVATAR_BASE_URL = "https://www.gravatar.com/avatar/"
