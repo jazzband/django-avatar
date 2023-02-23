@@ -1,20 +1,14 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools>=65.6.3", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "django-avatar"
-version = "7.0.1"
 description = "A Django app for handling user avatars"
-authors = ["Eric Florenzano <floguy@gmail.com>"]
-maintainers = ["Johannes Wilm <johannes@fiduswriter.org>"]
-license = "BSD-4-Clause"
+authors = [{email = "floguy@gmail.com", name = "Eric Florenzano"}]
+maintainers = [{email = "johannes@fiduswriter.org", name = "Johannes Wilm"}]
+license = {text = "BSD-4-Clause"}
 readme = "README.rst"
-packages = [
-    { include = "avatar" },
-]
-exclude = [
-    { path = "tests"},
-]
-homepage = "https://github.com/jazzband/django-avatar"
-repository = "https://github.com/jazzband/django-avatar"
-documentation = "https://django-avatar.readthedocs.io"
 keywords=["avatar", "django"]
 classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -34,17 +28,13 @@ classifiers=[
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
     ]
+dynamic = ["version", "dependencies"]
 
-[tool.poetry.dependencies]
-python = "^3.7"
-Pillow = "^9.4.0"
-django-appconf = "^1.0.5"
-dnspython = "^2.3.0"
+[project.urls]
+homepage = "https://github.com/jazzband/django-avatar"
+repository = "https://github.com/jazzband/django-avatar"
+documentation = "https://django-avatar.readthedocs.io"
 
-[tool.poetry.group.dev.dependencies]
-coverage = "^7.1.0"
-python-magic = "^0.4.27"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.setuptools.dynamic]
+version = {attr = "avatar.__version__"}
+dependencies = {file = "requirements.txt"}

@@ -15,3 +15,5 @@ htmlcov/
 test_proj/media
 .python-version
 /test-media/
+.envrc
+.direnv/
