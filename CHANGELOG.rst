@@ -1,5 +1,8 @@
 Changelog
 =========
+* 7.1.1 (February 23, 2023)
+    * Switch to setuptools for building
+
 * 7.1.0 (February 23, 2023)
     * Add LibRavatar support
     * Faster admin when many users are present
