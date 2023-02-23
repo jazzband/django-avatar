@@ -1,5 +1,13 @@
 Changelog
 =========
+* 7.1.0 (February 23, 2023)
+    * Add LibRavatar support
+    * Faster admin when many users are present
+    * Check for corrupted image during upload
+    * Switch Pillow Resize method from ``Image.ANTIALIAS`` to ``Image.LANCZOS``
+    * Removed Python 3.6 testing
+    * Added Python 3.11 support
+
 * 7.0.1 (October 27, 2022)
     * Remove height requirement for providers (broke 6 to 7 upgrades)
 
