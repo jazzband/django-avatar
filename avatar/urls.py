@@ -2,7 +2,7 @@ from django.urls import path, re_path
 
 from avatar import views
 
-# For reverseing namespaced urls
+# For reversing namespaced urls
 # https://docs.djangoproject.com/en/4.1/topics/http/urls/#reversing-namespaced-urls
 app_name = "avatar"
 
@@ -16,8 +16,8 @@ urlpatterns = [
         views.render_primary,
         name="avatar_render_primary",
     ),
-    re_path(
-        "render_primary/<slug:user>/<int:width>/<int:height>",
+    path(
+        "render_primary/<slug:user>/<int:width>/<int:height>/",
         views.render_primary,
         name="avatar_render_primary",
     ),
