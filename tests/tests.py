@@ -43,7 +43,7 @@ class AssertSignal:
 def upload_helper(o, filename):
     f = open(os.path.join(o.testdatapath, filename), "rb")
     response = o.client.post(
-        reverse("avatar_add"),
+        reverse("avatar:add"),
         {
             "avatar": f,
         },
@@ -165,7 +165,7 @@ class AvatarTests(TestCase):
     def test_default_url(self):
         response = self.client.get(
             reverse(
-                "avatar_render_primary",
+                "avatar:render_primary",
                 kwargs={
                     "user": self.user.username,
                     "width": 80,
@@ -196,7 +196,7 @@ class AvatarTests(TestCase):
         receiver = AssertSignal()
         avatar_deleted.connect(receiver)
         response = self.client.post(
-            reverse("avatar_delete"),
+            reverse("avatar:delete"),
             {
                 "choices": [avatar[0].id],
             },
@@ -216,7 +216,7 @@ class AvatarTests(TestCase):
         primary = get_primary_avatar(self.user)
         oid = primary.id
         self.client.post(
-            reverse("avatar_delete"),
+            reverse("avatar:delete"),
             {
                 "choices": [oid],
             },
@@ -229,7 +229,7 @@ class AvatarTests(TestCase):
 
     def test_change_avatar_get(self):
         self.test_normal_image_upload()
-        response = self.client.get(reverse("avatar_change"))
+        response = self.client.get(reverse("avatar:change"))
 
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(response.context["avatar"])
@@ -239,7 +239,7 @@ class AvatarTests(TestCase):
         old_primary = Avatar.objects.get(user=self.user, primary=True)
         choice = Avatar.objects.filter(user=self.user, primary=False)[0]
         response = self.client.post(
-            reverse("avatar_change"),
+            reverse("avatar:change"),
             {
                 "choice": choice.pk,
             },
