@@ -94,7 +94,7 @@ def primary_avatar(user, width=settings.AVATAR_DEFAULT_SIZE, height=None):
     else:
         kwargs["height"] = height
 
-    url = reverse("avatar_render_primary", kwargs=kwargs)
+    url = reverse("avatar:render_primary", kwargs=kwargs)
     return """<img src="%s" width="%s" height="%s" alt="%s" />""" % (
         url,
         width,
