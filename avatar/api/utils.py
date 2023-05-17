@@ -19,6 +19,9 @@ class HTMLTagParser(HTMLParser):
 
 
 def assign_width_or_height(query_params):
+    """
+        Getting width and height in url parameters and specifying them
+    """
     avatar_default_size = settings.AVATAR_DEFAULT_SIZE
 
     width = query_params.get('width', avatar_default_size)
