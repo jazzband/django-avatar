@@ -1,10 +1,11 @@
-from avatar.conf import settings
 from html.parser import HTMLParser
+
+from avatar.conf import settings
 
 
 class HTMLTagParser(HTMLParser):
     """
-        URL parser for getting (url ,width ,height) from avatar templatetags
+    URL parser for getting (url ,width ,height) from avatar templatetags
     """
 
     def __init__(self, output=None):
@@ -20,30 +21,27 @@ class HTMLTagParser(HTMLParser):
 
 def assign_width_or_height(query_params):
     """
-        Getting width and height in url parameters and specifying them
+    Getting width and height in url parameters and specifying them
     """
     avatar_default_size = settings.AVATAR_DEFAULT_SIZE
 
-    width = query_params.get('width', avatar_default_size)
-    height = query_params.get('height', avatar_default_size)
+    width = query_params.get("width", avatar_default_size)
+    height = query_params.get("height", avatar_default_size)
 
-    if width == '':
+    if width == "":
         width = avatar_default_size
-    if height == '':
+    if height == "":
         height = avatar_default_size
 
-    if height == avatar_default_size and height != '':
+    if height == avatar_default_size and height != "":
         height = width
-    elif width == avatar_default_size and width != '':
+    elif width == avatar_default_size and width != "":
         width = height
 
     width = int(width)
     height = int(height)
 
-    context = {
-        'width': width,
-        'height': height
-    }
+    context = {"width": width, "height": height}
     return context
 
 

@@ -1,43 +1,51 @@
 import os
-from PIL import Image, ImageOps
-from avatar.models import Avatar
-from avatar.conf import settings
-from rest_framework import serializers
-from avatar.conf import settings as api_setting
-from django.utils.translation import gettext_lazy as _
+
 from django.template.defaultfilters import filesizeformat
+from django.utils.translation import gettext_lazy as _
+from PIL import Image, ImageOps
+from rest_framework import serializers
+
+from avatar.conf import settings
+from avatar.conf import settings as api_setting
+from avatar.models import Avatar
 
 
 class AvatarSerializer(serializers.ModelSerializer):
-    avatar_url = serializers.HyperlinkedIdentityField(view_name='avatar-detail', )
+    avatar_url = serializers.HyperlinkedIdentityField(
+        view_name="avatar-detail",
+    )
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Avatar
-        fields = ['id', 'avatar_url', 'avatar', 'primary', 'user']
-        extra_kwargs = {'avatar': {'required': True}}
+        fields = ["id", "avatar_url", "avatar", "primary", "user"]
+        extra_kwargs = {"avatar": {"required": True}}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        request = kwargs.get('context').get('request', None)
+        request = kwargs.get("context").get("request", None)
 
         self.user = request.user
 
     def get_fields(self, *args, **kwargs):
         fields = super(AvatarSerializer, self).get_fields(*args, **kwargs)
-        request = self.context.get('request', None)
+        request = self.context.get("request", None)
 
         # remove avatar url field in detail page
-        if bool(self.context.get('view').kwargs):
-            fields.pop('avatar_url')
+        if bool(self.context.get("view").kwargs):
+            fields.pop("avatar_url")
 
         # remove avatar field in put method
-        if request and getattr(request, 'method', None) == "PUT":
+        if request and getattr(request, "method", None) == "PUT":
             # avatar updates only when primary=true and API_AVATAR_CHANGE_IMAGE = True
-            if not api_setting.API_AVATAR_CHANGE_IMAGE or self.instance and not self.instance.primary:
-                fields.pop('avatar')
+            if (
+                not api_setting.API_AVATAR_CHANGE_IMAGE
+                or self.instance
+                and not self.instance.primary
+            ):
+                fields.pop("avatar")
             else:
-                fields.get('avatar', None).required = False
+                fields.get("avatar", None).required = False
         return fields
 
     def validate_avatar(self, value):

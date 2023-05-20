@@ -308,5 +308,3 @@ after `Installation <#installation>`_ .
    :maxdepth: 1
 
    avatar
-
-

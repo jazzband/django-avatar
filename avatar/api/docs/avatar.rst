@@ -189,7 +189,3 @@ API Setting
 .. py:data:: API_AVATAR_CHANGE_IMAGE
 
     It Allows the user to Change the avatar image in ``PUT`` method. Default is ``False``.
-
-
-
-
