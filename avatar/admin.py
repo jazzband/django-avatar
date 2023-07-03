@@ -18,10 +18,10 @@ class AvatarAdmin(admin.ModelAdmin):
 
     def get_avatar(self, avatar_in):
         context = {
-                "user": avatar_in.user,
-                "url": avatar_in.avatar.url,
-                "alt": str(avatar_in.user),
-                "size": 80,
+            "user": avatar_in.user,
+            "url": avatar_in.avatar.url,
+            "alt": str(avatar_in.user),
+            "size": 80,
         }
         return render_to_string("avatar/avatar_tag.html", context)
 
