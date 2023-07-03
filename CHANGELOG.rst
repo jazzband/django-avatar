@@ -1,5 +1,8 @@
 Changelog
 =========
+* Unreleased
+    * Use ``Image.Resampling.LANCZOS`` instead of ``Image.LANCZOS`` that was removed in Pillow 10.0.0
+
 * 7.1.1 (February 23, 2023)
     * Switch to setuptools for building
 
