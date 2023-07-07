@@ -16,7 +16,6 @@ from PIL import Image, ImageOps
 from avatar.conf import settings
 from avatar.utils import get_username, invalidate_cache
 
-
 try:
     # From Django 4.2 use django.core.files.storage.storages in favor
     # of the deprecated django.core.files.storage.get_storage_class
