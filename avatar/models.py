@@ -21,12 +21,12 @@ try:
     # of the deprecated django.core.files.storage.get_storage_class
     from django.core.files.storage import storages
 
-    avatar_storage = storages["staticfiles"].__class__
+    avatar_storage = storages[settings.AVATAR_STORAGE].__class__
 except ImportError:
     # Backwards compatibility for Django versions prior to 4.2
     from django.core.files.storage import get_storage_class
 
-    avatar_storage = get_storage_class(settings.STATICFILES_STORAGE)
+    avatar_storage = get_storage_class(settings.AVATAR_STORAGE)
 
 
 def avatar_path_handler(
