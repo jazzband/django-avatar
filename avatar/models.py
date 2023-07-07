@@ -82,7 +82,7 @@ class AvatarField(models.ImageField):
 
         self.max_length = 1024
         self.upload_to = avatar_file_path
-        self.storage = avatar_storage
+        self.storage = avatar_storage()
         self.blank = True
 
     def deconstruct(self):
