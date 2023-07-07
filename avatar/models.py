@@ -5,7 +5,6 @@ from io import BytesIO
 
 from django.core.files import File
 from django.core.files.base import ContentFile
-from django.core.files.storage import storages
 from django.db import models
 from django.db.models import signals
 from django.utils.encoding import force_bytes, force_str
