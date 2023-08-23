@@ -25,7 +25,7 @@ class AvatarConf(AppConf):
     ALLOWED_MIMETYPES = None
     CACHE_TIMEOUT = 60 * 60
     STORAGE = settings.DEFAULT_FILE_STORAGE
-    STORAGE_ALIAS = 'default'
+    STORAGE_ALIAS = "default"
     CLEANUP_DELETED = True
     AUTO_GENERATE_SIZES = (DEFAULT_SIZE,)
     FACEBOOK_GET_ID = None

@@ -18,9 +18,11 @@ from avatar.utils import get_username, invalidate_cache
 
 try:  # Django 4.2+
     from django.core.files.storage import storages
+
     avatar_storage = storages[settings.AVATAR_STORAGE_ALIAS]
 except ImportError:
     from django.core.files.storage import get_storage_class
+
     avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 
 
