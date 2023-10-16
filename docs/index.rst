@@ -1,3 +1,4 @@
+
 django-avatar
 =============
 
@@ -218,7 +219,6 @@ appear on the site. Listed below are those settings:
     The directory under ``MEDIA_ROOT`` to store the images. If using a
     non-filesystem storage device, this will simply be appended to the beginning
     of the file name.  Defaults to ``avatars``.
-    Pillow. Defaults to ``Image.ANTIALIAS``.
 
 .. py:data:: AVATAR_THUMB_FORMAT
 
@@ -274,3 +274,36 @@ the avatars for the pixel sizes specified in the
 
 
 .. _pip: https://www.pip-installer.org/
+
+-----------------------------------------------
+
+
+API
+---
+
+To use API there are relatively few things that are required.
+
+after `Installation <#installation>`_ .
+
+1. in your ``INSTALLED_APPS`` of your settings file : ::
+
+        INSTALLED_APPS = (
+            # ...
+            'avatar',
+            'rest_framework'
+        )
+
+
+2.  Add the avatar api urls to the end of your root url config : ::
+
+        urlpatterns = [
+            # ...
+            path('api/', include('avatar.api.urls')),
+        ]
+
+-----------------------------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   avatar
