@@ -6,9 +6,12 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11']
-        django-version: ['3.2', '4.0', '4.1']
+        django-version: ['3.2', '4.1', '4.2']
         include:
           - python-version: 3.7
+            django-version: 3.2
+        exclude:
+          - python-version: 3.11
             django-version: 3.2
       fail-fast: false
 
