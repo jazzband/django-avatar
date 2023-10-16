@@ -21,7 +21,11 @@ def get_username(user):
 def get_user(userdescriptor):
     """Return user from a username/ID/ish identifier"""
     User = get_user_model()
-    if userdescriptor.isdigit():
+    if isinstance(userdescriptor, int):
+        user = User.objects.filter(id=userdescriptor).first()
+        if user:
+            return user
+    elif userdescriptor.isdigit():
         user = User.objects.filter(id=int(userdescriptor)).first()
         if user:
             return user
