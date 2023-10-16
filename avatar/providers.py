@@ -74,8 +74,8 @@ class LibRAvatarProvider:
     @classmethod
     def get_avatar_url(cls, user, width, _height=None):
         email = getattr(user, settings.AVATAR_GRAVATAR_FIELD).encode("utf-8")
-        _, domain = email.split(b"@")
         try:
+            _, domain = email.split(b"@")
             answers = dns.resolver.query("_avatars._tcp." + domain, "SRV")
             hostname = re.sub(r"\.$", "", str(answers[0].target))
             # query returns "example.com." and while http requests are fine with this,
