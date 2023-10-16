@@ -5,7 +5,6 @@ from io import BytesIO
 
 from django.core.files import File
 from django.core.files.base import ContentFile
-from django.core.files.storage import get_storage_class
 from django.db import models
 from django.db.models import signals
 from django.utils.encoding import force_bytes, force_str
@@ -17,7 +16,14 @@ from PIL import Image, ImageOps
 from avatar.conf import settings
 from avatar.utils import get_username, invalidate_cache
 
-avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
+try:  # Django 4.2+
+    from django.core.files.storage import storages
+
+    avatar_storage = storages[settings.AVATAR_STORAGE_ALIAS]
+except ImportError:
+    from django.core.files.storage import get_storage_class
+
+    avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 
 
 def avatar_path_handler(
