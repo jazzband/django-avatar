@@ -1,6 +1,6 @@
 Changelog
 =========
-* Unreleased
+* 8.0.0
     * Add Django 4.2 support
     * Remove Python 3.7 support
     * Use path and path converters (changes all url names from prefix `avatar_` to `avatar:`.)
