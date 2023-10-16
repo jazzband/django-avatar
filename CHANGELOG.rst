@@ -1,6 +1,11 @@
 Changelog
 =========
 * Unreleased
+    * Add Django 4.2 support
+    * Remove Python 3.7 support
+    * Use path and path converters (changes all url names from prefix `avatar_` to `avatar:`.)
+    * Add support for Django STORAGES (Django 4.2)
+    * Add optional api app (requires djangorestframework)
     * Use ``Image.Resampling.LANCZOS`` instead of ``Image.LANCZOS`` that was removed in Pillow 10.0.0
 
 * 7.1.1 (February 23, 2023)
