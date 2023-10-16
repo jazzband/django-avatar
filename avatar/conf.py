@@ -5,7 +5,7 @@ from PIL import Image
 
 class AvatarConf(AppConf):
     DEFAULT_SIZE = 80
-    RESIZE_METHOD = Image.LANCZOS
+    RESIZE_METHOD = Image.Resampling.LANCZOS
     STORAGE_DIR = "avatars"
     PATH_HANDLER = "avatar.models.avatar_path_handler"
     GRAVATAR_BASE_URL = "https://www.gravatar.com/avatar/"

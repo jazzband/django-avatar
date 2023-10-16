@@ -1,19 +1,24 @@
-from django.urls import re_path
+from django.urls import path
 
 from avatar import views
 
+# For reversing namespaced urls
+# https://docs.djangoproject.com/en/4.1/topics/http/urls/#reversing-namespaced-urls
+app_name = "avatar"
+
 urlpatterns = [
-    re_path(r"^add/$", views.add, name="avatar_add"),
-    re_path(r"^change/$", views.change, name="avatar_change"),
-    re_path(r"^delete/$", views.delete, name="avatar_delete"),
-    re_path(
-        r"^render_primary/(?P<user>[\w\d\@\.\-_]+)/(?P<width>[\d]+)/$",
+    path("add/", views.add, name="add"),
+    path("change/", views.change, name="change"),
+    path("delete/", views.delete, name="delete"),
+    # https://docs.djangoproject.com/en/4.1/topics/http/urls/#path-converters
+    path(
+        "render_primary/<slug:user>/<int:width>/",
         views.render_primary,
-        name="avatar_render_primary",
+        name="render_primary",
     ),
-    re_path(
-        r"^render_primary/(?P<user>[\w\d\@\.\-_]+)/(?P<width>[\d]+)/(?P<height>[\d]+)/$",
+    path(
+        "render_primary/<slug:user>/<int:width>/<int:height>/",
         views.render_primary,
-        name="avatar_render_primary",
+        name="render_primary",
     ),
 ]
