@@ -1,8 +1,5 @@
 import os
 
-from django.db.models import signals
-
-from avatar.api.conf import settings as api_settings
 from avatar.api.shortcut import get_object_or_none
 from avatar.conf import settings
 from avatar.models import Avatar, invalidate_avatar_cache
@@ -47,10 +44,5 @@ def remove_previous_avatar_images_when_update(
                 if update_main_avatar:
                     if old_instance.avatar.storage.exists(old_instance.avatar.name):
                         old_instance.avatar.storage.delete(old_instance.avatar.name)
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 pass
-
-
-if api_settings.API_AVATAR_CHANGE_IMAGE:
-    signals.pre_save.connect(remove_previous_avatar_images_when_update, sender=Avatar)
-    signals.post_save.connect(create_default_thumbnails, sender=Avatar)
