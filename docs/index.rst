@@ -263,6 +263,11 @@ appear on the site. Listed below are those settings:
     Suggested safe setting: ``("image/png", "image/gif", "image/jpeg")``.
     When enabled you'll get the following error on the form upload *File content is invalid. Detected: image/tiff Allowed content types are: image/png, image/gif, image/jpg*.
 
+.. py:data:: AVATAR_STORAGE_ALIAS
+
+   Default: 'default'
+   Alias of the storage backend (from STORAGES settings) to use for storing avatars.
+
 
 Management Commands
 -------------------
