@@ -24,7 +24,8 @@ class AvatarConf(AppConf):
     ALLOWED_FILE_EXTS = None
     ALLOWED_MIMETYPES = None
     CACHE_TIMEOUT = 60 * 60
-    STORAGE = settings.DEFAULT_FILE_STORAGE
+    if hasattr(settings, "DEFAULT_FILE_STORAGE"):
+        STORAGE = settings.DEFAULT_FILE_STORAGE  # deprecated settings
     STORAGE_ALIAS = "default"
     CLEANUP_DELETED = True
     AUTO_GENERATE_SIZES = (DEFAULT_SIZE,)
