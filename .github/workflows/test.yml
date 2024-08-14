@@ -5,11 +5,26 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
-        django-version: ['3.2', '4.1', '4.2']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        django-version: ['3.2', '4.1', '4.2', '5.0', '5.1.*']
         exclude:
           - python-version: 3.11
             django-version: 3.2
+
+          - python-version: 3.12
+            django-version: 3.2
+
+          - python-version: 3.8
+            django-version: 5.0
+
+          - python-version: 3.9
+            django-version: 5.0
+
+          - python-version: 3.8
+            django-version: 5.1.*
+
+          - python-version: 3.9
+            django-version: 5.1.*
       fail-fast: false
 
     steps:
@@ -23,7 +38,7 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -r tests/requirements.txt
-          pip install "Django~=${{ matrix.django-version }}.0" .
+          pip install "Django==${{ matrix.django-version }}" .
       - name: Run Tests
         run: |
           echo "$(python --version) / Django $(django-admin --version)"
