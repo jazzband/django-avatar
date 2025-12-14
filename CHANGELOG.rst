@@ -1,5 +1,10 @@
 Changelog
 =========
+* 9.0.0 (in progress)
+    * Add Django 5.2 and 6.0 support
+    * Add Python 3.14 support
+    * Drop Python 3.10 support
+    
 * 8.0.1
     * Fix Django 5.1 compatibility
 
