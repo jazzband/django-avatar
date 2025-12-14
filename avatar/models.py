@@ -1,4 +1,5 @@
 import binascii
+from contextlib import closing
 import hashlib
 import os
 from io import BytesIO
@@ -142,38 +143,38 @@ class Avatar(models.Model):
             orig = self.avatar.storage.open(self.avatar.name, "rb")
         except IOError:
             return  # What should we do here?  Render a "sorry, didn't work" img?
-        try:
-            image = Image.open(orig)
-            image = self.transpose_image(image)
-            quality = quality or settings.AVATAR_THUMB_QUALITY
-            w, h = image.size
-            if w != width or h != height:
-                ratioReal = 1.0 * w / h
-                ratioWant = 1.0 * width / height
-                if ratioReal > ratioWant:
-                    diff = int((w - (h * ratioWant)) / 2)
-                    image = image.crop((diff, 0, w - diff, h))
-                elif ratioReal < ratioWant:
-                    diff = int((h - (w / ratioWant)) / 2)
-                    image = image.crop((0, diff, w, h - diff))
-                if settings.AVATAR_THUMB_FORMAT == "JPEG" and image.mode == "RGBA":
-                    image = image.convert("RGB")
-                elif image.mode not in (settings.AVATAR_THUMB_MODES):
-                    image = image.convert(settings.AVATAR_THUMB_MODES[0])
-                image = image.resize((width, height), settings.AVATAR_RESIZE_METHOD)
-                thumb = BytesIO()
-                image.save(thumb, settings.AVATAR_THUMB_FORMAT, quality=quality)
-                thumb_file = ContentFile(thumb.getvalue())
-            else:
+
+        with closing(orig):
+            try:
+                image = Image.open(orig)
+            except IOError:
                 thumb_file = File(orig)
+            else:
+                image = self.transpose_image(image)
+                quality = quality or settings.AVATAR_THUMB_QUALITY
+                w, h = image.size
+                if w != width or h != height:
+                    ratioReal = 1.0 * w / h
+                    ratioWant = 1.0 * width / height
+                    if ratioReal > ratioWant:
+                        diff = int((w - (h * ratioWant)) / 2)
+                        image = image.crop((diff, 0, w - diff, h))
+                    elif ratioReal < ratioWant:
+                        diff = int((h - (w / ratioWant)) / 2)
+                        image = image.crop((0, diff, w, h - diff))
+                    if settings.AVATAR_THUMB_FORMAT == "JPEG" and image.mode == "RGBA":
+                        image = image.convert("RGB")
+                    elif image.mode not in (settings.AVATAR_THUMB_MODES):
+                        image = image.convert(settings.AVATAR_THUMB_MODES[0])
+                    image = image.resize((width, height), settings.AVATAR_RESIZE_METHOD)
+                    thumb = BytesIO()
+                    image.save(thumb, settings.AVATAR_THUMB_FORMAT, quality=quality)
+                    thumb_file = ContentFile(thumb.getvalue())
+                else:
+                    thumb_file = File(orig)
             thumb_name = self.avatar_name(width, height)
             thumb = self.avatar.storage.save(thumb_name, thumb_file)
-        except IOError:
-            thumb_file = File(orig)
-            thumb = self.avatar.storage.save(
-                self.avatar_name(width, height), thumb_file
-            )
-        invalidate_cache(self.user, width, height)
+            invalidate_cache(self.user, width, height)
 
     def avatar_url(self, width, height=None):
         return self.avatar.storage.url(self.avatar_name(width, height))

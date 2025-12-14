@@ -1,5 +1,8 @@
 Changelog
 =========
+* 9.0.0 (in progress)
+    * Fix files not closed in `create_thumbnail`
+    
 * 8.0.1
     * Fix Django 5.1 compatibility
 
