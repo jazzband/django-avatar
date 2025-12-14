@@ -1,8 +1,8 @@
 import math
 import os.path
+import sys
 from pathlib import Path
 from shutil import rmtree
-import sys
 from unittest import skipIf
 
 from django.contrib.admin.sites import AdminSite

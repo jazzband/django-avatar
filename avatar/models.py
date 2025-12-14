@@ -1,7 +1,7 @@
 import binascii
-from contextlib import closing
 import hashlib
 import os
+from contextlib import closing
 from io import BytesIO
 
 from django.core.files import File
