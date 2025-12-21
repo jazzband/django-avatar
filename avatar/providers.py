@@ -87,16 +87,14 @@ class LibRAvatarProvider:
                 baseurl = "http://" + hostname + ":" + port + "/avatar/"
         except Exception:
             baseurl = "https://seccdn.libravatar.org/avatar/"
-              
+
         params = {"s": str(width)}
         if settings.AVATAR_GRAVATAR_DEFAULT:
             params["d"] = settings.AVATAR_GRAVATAR_DEFAULT
         if settings.AVATAR_GRAVATAR_FORCEDEFAULT:
             params["f"] = "y"
         path = "%s/?%s" % (
-            hashlib.md5(
-                force_bytes(email.strip().lower())
-            ).hexdigest(),
+            hashlib.md5(force_bytes(email.strip().lower())).hexdigest(),
             urlencode(params),
         )
         return urljoin(baseurl, path)
