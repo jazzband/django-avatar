@@ -3,7 +3,7 @@
 
 {% block content %}
     {% if not avatars %}
-        {% url 'avatar_change' as avatar_change_url %}
+        {% url 'avatar:change' as avatar_change_url %}
         <p>{% blocktrans %}You have no avatars to delete. Please <a href="{{ avatar_change_url }}">upload one</a> now.{% endblocktrans %}</p>
     {% else %}
         <p>{% trans "Please select the avatars that you would like to delete." %}</p>
