@@ -68,7 +68,7 @@ class GravatarAvatarProvider(object):
 
 class LibRAvatarProvider:
     """
-    Returns the url of an avatar by the Ravatar service.
+    Returns the url of an avatar by the LibRavatar service.
     """
 
     @classmethod
@@ -87,8 +87,17 @@ class LibRAvatarProvider:
                 baseurl = "http://" + hostname + ":" + port + "/avatar/"
         except Exception:
             baseurl = "https://seccdn.libravatar.org/avatar/"
-        hash = hashlib.md5(email.strip().lower()).hexdigest()
-        return baseurl + hash
+
+        params = {"s": str(width)}
+        if settings.AVATAR_GRAVATAR_DEFAULT:
+            params["d"] = settings.AVATAR_GRAVATAR_DEFAULT
+        if settings.AVATAR_GRAVATAR_FORCEDEFAULT:
+            params["f"] = "y"
+        path = "%s/?%s" % (
+            hashlib.md5(force_bytes(email.strip().lower())).hexdigest(),
+            urlencode(params),
+        )
+        return urljoin(baseurl, path)
 
 
 class FacebookAvatarProvider(object):
