@@ -1,6 +1,7 @@
 Changelog
 =========
 * 9.0.0 (in progress)
+    * Fix files not closed in `create_thumbnail`
     * Add Django 5.2 and 6.0 support
     * Add Python 3.13, 3.14 support
     * Drop Python 3.8, 3.9 support

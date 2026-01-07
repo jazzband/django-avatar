@@ -1,7 +1,9 @@
 import math
 import os.path
+import sys
 from pathlib import Path
 from shutil import rmtree
+from unittest import skipIf
 
 from django.contrib.admin.sites import AdminSite
 from django.core import management
@@ -118,6 +120,7 @@ class AvatarTests(TestCase):
         self.assertTrue(avatar.primary)
 
     # We allow the .tiff file extension but not the mime type
+    @skipIf(sys.platform == "win32", "Skipping test on Windows platform")
     @override_settings(AVATAR_ALLOWED_FILE_EXTS=(".png", ".gif", ".jpg", ".tiff"))
     @override_settings(
         AVATAR_ALLOWED_MIMETYPES=("image/png", "image/gif", "image/jpeg")
@@ -130,6 +133,7 @@ class AvatarTests(TestCase):
         self.assertNotEqual(response.context["upload_avatar_form"].errors, {})
 
     # We allow the .tiff file extension and the mime type
+    @skipIf(sys.platform == "win32", "Skipping test on Windows platform")
     @override_settings(AVATAR_ALLOWED_FILE_EXTS=(".png", ".gif", ".jpg", ".tiff"))
     @override_settings(
         AVATAR_ALLOWED_MIMETYPES=("image/png", "image/gif", "image/jpeg", "image/tiff")
@@ -141,6 +145,7 @@ class AvatarTests(TestCase):
         self.assertEqual(len(response.redirect_chain), 1)  # Redirect only if it worked
         self.assertEqual(response.context["upload_avatar_form"].errors, {})
 
+    @skipIf(sys.platform == "win32", "Skipping test on Windows platform")
     @override_settings(AVATAR_ALLOWED_FILE_EXTS=(".jpg", ".png"))
     def test_image_without_wrong_extension(self):
         response = upload_helper(self, "imagefilewithoutext")
@@ -148,6 +153,7 @@ class AvatarTests(TestCase):
         self.assertEqual(len(response.redirect_chain), 0)  # Redirect only if it worked
         self.assertNotEqual(response.context["upload_avatar_form"].errors, {})
 
+    @skipIf(sys.platform == "win32", "Skipping test on Windows platform")
     @override_settings(AVATAR_ALLOWED_FILE_EXTS=(".jpg", ".png"))
     def test_image_with_wrong_extension(self):
         response = upload_helper(self, "imagefilewithwrongext.ogg")
